@@ -5,7 +5,7 @@
 
 # Musical Zoe Frontend 🎵
 
-A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API platform. Built with cutting-edge `Svelte` & `Typescript` and designed for optimal user experience across all devices.
+A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API platform. Built with  `Svelte` & `Typescript` and designed for optimal user experience across all devices.
 
 ## ✨ Features
 
