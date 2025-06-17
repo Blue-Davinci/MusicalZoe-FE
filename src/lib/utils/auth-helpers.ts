@@ -14,6 +14,11 @@ export interface AuthResult {
 	error?: string | object;
 	message?: string;
 	requiresVerification?: boolean;
+	session?: {
+		access_token: string;
+		refresh_token?: string;
+		expires_at?: number;
+	} | null;
 }
 
 // Rate limiting storage (in production, use Redis)
