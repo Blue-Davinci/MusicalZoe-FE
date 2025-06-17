@@ -63,10 +63,10 @@
 					{/if}
 				</button>
 				
-				<Button variant="ghost" href="/auth/login">
+				<Button variant="ghost" href="/login">
 					Sign In
 				</Button>
-				<Button variant="primary" href="/auth/signup">
+				<Button variant="primary" href="/signup">
 					Get Started
 				</Button>
 			</div>
@@ -116,10 +116,10 @@
 								{/if}
 							</button>
 							
-							<Button variant="ghost" href="/auth/login" class="justify-center">
+							<Button variant="ghost" href="/login" class="justify-center">
 								Sign In
 							</Button>
-							<Button variant="primary" href="/auth/signup" class="justify-center">
+							<Button variant="primary" href="/signup" class="justify-center">
 								Get Started
 							</Button>
 						</div>

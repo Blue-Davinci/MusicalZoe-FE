@@ -1,4 +1,3 @@
-import { env } from '$env/dynamic/public';
 import type {
 	HealthResponse,
 	NewsResponse,
@@ -16,8 +15,8 @@ import type {
 export class ApiClient {
 	private baseUrl: string;
 
-	constructor(baseUrl?: string) {
-		this.baseUrl = baseUrl || env.VITE_API_BASE_URL || 'http://localhost:4000/v1';
+	constructor(baseUrl: string) {
+		this.baseUrl = baseUrl;
 	}
 
 	private async makeRequest<T>(
@@ -39,9 +38,9 @@ export class ApiClient {
 			'Content-Type': 'application/json'
 		};
 
-		// Add auth header for all endpoints except health
-		if (endpoint !== '/health') {
-			headers['Authorization'] = `Bearer ${this.authToken}`;
+		// Add auth header if provided
+		if (authToken) {
+			headers['Authorization'] = `Bearer ${authToken}`;
 		}
 
 		try {
@@ -68,25 +67,19 @@ export class ApiClient {
 		return this.makeRequest<HealthResponse>('/health');
 	}
 
-	async getNews(params?: NewsParams): Promise<NewsResponse> {
-		return this.makeRequest<NewsResponse>('/musical/news', params as unknown as Record<string, string | number | boolean>);
+	async getNews(params?: NewsParams, authToken?: string): Promise<NewsResponse> {
+		return this.makeRequest<NewsResponse>('/musical/news', params as unknown as Record<string, string | number | boolean>, authToken);
 	}
 
-	async getTrends(params?: TrendsParams): Promise<TrendsResponse> {
-		return this.makeRequest<TrendsResponse>('/musical/trends', params as unknown as Record<string, string | number | boolean>);
+	async getTrends(params?: TrendsParams, authToken?: string): Promise<TrendsResponse> {
+		return this.makeRequest<TrendsResponse>('/musical/trends', params as unknown as Record<string, string | number | boolean>, authToken);
 	}
 
-	async getLyrics(params: LyricsParams): Promise<LyricsResponse | LyricsRawResponse> {
-		if (params.format === 'raw') {
-			return this.makeRequest<LyricsRawResponse>('/musical/lyrics', params as unknown as Record<string, string | number | boolean>);
-		}
-		return this.makeRequest<LyricsResponse>('/musical/lyrics', params as unknown as Record<string, string | number | boolean>);
+	async getLyrics(params: LyricsParams, authToken?: string): Promise<LyricsResponse | LyricsRawResponse> {
+		return this.makeRequest<LyricsResponse | LyricsRawResponse>('/musical/lyrics', params as unknown as Record<string, string | number | boolean>, authToken);
 	}
 
-	async getTrackInfo(params: TrackInfoParams): Promise<TrackInfoResponse> {
-		return this.makeRequest<TrackInfoResponse>('/musical/track-info', params as unknown as Record<string, string | number | boolean>);
+	async getTrackInfo(params: TrackInfoParams, authToken?: string): Promise<TrackInfoResponse> {
+		return this.makeRequest<TrackInfoResponse>('/musical/track-info', params as unknown as Record<string, string | number | boolean>, authToken);
 	}
 }
-
-// Export a singleton instance
-export const apiClient = new ApiClient();
