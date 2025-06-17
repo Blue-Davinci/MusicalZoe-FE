@@ -1,6 +1,7 @@
 <div align="center">
   <img src="https://i.ibb.co/zhMky0qT/musical-zoe-high-resolution-logo-transparent.png" alt="Musical Zoe Logo" width="400"/>
 </div>
+<br>
 
 # Musical Zoe Frontend 🎵
 
@@ -55,6 +56,7 @@ A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API
   - Reusable Button, Card, and Container components
   - Form elements with proper accessibility
   - Icon integration with Lucide Svelte
+<br>
 
 ### 🚧 **In Development**
 - [ ] **Authentication System**
@@ -72,19 +74,6 @@ A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API
   - Music library management
   - Playlist creation and management
   - User preferences and settings
-
-### 📋 **Planned Features**
-- [ ] **Music Discovery**
-  - Trending tracks and artists
-  - Genre-based browsing
-  - Artist and album pages
-  - Music recommendation system
-
-- [ ] **Social Features**
-  - User profiles and following
-  - Music sharing capabilities
-  - Community features
-  - Rating and review system
 
 ## 🚀 Getting Started
 
