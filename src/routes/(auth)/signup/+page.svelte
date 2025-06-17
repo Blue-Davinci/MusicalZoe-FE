@@ -275,7 +275,7 @@
 					<div class="mt-6 text-center">
 						<p class="text-muted-foreground text-sm">
 							Already have an account?
-							<a href="/auth/login" class="text-primary hover:text-primary/80 font-medium transition-colors">
+							<a href="/login" class="text-primary hover:text-primary/80 font-medium transition-colors">
 								Sign in here
 							</a>
 						</p>
@@ -290,7 +290,7 @@
 								</p>
 							</div>
 							<Button 
-								href="/auth/login" 
+								href="/login" 
 								class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
 								size="lg"
 							>
