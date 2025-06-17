@@ -38,3 +38,38 @@ export interface SignupResponse {
 	};
 	error?: string;
 }
+
+// Login schema matching the expected JSON structure
+export const loginSchema = z.object({
+	email: z
+		.string()
+		.email('Please enter a valid email address')
+		.max(255, 'Email must be less than 255 characters')
+		.toLowerCase(),
+	password: z
+		.string()
+		.min(1, 'Password is required')
+		.max(128, 'Password must be less than 128 characters'),
+	rememberMe: z.boolean().optional().default(false)
+});
+
+// Type inference from login schema
+export type LoginSchema = typeof loginSchema;
+export type LoginData = z.infer<typeof loginSchema>;
+
+// Interface for the login response
+export interface LoginResponse {
+	success: boolean;
+	message: string;
+	data?: {
+		user: {
+			id: string;
+			name: string;
+			email: string;
+			created_at: string;
+		};
+		token: string;
+		expires_at?: string;
+	};
+	error?: string;
+}
