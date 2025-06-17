@@ -50,6 +50,8 @@
 		"date-fns": "^4.1.0",
 		"lucide-svelte": "^0.516.0",
 		"mode-watcher": "^1.0.8",
+		"pino": "^9.7.0",
+		"pino-pretty": "^13.0.0",
 		"sveltekit-superforms": "^2.27.0",
 		"zod": "^3.25.67"
 	}
