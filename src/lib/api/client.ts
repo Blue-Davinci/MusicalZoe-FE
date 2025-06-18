@@ -25,7 +25,7 @@ export class ApiClient {
 		authToken?: string
 	): Promise<T> {
 		const url = new URL(`${this.baseUrl}${endpoint}`);
-		
+
 		if (params) {
 			Object.entries(params).forEach(([key, value]) => {
 				if (value !== undefined && value !== null) {
@@ -68,18 +68,37 @@ export class ApiClient {
 	}
 
 	async getNews(params?: NewsParams, authToken?: string): Promise<NewsResponse> {
-		return this.makeRequest<NewsResponse>('/musical/news', params as unknown as Record<string, string | number | boolean>, authToken);
+		return this.makeRequest<NewsResponse>(
+			'/musical/news',
+			params as unknown as Record<string, string | number | boolean>,
+			authToken
+		);
 	}
 
 	async getTrends(params?: TrendsParams, authToken?: string): Promise<TrendsResponse> {
-		return this.makeRequest<TrendsResponse>('/musical/trends', params as unknown as Record<string, string | number | boolean>, authToken);
+		return this.makeRequest<TrendsResponse>(
+			'/musical/trends',
+			params as unknown as Record<string, string | number | boolean>,
+			authToken
+		);
 	}
 
-	async getLyrics(params: LyricsParams, authToken?: string): Promise<LyricsResponse | LyricsRawResponse> {
-		return this.makeRequest<LyricsResponse | LyricsRawResponse>('/musical/lyrics', params as unknown as Record<string, string | number | boolean>, authToken);
+	async getLyrics(
+		params: LyricsParams,
+		authToken?: string
+	): Promise<LyricsResponse | LyricsRawResponse> {
+		return this.makeRequest<LyricsResponse | LyricsRawResponse>(
+			'/musical/lyrics',
+			params as unknown as Record<string, string | number | boolean>,
+			authToken
+		);
 	}
 
 	async getTrackInfo(params: TrackInfoParams, authToken?: string): Promise<TrackInfoResponse> {
-		return this.makeRequest<TrackInfoResponse>('/musical/track-info', params as unknown as Record<string, string | number | boolean>, authToken);
+		return this.makeRequest<TrackInfoResponse>(
+			'/musical/track-info',
+			params as unknown as Record<string, string | number | boolean>,
+			authToken
+		);
 	}
 }

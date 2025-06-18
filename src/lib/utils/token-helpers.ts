@@ -6,13 +6,13 @@ import type { Cookies } from '@sveltejs/kit';
 export interface User {
 	name: string;
 	email: string;
+	activated: boolean;
 	created_at: string;
 	// Optional fields for future expansion
 	id?: string;
 	first_name?: string;
 	last_name?: string;
 	role?: string;
-	email_verified?: boolean;
 }
 
 // Interface for API key structure (matching your API response)
@@ -50,7 +50,7 @@ export async function validateBearerToken(token: string): Promise<User | null> {
 		const response = await fetch(`${VITE_API_BASE_URL}/auth/validate`, {
 			method: 'GET',
 			headers: {
-				'Authorization': `Bearer ${token}`,
+				Authorization: `Bearer ${token}`,
 				'Content-Type': 'application/json'
 			}
 		});
@@ -65,16 +65,16 @@ export async function validateBearerToken(token: string): Promise<User | null> {
 		}
 
 		const result: TokenValidationResponse = await response.json();
-		
+
 		// Check if the API returned user data directly or wrapped in a response
 		let user: User | null = null;
-		
+
 		if (result.user) {
 			user = result.user;
 		} else if (result && typeof result === 'object' && 'email' in result && 'name' in result) {
 			user = result as User;
 		}
-		
+
 		if (user) {
 			logAuth('TOKEN_VALIDATED', {
 				userEmail: user.email,
@@ -138,5 +138,6 @@ export function getTokenExpiry(cookies: Cookies): string | null {
 export function clearAuthCookies(cookies: Cookies): void {
 	cookies.delete('bearer_token', { path: '/' });
 	cookies.delete('token_expiry', { path: '/' });
+	cookies.delete('user_data', { path: '/' });
 	cookies.delete('remember_me', { path: '/' });
 }

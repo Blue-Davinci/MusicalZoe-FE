@@ -18,10 +18,7 @@ export interface RateLimitResult {
 }
 
 // Generic rate limiting function
-export function checkRateLimit(
-	key: string,
-	config: RateLimitConfig
-): RateLimitResult {
+export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitResult {
 	const now = Date.now();
 	const attempt = attemptStorage.get(key);
 

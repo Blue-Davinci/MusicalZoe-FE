@@ -6,13 +6,14 @@
 
 	let { children, data }: { children: any; data: LayoutData } = $props();
 
-	// Set authentication context for child components
-	setContext('auth', {
+	// Set authentication context for child components using a getter function
+	// This ensures the context stays reactive to data changes
+	setContext('auth', () => ({
 		user: data.user,
 		isAuthenticated: data.isAuthenticated,
 		isAdmin: data.isAdmin,
 		isVerified: data.isVerified
-	});
+	}));
 </script>
 
 <ModeWatcher />

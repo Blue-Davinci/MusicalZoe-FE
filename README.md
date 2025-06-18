@@ -5,17 +5,19 @@
 
 # Musical Zoe Frontend 🎵
 
-A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API platform. Built with  `Svelte` & `Typescript` and designed for optimal user experience across all devices.
+A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API platform. Built with `Svelte` & `Typescript` and designed for optimal user experience across all devices.
 
 ## ✨ Features
 
 ### 🎨 **Modern Design System**
+
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 - **Dark/Light Mode**: Seamless theme switching with user preference persistence
 - **Musical Branding**: Vibrant, music-inspired color palette and animations
 - **Component-Based Architecture**: Modular, reusable UI components
 
 ### 🚀 **Technology Stack**
+
 - **SvelteKit**: Full-stack web framework with SSR/SPA capabilities
 - **Svelte 5**: Latest Svelte with runes and modern reactive primitives
 - **TypeScript**: Type-safe development with excellent developer experience
@@ -24,6 +26,7 @@ A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API
 - **mode-watcher**: Robust dark mode implementation
 
 ### 🏗️ **Architecture Highlights**
+
 - **Modular Structure**: Organized components by feature and functionality
 - **Type Safety**: Full TypeScript coverage for reliable development
 - **Modern Patterns**: Uses Svelte 5 runes instead of stores for state management
@@ -33,37 +36,38 @@ A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API
 ## 🎯 Current Status
 
 ### ✅ **Completed Features**
+
 - [x] **Project Setup & Configuration**
   - SvelteKit with TypeScript and Tailwind CSS
   - shadcn-svelte integration with dark mode support
   - Modular folder structure and component organization
-  
 - [x] **Homepage Components**
   - Hero section with search functionality
   - Features showcase with animated cards
   - Services overview with API information
   - Contact form with validation
   - Footer with branding and links
-  
 - [x] **Theming System**
   - Complete dark/light mode implementation
   - CSS variables for consistent theming
   - mode-watcher integration for theme persistence
   - Responsive theme toggle in navigation
-  
 - [x] **UI Components**
   - Header/Navigation with mobile-responsive menu
   - Reusable Button, Card, and Container components
   - Form elements with proper accessibility
   - Icon integration with Lucide Svelte
-<br>
+    <br>
 
 ### 🚧 **In Development**
+
 - [ ] **Authentication System**
+
   - User registration and login
   - Protected routes and middleware
 
 - [ ] **API Integration**
+
   - Music data fetching from backend
   - Search functionality implementation
   - Real-time data updates
@@ -78,18 +82,21 @@ A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 20+ 
+
+- Node.js 20+
 - npm, pnpm, or yarn package manager
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/MusicalZoe-FE.git
    cd MusicalZoe-FE
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -99,12 +106,14 @@ A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 4. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -175,16 +184,16 @@ The project uses CSS variables for theming with shadcn-svelte:
 ```css
 /* Light mode variables */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  /* ... more variables */
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.129 0.042 264.695);
+	/* ... more variables */
 }
 
 /* Dark mode variables */
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  /* ... more variables */
+	--background: oklch(0.129 0.042 264.695);
+	--foreground: oklch(0.984 0.003 247.858);
+	/* ... more variables */
 }
 ```
 

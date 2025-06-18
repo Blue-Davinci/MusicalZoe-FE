@@ -8,66 +8,74 @@
 		{
 			icon: Globe,
 			title: 'Global Music News',
-			description: 'Access music news from around the world with intelligent filtering by country, genre, and type.',
-			features: ['Multi-country support', 'Genre-specific filtering', 'Real-time updates', 'Curated content']
+			description:
+				'Access music news from around the world with intelligent filtering by country, genre, and type.',
+			features: [
+				'Multi-country support',
+				'Genre-specific filtering',
+				'Real-time updates',
+				'Curated content'
+			]
 		},
 		{
 			icon: Database,
 			title: 'Comprehensive Music Data',
-			description: 'Rich metadata and analytics for tracks, artists, and albums powered by Last.fm integration.',
+			description:
+				'Rich metadata and analytics for tracks, artists, and albums powered by Last.fm integration.',
 			features: ['Track analytics', 'Artist information', 'Album metadata', 'Play statistics']
 		},
 		{
 			icon: Code,
 			title: 'Developer-Friendly API',
-			description: 'Clean, well-documented API endpoints with consistent response formats and error handling.',
+			description:
+				'Clean, well-documented API endpoints with consistent response formats and error handling.',
 			features: ['RESTful design', 'JSON responses', 'Error handling', 'Rate limiting']
 		},
 		{
 			icon: Cpu,
 			title: 'High Performance',
-			description: 'Optimized for speed with intelligent caching, timeout handling, and reliable data sources.',
+			description:
+				'Optimized for speed with intelligent caching, timeout handling, and reliable data sources.',
 			features: ['Fast responses', 'Smart caching', 'Timeout protection', 'High availability']
 		}
 	];
 </script>
 
-<section class="py-24 bg-background">
+<section class="bg-background py-24">
 	<Container size="xl">
 		<!-- Section Header -->
-		<div class="text-center mb-20">
-			<h2 class="text-4xl md:text-5xl font-bold text-foreground mb-6">
-				Our Services
-			</h2>
-			<p class="text-xl text-muted-foreground max-w-3xl mx-auto">
-				Professional-grade music data services designed for developers, businesses, and music enthusiasts.
+		<div class="mb-20 text-center">
+			<h2 class="text-foreground mb-6 text-4xl font-bold md:text-5xl">Our Services</h2>
+			<p class="text-muted-foreground mx-auto max-w-3xl text-xl">
+				Professional-grade music data services designed for developers, businesses, and music
+				enthusiasts.
 			</p>
 		</div>
 
 		<!-- Services Grid -->
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+		<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
 			{#each services as service}
 				<Card class="h-full">
 					<div class="flex items-start space-x-4">
 						<div class="flex-shrink-0">
-							<div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-								<svelte:component this={service.icon} class="w-6 h-6 text-blue-600" />
+							<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
+								<svelte:component this={service.icon} class="h-6 w-6 text-blue-600" />
 							</div>
 						</div>
-						
+
 						<div class="flex-1">
-							<h3 class="text-xl font-semibold text-foreground mb-3">
+							<h3 class="text-foreground mb-3 text-xl font-semibold">
 								{service.title}
 							</h3>
-							
+
 							<p class="text-muted-foreground mb-4">
 								{service.description}
 							</p>
-							
+
 							<ul class="space-y-2">
 								{#each service.features as feature}
-									<li class="flex items-center text-sm text-muted-foreground">
-										<div class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-3"></div>
+									<li class="text-muted-foreground flex items-center text-sm">
+										<div class="mr-3 h-1.5 w-1.5 rounded-full bg-blue-600"></div>
 										{feature}
 									</li>
 								{/each}
@@ -80,18 +88,25 @@
 
 		<!-- API Showcase -->
 		<div class="mt-20">
-			<Card class="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
+			<Card class="from-primary to-primary/80 text-primary-foreground bg-gradient-to-r">
 				<div class="text-center">
-					<h3 class="text-2xl font-semibold mb-4">Ready to Get Started?</h3>
-					<p class="text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-						Join thousands of developers and music enthusiasts using Musical Zoe to power their applications and discover new music.
+					<h3 class="mb-4 text-2xl font-semibold">Ready to Get Started?</h3>
+					<p class="text-primary-foreground/80 mx-auto mb-8 max-w-2xl">
+						Join thousands of developers and music enthusiasts using Musical Zoe to power their
+						applications and discover new music.
 					</p>
-					
-					<div class="flex flex-col sm:flex-row gap-4 justify-center">
-						<a href="/auth/signup" class="bg-background text-foreground px-8 py-3 rounded-lg font-medium hover:bg-muted transition-colors duration-200">
+
+					<div class="flex flex-col justify-center gap-4 sm:flex-row">
+						<a
+							href="/auth/signup"
+							class="bg-background text-foreground hover:bg-muted rounded-lg px-8 py-3 font-medium transition-colors duration-200"
+						>
 							Create Free Account
 						</a>
-						<a href="#contact" class="border border-border text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary-foreground/10 transition-colors duration-200">
+						<a
+							href="#contact"
+							class="border-border text-primary-foreground hover:bg-primary-foreground/10 rounded-lg border px-8 py-3 font-medium transition-colors duration-200"
+						>
 							Get in Touch
 						</a>
 					</div>

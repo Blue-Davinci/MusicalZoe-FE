@@ -1,10 +1,10 @@
 import { type RequestEvent } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { logAuth, logSecurity, logError, generateErrorId } from '$lib/utils/logger';
-import { 
-	type AuthResult, 
-	checkAuthRateLimit, 
-	recordFailedAuthAttempt, 
+import {
+	type AuthResult,
+	checkAuthRateLimit,
+	recordFailedAuthAttempt,
 	clearFailedAuthAttempts,
 	validateToken,
 	extractErrorMessage
@@ -46,7 +46,7 @@ export const load = async ({ url, getClientAddress }: RequestEvent) => {
 	const rateLimit = checkAuthRateLimit(token!, clientIP, 'activation');
 	if (!rateLimit.allowed) {
 		const waitMinutes = Math.ceil(rateLimit.waitTime / (1000 * 60));
-		
+
 		logSecurity('ACTIVATION_RATE_LIMITED', {
 			clientIP,
 			attempts: rateLimit.attempts,
@@ -75,7 +75,10 @@ export const load = async ({ url, getClientAddress }: RequestEvent) => {
 			recordFailedAuthAttempt(token!, clientIP, 'activation');
 
 			// Extract proper error message from the result
-			const errorMessage = extractErrorMessage(activationResult.error, 'Account activation failed. Please try again.');
+			const errorMessage = extractErrorMessage(
+				activationResult.error,
+				'Account activation failed. Please try again.'
+			);
 
 			logAuth('ACTIVATION_FAILED', {
 				clientIP,
@@ -109,7 +112,6 @@ export const load = async ({ url, getClientAddress }: RequestEvent) => {
 			user: activationResult.user,
 			token: null
 		};
-
 	} catch (error) {
 		const errorId = generateErrorId();
 
@@ -160,7 +162,7 @@ async function activateAccount(token: string, clientIP: string): Promise<AuthRes
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			},
 			body: JSON.stringify({ token })
 		});
@@ -174,15 +176,15 @@ async function activateAccount(token: string, clientIP: string): Promise<AuthRes
 				error: result.message || result.error,
 				clientIP
 			});
-			
+
 			// Extract proper error message
 			const errorMessage = extractErrorMessage(
-				result.message || result.error, 
+				result.message || result.error,
 				'Account activation failed'
 			);
-			
-			return { 
-				success: false, 
+
+			return {
+				success: false,
 				error: errorMessage
 			};
 		}
@@ -199,7 +201,6 @@ async function activateAccount(token: string, clientIP: string): Promise<AuthRes
 			message: result.message || 'Account activated successfully!',
 			user: result.user
 		};
-
 	} catch (error) {
 		logError('ACTIVATION_API_ERROR', {
 			error: error instanceof Error ? error.message : 'Unknown error',

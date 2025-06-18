@@ -116,13 +116,16 @@ export function validateToken(token: string | null): { isValid: boolean; error?:
 }
 
 // Utility function to extract error messages from various formats
-export function extractErrorMessage(error: string | object | undefined, fallback: string = 'An error occurred'): string {
+export function extractErrorMessage(
+	error: string | object | undefined,
+	fallback: string = 'An error occurred'
+): string {
 	if (!error) return fallback;
-	
+
 	if (typeof error === 'string') {
 		return error;
 	}
-	
+
 	if (typeof error === 'object') {
 		// Handle object errors like { "token": "invalid or expired activation token" }
 		const values = Object.values(error);
@@ -130,6 +133,6 @@ export function extractErrorMessage(error: string | object | undefined, fallback
 			return values.join(', ');
 		}
 	}
-	
+
 	return fallback;
 }

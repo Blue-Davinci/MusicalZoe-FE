@@ -58,17 +58,17 @@ export function truncateText(text: string, length: number): string {
  */
 export function getBestImage(images: Array<{ '#text': string; size: string }>): string {
 	if (!images || images.length === 0) return '';
-	
+
 	// Try to get large first, then medium, then small
-	const large = images.find(img => img.size === 'large');
+	const large = images.find((img) => img.size === 'large');
 	if (large && large['#text']) return large['#text'];
-	
-	const medium = images.find(img => img.size === 'medium');
+
+	const medium = images.find((img) => img.size === 'medium');
 	if (medium && medium['#text']) return medium['#text'];
-	
-	const small = images.find(img => img.size === 'small');
+
+	const small = images.find((img) => img.size === 'small');
 	if (small && small['#text']) return small['#text'];
-	
+
 	return '';
 }
 
@@ -88,5 +88,5 @@ export function isValidUrl(string: string): boolean {
  * Sleep function for delays
  */
 export function sleep(ms: number): Promise<void> {
-	return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }
