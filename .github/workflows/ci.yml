@@ -120,11 +120,11 @@ jobs:
       - name: Check build output
         run: |
           echo "Build completed successfully!"
-          ls -la build/
+          ls -la .svelte-kit/output/
           echo "Build output:"
-          ls -la build/output/
+          ls -la .svelte-kit/output/client/
           echo "Build size:"
-          du -sh build/
+          du -sh .svelte-kit/output/
 
       - name: Validate API routes structure
         run: |

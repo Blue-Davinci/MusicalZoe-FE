@@ -74,11 +74,11 @@ jobs:
           npm run build
 
           echo "📦 Build Analysis:"
-          echo "Total build size: $(du -sh build/)"
+          echo "Total build size: $(du -sh .svelte-kit/output/)"
 
           # Analyze largest files
           echo "Largest files in build:"
-          find build -type f -name "*.js" -o -name "*.css" | xargs ls -lh | sort -k5 -hr | head -10
+          find .svelte-kit/output -type f -name "*.js" -o -name "*.css" | xargs ls -lh | sort -k5 -hr | head -10
 
       - name: Check for accessibility issues
         run: |
