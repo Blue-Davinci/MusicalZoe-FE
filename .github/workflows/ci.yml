@@ -121,6 +121,8 @@ jobs:
         run: |
           echo "Build completed successfully!"
           ls -la build/
+          echo "Build output:"
+          ls -la build/output/
           echo "Build size:"
           du -sh build/
 
