@@ -21,7 +21,7 @@ assignees: []
 - [ ] API endpoints
 - [ ] Navigation/routing
 - [ ] Responsive design
-- [ ] Other: ****\_\_\_****
+- [ ] Other: \***\*\_\_\_\*\***
 
 ## 🔄 Steps to Reproduce
 
@@ -55,7 +55,7 @@ assignees: []
 <!-- If the bug involves data loading or API calls -->
 
 - [ ] Issue occurs with all music searches
-- [ ] Issue occurs with specific songs/artists: ****\_\_\_****
+- [ ] Issue occurs with specific songs/artists: \***\*\_\_\_\*\***
 - [ ] Issue occurs intermittently
 - [ ] Network connection: [e.g. WiFi, Mobile data, Slow connection]
 

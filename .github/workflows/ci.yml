@@ -67,7 +67,7 @@ jobs:
           MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
           MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
           MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
-          
+
           # Client-side variables (accessible via \$env/static/public)
           VITE_API_BASE_URL=https://api.test.com/v1
           VITE_API_SIGNUP_URL=https://api.test.com/v1/api

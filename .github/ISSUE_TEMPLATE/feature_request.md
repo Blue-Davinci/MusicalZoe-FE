@@ -29,7 +29,7 @@ assignees: []
 - [ ] New Widget - Completely new dashboard component
 - [ ] API Integration - New music service or endpoint
 - [ ] User Experience - Accessibility, performance, responsiveness
-- [ ] Other: ****\_\_\_****
+- [ ] Other: \***\*\_\_\_\*\***
 
 ## 🎨 User Interface Ideas
 
