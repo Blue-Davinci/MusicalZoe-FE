@@ -1,24 +1,15 @@
 import { logSecurity } from './logger';
 import { dev } from '$app/environment';
+import type { User, ApiKey } from './token-helpers';
 
 // Types
 export interface AuthResult {
 	success: boolean;
-	user?: {
-		id: string;
-		name: string;
-		email: string;
-		created_at: string;
-		email_confirmed_at?: string;
-	} | null;
+	user?: User | null;
+	api_key?: ApiKey;
 	error?: string | object;
 	message?: string;
 	requiresVerification?: boolean;
-	session?: {
-		access_token: string;
-		refresh_token?: string;
-		expires_at?: number;
-	} | null;
 }
 
 // Rate limiting storage (in production, use Redis)
