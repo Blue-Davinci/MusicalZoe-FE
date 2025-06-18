@@ -1,5 +1,5 @@
 import { logAuth, logError, logSecurity } from './logger';
-import { VITE_API_BASE_URL } from '$env/static/private';
+import { API_BASE_URL } from '$env/static/private';
 import type { Cookies } from '@sveltejs/kit';
 
 // Interface for user data structure (matching your API response)
@@ -40,14 +40,14 @@ interface TokenValidationResponse {
  */
 export async function validateBearerToken(token: string): Promise<User | null> {
 	try {
-		if (!VITE_API_BASE_URL) {
+		if (!API_BASE_URL) {
 			logError('MISSING_API_CONFIG', {
-				message: 'VITE_API_BASE_URL not configured for token validation'
+				message: 'API_BASE_URL not configured for token validation'
 			});
 			return null;
 		}
 
-		const response = await fetch(`${VITE_API_BASE_URL}/auth/validate`, {
+		const response = await fetch(`${API_BASE_URL}/auth/validate`, {
 			method: 'GET',
 			headers: {
 				Authorization: `Bearer ${token}`,

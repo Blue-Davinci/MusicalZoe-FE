@@ -8,10 +8,7 @@
 		BarChart3,
 		Users,
 		Activity,
-		Calendar,
-		Clock,
 		AlertCircle,
-		CheckCircle,
 		Headphones,
 		Radio
 	} from 'lucide-svelte';

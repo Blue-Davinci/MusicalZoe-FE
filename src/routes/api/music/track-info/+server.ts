@@ -2,24 +2,21 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getBearerToken } from '$lib/utils/token-helpers';
 import { logAuth, logError, generateErrorId } from '$lib/utils/logger';
-import { VITE_MUSIC_API_TRACK_INFO_URL } from '$env/static/private';
+import { MUSIC_API_TRACK_INFO_URL } from '$env/static/private';
 
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	const startTime = Date.now();
-	
+
 	try {
 		// Extract authentication token
 		const bearerToken = getBearerToken(cookies);
-		
+
 		if (!bearerToken) {
 			logAuth('TRACK_INFO_API_NO_TOKEN', {
 				timestamp: new Date().toISOString()
 			});
-			
-			return json(
-				{ error: 'Authentication required' },
-				{ status: 401 }
-			);
+
+			return json({ error: 'Authentication required' }, { status: 401 });
 		}
 
 		// Extract query parameters
@@ -29,21 +26,15 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 
 		// Validate required parameters
 		if (!artist) {
-			return json(
-				{ error: 'Artist parameter is required' },
-				{ status: 400 }
-			);
+			return json({ error: 'Artist parameter is required' }, { status: 400 });
 		}
 
 		if (!title && !song) {
-			return json(
-				{ error: 'Title or song parameter is required' },
-				{ status: 400 }
-			);
+			return json({ error: 'Title or song parameter is required' }, { status: 400 });
 		}
 
 		// Build API URL
-		const apiUrl = new URL(VITE_MUSIC_API_TRACK_INFO_URL);
+		const apiUrl = new URL(MUSIC_API_TRACK_INFO_URL);
 		apiUrl.searchParams.set('artist', artist);
 		if (title) {
 			apiUrl.searchParams.set('title', title);
@@ -61,9 +52,9 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 		const response = await fetch(apiUrl.toString(), {
 			method: 'GET',
 			headers: {
-				'Authorization': `Bearer ${bearerToken}`,
+				Authorization: `Bearer ${bearerToken}`,
 				'Content-Type': 'application/json',
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			}
 		});
 
@@ -94,10 +85,9 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 		});
 
 		return json(data);
-
 	} catch (error) {
 		const errorId = generateErrorId();
-		
+
 		logError('TRACK_INFO_API_UNEXPECTED_ERROR', {
 			errorId,
 			error: error instanceof Error ? error.message : 'Unknown error',

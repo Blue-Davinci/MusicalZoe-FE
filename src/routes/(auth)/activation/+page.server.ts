@@ -9,7 +9,7 @@ import {
 	validateToken,
 	extractErrorMessage
 } from '$lib/utils/auth-helpers';
-import { VITE_API_ACTIVATION_URL } from '$env/static/private';
+import { API_ACTIVATION_URL } from '$env/static/private';
 
 export const load = async ({ url, getClientAddress }: RequestEvent) => {
 	const startTime = Date.now();
@@ -143,9 +143,9 @@ async function activateAccount(token: string, clientIP: string): Promise<AuthRes
 		});
 
 		// Use the direct activation URL from environment
-		if (!VITE_API_ACTIVATION_URL) {
+		if (!API_ACTIVATION_URL) {
 			logError('MISSING_API_CONFIG', {
-				message: 'VITE_API_ACTIVATION_URL not configured'
+				message: 'API_ACTIVATION_URL not configured'
 			});
 			return {
 				success: false,
@@ -154,11 +154,11 @@ async function activateAccount(token: string, clientIP: string): Promise<AuthRes
 		}
 
 		logAuth('API_CALL_START', {
-			url: dev ? VITE_API_ACTIVATION_URL : '[REDACTED]',
+			url: dev ? API_ACTIVATION_URL : '[REDACTED]',
 			method: 'PUT'
 		});
 
-		const response = await fetch(VITE_API_ACTIVATION_URL, {
+		const response = await fetch(API_ACTIVATION_URL, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
