@@ -13,7 +13,7 @@
 	}
 
 	let {
-		limit = 4,
+		limit = 6,
 		country = 'us',
 		type = 'everything',
 		genre = '',
@@ -94,15 +94,15 @@
 		if (diffDays === 0) {
 			if (diffHours === 0) {
 				const diffMinutes = Math.floor(diffMs / (1000 * 60));
-				return `${diffMinutes} minutes ago`;
+				return `${diffMinutes}m ago`;
 			}
-			return `${diffHours} hours ago`;
+			return `${diffHours}h ago`;
 		} else if (diffDays === 1) {
 			return 'Yesterday';
 		} else if (diffDays < 7) {
-			return `${diffDays} days ago`;
+			return `${diffDays}d ago`;
 		} else {
-			return date.toLocaleDateString();
+			return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 		}
 	}
 
@@ -112,10 +112,10 @@
 	}
 </script>
 
-<Card class="overflow-hidden">
-	<div class="p-6">
+<Card class="h-full flex flex-col">
+	<div class="p-6 flex-1 flex flex-col overflow-y-auto">
 		<!-- Header -->
-		<div class="mb-6 flex items-center justify-between">
+		<div class="mb-4 flex items-center justify-between">
 			<div class="flex items-center space-x-3">
 				<div class="rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 p-2">
 					<Newspaper class="h-5 w-5 text-white" />
@@ -127,168 +127,168 @@
 					</p>
 				</div>
 			</div>
+		</div>
 
-			<!-- Filters -->
-			<div class="flex items-center space-x-2">
-				<!-- Genre Filter -->
-				<select
-					bind:value={genre}
-					onchange={loadNews}
+		<!-- Compact Filters -->
+		<div class="mb-4 flex flex-wrap items-center gap-2">
+			<!-- Genre Filter -->
+			<select
+				bind:value={genre}
+				onchange={loadNews}
+				disabled={loading}
+				class="border-border bg-background text-foreground focus:ring-primary rounded-md border px-2 py-1 text-xs focus:ring-2 focus:outline-none"
+			>
+				{#each genreOptions as option}
+					<option value={option.value}>{option.name}</option>
+				{/each}
+			</select>
+
+			<!-- Country Filter -->
+			<select
+				bind:value={country}
+				onchange={loadNews}
+				disabled={loading}
+				class="border-border bg-background text-foreground focus:ring-primary rounded-md border px-2 py-1 text-xs focus:ring-2 focus:outline-none"
+			>
+				{#each countryOptions as option}
+					<option value={option.code}>{option.name}</option>
+				{/each}
+			</select>
+
+			<!-- Type Toggle -->
+			<div class="border-border flex overflow-hidden rounded-md border">
+				<button
+					onclick={() => {
+						type = 'headlines';
+						loadNews();
+					}}
+					class="px-2 py-1 text-xs {type === 'headlines'
+						? 'bg-primary text-primary-foreground'
+						: 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
 					disabled={loading}
-					class="border-border bg-background text-foreground focus:ring-primary rounded-md border px-2 py-1 text-sm focus:ring-2 focus:outline-none"
 				>
-					{#each genreOptions as option}
-						<option value={option.value}>{option.name}</option>
-					{/each}
-				</select>
-
-				<!-- Country Filter -->
-				<select
-					bind:value={country}
-					onchange={loadNews}
+					Headlines
+				</button>
+				<button
+					onclick={() => {
+						type = 'everything';
+						loadNews();
+					}}
+					class="px-2 py-1 text-xs {type === 'everything'
+						? 'bg-primary text-primary-foreground'
+						: 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
 					disabled={loading}
-					class="border-border bg-background text-foreground focus:ring-primary rounded-md border px-2 py-1 text-sm focus:ring-2 focus:outline-none"
 				>
-					{#each countryOptions as option}
-						<option value={option.code}>{option.name}</option>
-					{/each}
-				</select>
-
-				<!-- Type Toggle -->
-				<div class="border-border flex overflow-hidden rounded-md border">
-					<button
-						onclick={() => {
-							type = 'headlines';
-							loadNews();
-						}}
-						class="px-3 py-1 text-sm {type === 'headlines'
-							? 'bg-primary text-primary-foreground'
-							: 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
-						disabled={loading}
-					>
-						Headlines
-					</button>
-					<button
-						onclick={() => {
-							type = 'everything';
-							loadNews();
-						}}
-						class="px-3 py-1 text-sm {type === 'everything'
-							? 'bg-primary text-primary-foreground'
-							: 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
-						disabled={loading}
-					>
-						All
-					</button>
-				</div>
+					All
+				</button>
 			</div>
 		</div>
 
-		<!-- Loading State -->
-		{#if loading}
-			<div class="space-y-4">
-				{#each Array(3) as _}
-					<div class="flex animate-pulse space-x-4">
-						<div class="bg-muted h-16 w-24 rounded-md"></div>
-						<div class="flex-1">
-							<div class="bg-muted mb-2 h-4 w-3/4 rounded"></div>
-							<div class="bg-muted mb-2 h-3 w-full rounded"></div>
-							<div class="bg-muted h-3 w-1/2 rounded"></div>
-						</div>
-					</div>
-				{/each}
-			</div>
-		{/if}
-
-		<!-- Error State -->
-		{#if error}
-			<div class="py-8 text-center">
-				<div class="bg-destructive/10 border-destructive/20 rounded-md border p-3">
-					<p class="text-destructive text-sm">{error}</p>
-				</div>
-				<Button variant="outline" onclick={loadNews} class="mt-4">Try Again</Button>
-			</div>
-		{/if}
-
-		<!-- News Articles -->
-		{#if data && data.news.articles.length > 0 && !loading}
-			<div class="space-y-3">
-				{#each data.news.articles.slice(0, limit) as article}
-					<article
-						class="group border-border hover:border-primary/50 cursor-pointer rounded-lg border p-3 transition-all hover:shadow-md"
-					>
-						<div class="space-y-3">
-							<!-- Article Image -->
-							{#if article.urlToImage}
-								<div class="h-32 w-full flex-shrink-0">
-									<img
-										src={article.urlToImage}
-										alt={article.title}
-										class="h-full w-full rounded-md object-cover transition-transform group-hover:scale-105"
-										loading="lazy"
-									/>
-								</div>
-							{/if}
-
-							<!-- Article Content -->
-							<div class="space-y-2">
-								<h4
-									class="text-foreground group-hover:text-primary line-clamp-2 text-sm font-semibold transition-colors"
-								>
-									{article.title}
-								</h4>
-
-								{#if article.description}
-									<p class="text-muted-foreground line-clamp-2 text-xs">
-										{truncateText(article.description, 100)}
-									</p>
-								{/if}
-
-								<!-- Article Meta -->
-								<div class="flex items-center justify-between">
-									<div class="text-muted-foreground flex items-center space-x-2 text-xs">
-										{#if article.source.name}
-											<span class="truncate font-medium">{article.source.name}</span>
-										{/if}
-										<span>•</span>
-										<span>{formatDate(article.publishedAt)}</span>
-									</div>
-
-									<a
-										href={article.url}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="text-primary hover:text-primary/80 flex items-center space-x-1 text-xs transition-colors"
-										onclick={(e) => e.stopPropagation()}
-									>
-										<ExternalLink class="h-3 w-3" />
-									</a>
-								</div>
+		<!-- Content Area -->
+		<div class="flex-shrink-0">
+			<!-- Loading State -->
+			{#if loading}
+				<div class="space-y-3">
+					{#each Array(4) as _}
+						<div class="flex animate-pulse space-x-3">
+							<div class="bg-muted h-12 w-16 rounded-md flex-shrink-0"></div>
+							<div class="flex-1 min-w-0">
+								<div class="bg-muted mb-2 h-3 w-3/4 rounded"></div>
+								<div class="bg-muted mb-1 h-2 w-full rounded"></div>
+								<div class="bg-muted h-2 w-1/2 rounded"></div>
 							</div>
 						</div>
-					</article>
-				{/each}
-			</div>
+					{/each}
+				</div>
+			{:else if error}
+				<!-- Error State -->
+				<div class="py-8 text-center">
+					<div class="bg-destructive/10 border-destructive/20 rounded-md border p-3">
+						<p class="text-destructive text-sm">{error}</p>
+					</div>
+					<Button variant="outline" onclick={loadNews} class="mt-4" size="sm">Try Again</Button>
+				</div>
+			{:else if data && data.news.articles.length > 0}
+				<!-- News Articles -->
+				<div class="space-y-3 mb-4">
+					{#each data.news.articles.slice(0, limit) as article}
+						<article class="group border-border hover:border-primary/50 rounded-lg border transition-all hover:shadow-md relative bg-card/50 hover:bg-card">
+							<div class="p-3">
+								<div class="flex space-x-3">
+									{#if article.urlToImage}
+										<img
+											src={article.urlToImage}
+											alt={article.title}
+											class="h-14 w-20 rounded-md object-cover flex-shrink-0"
+											loading="lazy"
+										/>
+									{:else}
+										<div class="bg-muted flex h-14 w-20 items-center justify-center rounded-md flex-shrink-0">
+											<Newspaper class="text-muted-foreground h-5 w-5" />
+										</div>
+									{/if}
 
-			<!-- View More Button -->
-			<div class="mt-6 text-center">
-				<Button
-					variant="outline"
-					href="/dashboard/news?country={country}&type={type}&genre={genre}"
-					class="w-full"
-				>
-					View All Music News ({data.news.totalResults} articles)
-				</Button>
-			</div>
-		{/if}
+									<div class="min-w-0 flex-1">
+										<h4 class="text-foreground text-sm font-medium leading-tight group-hover:text-primary transition-colors">
+											<span class="line-clamp-2">{article.title}</span>
+										</h4>
+										
+										{#if article.description}
+											<p class="text-muted-foreground mt-1 text-xs leading-relaxed">
+												<span class="line-clamp-2">{truncateText(article.description, 100)}</span>
+											</p>
+										{/if}
 
-		<!-- Empty State -->
-		{#if data && data.news.articles.length === 0 && !loading && !error}
-			<div class="py-8 text-center">
-				<Newspaper class="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-				<p class="text-muted-foreground">No news articles found for the selected filters.</p>
-				<Button variant="outline" onclick={loadNews} class="mt-4">Refresh</Button>
-			</div>
-		{/if}
+										<div class="mt-2 flex items-center justify-between">
+											<div class="flex items-center space-x-2 text-xs text-muted-foreground">
+												{#if article.source?.name}
+													<span class="truncate font-medium max-w-20">{article.source.name}</span>
+													<span>•</span>
+												{/if}
+												<span>{formatDate(article.publishedAt)}</span>
+											</div>
+
+											<ExternalLink class="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Accessible overlay button -->
+							{#if article.url}
+								<a 
+									href={article.url} 
+									target="_blank" 
+									rel="noopener noreferrer" 
+									class="absolute inset-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+									aria-label="Read article: {article.title}"
+								>
+									<span class="sr-only">Read full article</span>
+								</a>
+							{/if}
+						</article>
+					{/each}
+				</div>
+
+				<!-- View More Button -->
+				<div class="pt-3 border-t border-border">
+					<Button
+						variant="outline"
+						href="/dashboard/news?country={country}&type={type}&genre={genre}"
+						class="w-full text-xs"
+						size="sm"
+					>
+						View All News ({data.news.totalResults})
+					</Button>
+				</div>
+			{:else}
+				<!-- No Results State -->
+				<div class="py-8 text-center">
+					<Newspaper class="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+					<p class="text-muted-foreground text-sm">No news articles found</p>
+					<Button variant="outline" onclick={loadNews} class="mt-4" size="sm">Refresh</Button>
+				</div>
+			{/if}
+		</div>
 	</div>
 </Card>

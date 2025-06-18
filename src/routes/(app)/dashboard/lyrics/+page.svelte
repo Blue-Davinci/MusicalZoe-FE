@@ -148,7 +148,8 @@
 </script>
 
 <svelte:head>
-	<title>Lyrics Search - MusicalZoe</title>
+	<title>Lyrics Search - Musical Zoe</title>
+	<meta name="description" content="Search for song lyrics with rich metadata, album art, and track information." />
 </svelte:head>
 
 <div class="container mx-auto space-y-8 px-4 py-8">
