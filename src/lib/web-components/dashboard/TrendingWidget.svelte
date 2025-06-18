@@ -11,12 +11,7 @@
 		autoLoad?: boolean;
 	}
 
-	let {
-		type = 'tracks',
-		period = '7day',
-		limit = 10,
-		autoLoad = true
-	}: Props = $props();
+	let { type = 'tracks', period = '7day', limit = 10, autoLoad = true }: Props = $props();
 
 	let loading = $state(false);
 	let data = $state<MusicTrendsResponse | null>(null);
@@ -29,7 +24,7 @@
 		'3month': 'Last 3 Months',
 		'6month': 'Last 6 Months',
 		'12month': 'Last Year',
-		'overall': 'Overall'
+		overall: 'Overall'
 	};
 
 	async function loadTrends() {
@@ -88,28 +83,28 @@
 	}
 
 	function getImageUrl(images: any[], size: 'small' | 'medium' | 'large' = 'medium'): string {
-		const image = images?.find(img => img.size === size) || images?.[0];
+		const image = images?.find((img) => img.size === size) || images?.[0];
 		return image?.['#text'] || '/placeholder-album.png';
 	}
 
-	const items = $derived(type === 'tracks' 
-		? (data?.trends?.tracks?.track || [])
-		: (data?.trends?.artists?.artist || []));
+	const items = $derived(
+		type === 'tracks' ? data?.trends?.tracks?.track || [] : data?.trends?.artists?.artist || []
+	);
 </script>
 
 <Card class="overflow-hidden">
 	<div class="p-6">
 		<!-- Header -->
-		<div class="flex items-center justify-between mb-6">
+		<div class="mb-6 flex items-center justify-between">
 			<div class="flex items-center space-x-3">
-				<div class="p-2 rounded-lg bg-gradient-to-br from-green-500 to-teal-500">
+				<div class="rounded-lg bg-gradient-to-br from-green-500 to-teal-500 p-2">
 					<TrendingUp class="h-5 w-5 text-white" />
 				</div>
 				<div>
-					<h3 class="text-lg font-semibold text-foreground">
+					<h3 class="text-foreground text-lg font-semibold">
 						Trending {type === 'tracks' ? 'Tracks' : 'Artists'}
 					</h3>
-					<p class="text-sm text-muted-foreground">
+					<p class="text-muted-foreground text-sm">
 						{periodLabels[period]} • Top {limit}
 					</p>
 				</div>
@@ -121,7 +116,7 @@
 					bind:value={period}
 					onchange={loadTrends}
 					disabled={loading}
-					class="text-sm border border-border rounded-md px-2 py-1 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+					class="border-border bg-background text-foreground focus:ring-primary rounded-md border px-2 py-1 text-sm focus:ring-2 focus:outline-none"
 				>
 					<option value="">All Time</option>
 					<option value="7day">Last 7 Days</option>
@@ -133,17 +128,27 @@
 				</select>
 
 				<!-- Type Toggle -->
-				<div class="flex border border-border rounded-md overflow-hidden">
+				<div class="border-border flex overflow-hidden rounded-md border">
 					<button
-						onclick={() => { type = 'tracks'; loadTrends(); }}
-						class="px-3 py-1 text-sm {type === 'tracks' ? 'bg-primary text-primary-foreground' : 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
+						onclick={() => {
+							type = 'tracks';
+							loadTrends();
+						}}
+						class="px-3 py-1 text-sm {type === 'tracks'
+							? 'bg-primary text-primary-foreground'
+							: 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
 						disabled={loading}
 					>
 						Tracks
 					</button>
 					<button
-						onclick={() => { type = 'artists'; loadTrends(); }}
-						class="px-3 py-1 text-sm {type === 'artists' ? 'bg-primary text-primary-foreground' : 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
+						onclick={() => {
+							type = 'artists';
+							loadTrends();
+						}}
+						class="px-3 py-1 text-sm {type === 'artists'
+							? 'bg-primary text-primary-foreground'
+							: 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
 						disabled={loading}
 					>
 						Artists
@@ -156,13 +161,13 @@
 		{#if loading}
 			<div class="space-y-3">
 				{#each Array(5) as _}
-					<div class="flex items-center space-x-3 animate-pulse">
-						<div class="w-12 h-12 bg-muted rounded-md"></div>
+					<div class="flex animate-pulse items-center space-x-3">
+						<div class="bg-muted h-12 w-12 rounded-md"></div>
 						<div class="flex-1">
-							<div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
-							<div class="h-3 bg-muted rounded w-1/2"></div>
+							<div class="bg-muted mb-2 h-4 w-3/4 rounded"></div>
+							<div class="bg-muted h-3 w-1/2 rounded"></div>
 						</div>
-						<div class="w-16 h-3 bg-muted rounded"></div>
+						<div class="bg-muted h-3 w-16 rounded"></div>
 					</div>
 				{/each}
 			</div>
@@ -170,13 +175,11 @@
 
 		<!-- Error State -->
 		{#if error}
-			<div class="text-center py-8">
-				<div class="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
-					<p class="text-sm text-destructive">{error}</p>
+			<div class="py-8 text-center">
+				<div class="bg-destructive/10 border-destructive/20 rounded-md border p-3">
+					<p class="text-destructive text-sm">{error}</p>
 				</div>
-				<Button variant="outline" onclick={loadTrends} class="mt-4">
-					Try Again
-				</Button>
+				<Button variant="outline" onclick={loadTrends} class="mt-4">Try Again</Button>
 			</div>
 		{/if}
 
@@ -186,11 +189,13 @@
 				{#each items.slice(0, limit) as item, index}
 					{@const track = item as Track}
 					{@const artist = item as Artist}
-					
-					<div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer">
+
+					<div
+						class="hover:bg-muted/50 group flex cursor-pointer items-center space-x-3 rounded-lg p-3 transition-colors"
+					>
 						<!-- Rank -->
 						<div class="w-6 text-center">
-							<span class="text-sm font-medium text-muted-foreground">
+							<span class="text-muted-foreground text-sm font-medium">
 								{index + 1}
 							</span>
 						</div>
@@ -200,29 +205,35 @@
 							<img
 								src={getImageUrl(item.image)}
 								alt={type === 'tracks' ? track.name : artist.name}
-								class="w-12 h-12 rounded-md object-cover"
+								class="h-12 w-12 rounded-md object-cover"
 								loading="lazy"
 							/>
 							{#if type === 'tracks'}
-								<div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-md flex items-center justify-center">
+								<div
+									class="absolute inset-0 flex items-center justify-center rounded-md bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
+								>
 									<Play class="h-4 w-4 text-white" />
 								</div>
 							{/if}
 						</div>
 
 						<!-- Content -->
-						<div class="flex-1 min-w-0">
-							<h4 class="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+						<div class="min-w-0 flex-1">
+							<h4
+								class="text-foreground group-hover:text-primary truncate text-sm font-medium transition-colors"
+							>
 								{type === 'tracks' ? track.name : artist.name}
 							</h4>
-							<p class="text-xs text-muted-foreground truncate">
-								{type === 'tracks' ? track.artist.name : `${formatNumber(artist.listeners)} listeners`}
+							<p class="text-muted-foreground truncate text-xs">
+								{type === 'tracks'
+									? track.artist.name
+									: `${formatNumber(artist.listeners)} listeners`}
 							</p>
 						</div>
 
 						<!-- Stats -->
 						<div class="text-right">
-							<div class="flex items-center space-x-2 text-xs text-muted-foreground">
+							<div class="text-muted-foreground flex items-center space-x-2 text-xs">
 								{#if type === 'tracks'}
 									<div class="flex items-center space-x-1">
 										<Users class="h-3 w-3" />
@@ -244,15 +255,17 @@
 						</div>
 
 						<!-- Arrow -->
-						<ChevronRight class="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+						<ChevronRight
+							class="text-muted-foreground h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100"
+						/>
 					</div>
 				{/each}
 			</div>
 
 			<!-- View More Button -->
 			<div class="mt-6 text-center">
-				<Button 
-					variant="outline" 
+				<Button
+					variant="outline"
 					href="/dashboard/trends?type={type}&period={period}"
 					class="w-full"
 				>
@@ -263,12 +276,10 @@
 
 		<!-- Empty State -->
 		{#if data && items.length === 0 && !loading && !error}
-			<div class="text-center py-8">
-				<TrendingUp class="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+			<div class="py-8 text-center">
+				<TrendingUp class="text-muted-foreground mx-auto mb-4 h-12 w-12" />
 				<p class="text-muted-foreground">No trending {type} found for this period.</p>
-				<Button variant="outline" onclick={loadTrends} class="mt-4">
-					Refresh
-				</Button>
+				<Button variant="outline" onclick={loadTrends} class="mt-4">Refresh</Button>
 			</div>
 		{/if}
 	</div>
