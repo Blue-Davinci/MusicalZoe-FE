@@ -13,7 +13,7 @@
 	}
 
 	let {
-		limit = 6,
+		limit = 4,
 		country = 'us',
 		type = 'everything',
 		genre = '',
@@ -204,13 +204,13 @@
 
 		<!-- News Articles -->
 		{#if data && data.news.articles.length > 0 && !loading}
-			<div class="space-y-4">
+			<div class="space-y-3">
 				{#each data.news.articles.slice(0, limit) as article}
-					<article class="group cursor-pointer border border-border rounded-lg p-4 hover:shadow-md hover:border-primary/50 transition-all">
-						<div class="flex space-x-4">
+					<article class="group cursor-pointer border border-border rounded-lg p-3 hover:shadow-md hover:border-primary/50 transition-all">
+						<div class="space-y-3">
 							<!-- Article Image -->
 							{#if article.urlToImage}
-								<div class="w-24 h-16 flex-shrink-0">
+								<div class="w-full h-32 flex-shrink-0">
 									<img
 										src={article.urlToImage}
 										alt={article.title}
@@ -218,40 +218,28 @@
 										loading="lazy"
 									/>
 								</div>
-							{:else}
-								<div class="w-24 h-16 flex-shrink-0 bg-muted rounded-md flex items-center justify-center">
-									<Newspaper class="h-6 w-6 text-muted-foreground" />
-								</div>
 							{/if}
 
 							<!-- Article Content -->
-							<div class="flex-1 min-w-0">
+							<div class="space-y-2">
 								<h4 class="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
 									{article.title}
 								</h4>
 								
 								{#if article.description}
-									<p class="text-xs text-muted-foreground mt-2 line-clamp-2">
-										{truncateText(article.description, 120)}
+									<p class="text-xs text-muted-foreground line-clamp-2">
+										{truncateText(article.description, 100)}
 									</p>
 								{/if}
 
 								<!-- Article Meta -->
-								<div class="flex items-center justify-between mt-3">
-									<div class="flex items-center space-x-3 text-xs text-muted-foreground">
+								<div class="flex items-center justify-between">
+									<div class="flex items-center space-x-2 text-xs text-muted-foreground">
 										{#if article.source.name}
-											<span class="font-medium">{article.source.name}</span>
+											<span class="font-medium truncate">{article.source.name}</span>
 										{/if}
-										{#if article.author}
-											<div class="flex items-center space-x-1">
-												<User class="h-3 w-3" />
-												<span>{article.author}</span>
-											</div>
-										{/if}
-										<div class="flex items-center space-x-1">
-											<Calendar class="h-3 w-3" />
-											<span>{formatDate(article.publishedAt)}</span>
-										</div>
+										<span>•</span>
+										<span>{formatDate(article.publishedAt)}</span>
 									</div>
 
 									<a
@@ -261,7 +249,6 @@
 										class="flex items-center space-x-1 text-xs text-primary hover:text-primary/80 transition-colors"
 										onclick={(e) => e.stopPropagation()}
 									>
-										<span>Read more</span>
 										<ExternalLink class="h-3 w-3" />
 									</a>
 								</div>
