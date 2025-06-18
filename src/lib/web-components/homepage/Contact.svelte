@@ -1,7 +1,6 @@
 <!-- Contact Section Component -->
 <script lang="ts">
 	import { Mail, MessageSquare, Send, MapPin, Phone } from 'lucide-svelte';
-	import Button from '$lib/web-components/ui/Button.svelte';
 	import Card from '$lib/web-components/ui/Card.svelte';
 	import Container from '$lib/web-components/ui/Container.svelte';
 

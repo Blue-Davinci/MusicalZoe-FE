@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Music, Search, Clock, Album, User, ExternalLink, Copy, Heart } from 'lucide-svelte';
+	import { Music, Search, Clock, Album, User, ExternalLink, Copy } from 'lucide-svelte';
 	import Card from '$lib/web-components/ui/Card.svelte';
 	import Button from '$lib/web-components/ui/Button.svelte';
-	import type { LyricsResponse, TrackInfoResponse } from '$lib/types/music-api';
+	import type { LyricsResponse } from '$lib/types/music-api';
 
 	// State management
 	let searchQuery = $state('');

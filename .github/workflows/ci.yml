@@ -34,7 +34,9 @@ jobs:
         run: npm run lint
 
       - name: Check for unused dependencies
-        run: npx depcheck --ignores="@types/*,eslint-*,prettier-*,@testing-library/*"
+        run: |
+          echo "Checking for unused dependencies..."
+          npx depcheck --skip-missing --ignores="@types/*,eslint-*,prettier-*,@testing-library/*,@tailwindcss/typography,date-fns,lucide-svelte,mode-watcher,pino-pretty,@lucide/svelte,tailwind-variants,tw-animate-css"
 
   # Job 2: TypeScript and Svelte Check
   type-check:

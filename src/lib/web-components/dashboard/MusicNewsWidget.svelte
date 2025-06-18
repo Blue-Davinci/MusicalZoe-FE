@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Newspaper, ExternalLink, Calendar, User } from 'lucide-svelte';
+	import { Newspaper, ExternalLink } from 'lucide-svelte';
 	import Card from '../ui/Card.svelte';
 	import Button from '../ui/Button.svelte';
-	import type { MusicNewsResponse, NewsArticle, ApiError } from '$lib/types/music-api';
+	import type { MusicNewsResponse, ApiError } from '$lib/types/music-api';
 
 	interface Props {
 		limit?: number;

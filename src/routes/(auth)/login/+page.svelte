@@ -2,18 +2,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { loginSchema } from '$lib/schemas/auth';
-	import {
-		Eye,
-		EyeOff,
-		Mail,
-		Lock,
-		CheckCircle,
-		AlertCircle,
-		Music,
-		Sparkles,
-		ArrowRight
-	} from 'lucide-svelte';
-	import Button from '$lib/web-components/ui/Button.svelte';
+	import { Eye, EyeOff, Mail, Lock, AlertCircle, Music, Sparkles, ArrowRight } from 'lucide-svelte';
 	import BackButton from '$lib/web-components/ui/BackButton.svelte';
 	import Container from '$lib/web-components/ui/Container.svelte';
 	import Card from '$lib/web-components/ui/Card.svelte';

@@ -1,6 +1,6 @@
 <!-- Footer Component -->
 <script lang="ts">
-	import { Music, Github, Twitter, Linkedin, Mail } from 'lucide-svelte';
+	import { Github, Twitter, Linkedin, Mail } from 'lucide-svelte';
 	import Container from '$lib/web-components/ui/Container.svelte';
 
 	const currentYear = new Date().getFullYear();
