@@ -146,7 +146,10 @@
 
 <svelte:head>
 	<title>Trending Music - Musical Zoe</title>
-	<meta name="description" content="Discover trending tracks and artists with real-time music charts and analytics." />
+	<meta
+		name="description"
+		content="Discover trending tracks and artists with real-time music charts and analytics."
+	/>
 </svelte:head>
 
 <div class="container mx-auto space-y-8 px-4 py-8">

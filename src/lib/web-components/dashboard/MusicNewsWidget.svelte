@@ -112,8 +112,8 @@
 	}
 </script>
 
-<Card class="h-full flex flex-col">
-	<div class="p-6 flex-1 flex flex-col overflow-y-auto">
+<Card class="flex h-full flex-col">
+	<div class="flex flex-1 flex-col overflow-y-auto p-6">
 		<!-- Header -->
 		<div class="mb-4 flex items-center justify-between">
 			<div class="flex items-center space-x-3">
@@ -191,8 +191,8 @@
 				<div class="space-y-3">
 					{#each Array(4) as _}
 						<div class="flex animate-pulse space-x-3">
-							<div class="bg-muted h-12 w-16 rounded-md flex-shrink-0"></div>
-							<div class="flex-1 min-w-0">
+							<div class="bg-muted h-12 w-16 flex-shrink-0 rounded-md"></div>
+							<div class="min-w-0 flex-1">
 								<div class="bg-muted mb-2 h-3 w-3/4 rounded"></div>
 								<div class="bg-muted mb-1 h-2 w-full rounded"></div>
 								<div class="bg-muted h-2 w-1/2 rounded"></div>
@@ -210,29 +210,35 @@
 				</div>
 			{:else if data && data.news.articles.length > 0}
 				<!-- News Articles -->
-				<div class="space-y-3 mb-4">
+				<div class="mb-4 space-y-3">
 					{#each data.news.articles.slice(0, limit) as article}
-						<article class="group border-border hover:border-primary/50 rounded-lg border transition-all hover:shadow-md relative bg-card/50 hover:bg-card">
+						<article
+							class="group border-border hover:border-primary/50 bg-card/50 hover:bg-card relative rounded-lg border transition-all hover:shadow-md"
+						>
 							<div class="p-3">
 								<div class="flex space-x-3">
 									{#if article.urlToImage}
 										<img
 											src={article.urlToImage}
 											alt={article.title}
-											class="h-14 w-20 rounded-md object-cover flex-shrink-0"
+											class="h-14 w-20 flex-shrink-0 rounded-md object-cover"
 											loading="lazy"
 										/>
 									{:else}
-										<div class="bg-muted flex h-14 w-20 items-center justify-center rounded-md flex-shrink-0">
+										<div
+											class="bg-muted flex h-14 w-20 flex-shrink-0 items-center justify-center rounded-md"
+										>
 											<Newspaper class="text-muted-foreground h-5 w-5" />
 										</div>
 									{/if}
 
 									<div class="min-w-0 flex-1">
-										<h4 class="text-foreground text-sm font-medium leading-tight group-hover:text-primary transition-colors">
+										<h4
+											class="text-foreground group-hover:text-primary text-sm leading-tight font-medium transition-colors"
+										>
 											<span class="line-clamp-2">{article.title}</span>
 										</h4>
-										
+
 										{#if article.description}
 											<p class="text-muted-foreground mt-1 text-xs leading-relaxed">
 												<span class="line-clamp-2">{truncateText(article.description, 100)}</span>
@@ -240,15 +246,17 @@
 										{/if}
 
 										<div class="mt-2 flex items-center justify-between">
-											<div class="flex items-center space-x-2 text-xs text-muted-foreground">
+											<div class="text-muted-foreground flex items-center space-x-2 text-xs">
 												{#if article.source?.name}
-													<span class="truncate font-medium max-w-20">{article.source.name}</span>
+													<span class="max-w-20 truncate font-medium">{article.source.name}</span>
 													<span>•</span>
 												{/if}
 												<span>{formatDate(article.publishedAt)}</span>
 											</div>
 
-											<ExternalLink class="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
+											<ExternalLink
+												class="text-muted-foreground group-hover:text-primary h-3 w-3 flex-shrink-0 transition-colors"
+											/>
 										</div>
 									</div>
 								</div>
@@ -256,11 +264,11 @@
 
 							<!-- Accessible overlay button -->
 							{#if article.url}
-								<a 
-									href={article.url} 
-									target="_blank" 
-									rel="noopener noreferrer" 
-									class="absolute inset-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+								<a
+									href={article.url}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="focus:ring-primary absolute inset-0 rounded-lg focus:ring-2 focus:ring-offset-2 focus:outline-none"
 									aria-label="Read article: {article.title}"
 								>
 									<span class="sr-only">Read full article</span>
@@ -271,7 +279,7 @@
 				</div>
 
 				<!-- View More Button -->
-				<div class="pt-3 border-t border-border">
+				<div class="border-border border-t pt-3">
 					<Button
 						variant="outline"
 						href="/dashboard/news?country={country}&type={type}&genre={genre}"

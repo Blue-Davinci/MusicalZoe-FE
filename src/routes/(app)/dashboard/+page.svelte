@@ -163,7 +163,10 @@
 
 <svelte:head>
 	<title>Dashboard - Musical Zoe</title>
-	<meta name="description" content="Your personalized music dashboard with lyrics search, trending content, and latest music news." />
+	<meta
+		name="description"
+		content="Your personalized music dashboard with lyrics search, trending content, and latest music news."
+	/>
 </svelte:head>
 
 <div class="container mx-auto space-y-8 px-4 py-8">
@@ -305,10 +308,11 @@
 			<div class="xl:col-span-3">
 				<Card class="h-full p-6">
 					<div class="mb-6 flex items-center justify-between">
-						<h3 class="text-foreground text-xl font-semibold">Recent Music Activity</h3>					<Button variant="ghost" size="sm" href="/dashboard">
-						<Activity class="mr-2 h-4 w-4" />
-						View Dashboard
-					</Button>
+						<h3 class="text-foreground text-xl font-semibold">Recent Music Activity</h3>
+						<Button variant="ghost" size="sm" href="/dashboard">
+							<Activity class="mr-2 h-4 w-4" />
+							View Dashboard
+						</Button>
 					</div>
 					<div class="space-y-4">
 						{#each recentActivities as activity}
@@ -342,22 +346,31 @@
 			<div class="xl:col-span-1">
 				<Card class="h-full p-6">
 					<h3 class="text-foreground mb-6 text-xl font-semibold">Quick Actions</h3>
-					<div class="space-y-3">					<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard/lyrics">
-						<Search class="h-5 w-5" />
-						<span class="text-sm">Search Lyrics</span>
-					</Button>
-					<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard/trends">
-						<TrendingUp class="h-5 w-5" />
-						<span class="text-sm">View Trends</span>
-					</Button>
-					<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard/news">
-						<Newspaper class="h-5 w-5" />
-						<span class="text-sm">Latest News</span>
-					</Button>
-					<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard">
-						<Activity class="h-5 w-5" />
-						<span class="text-sm">Dashboard</span>
-					</Button>
+					<div class="space-y-3">
+						<Button
+							variant="outline"
+							class="h-16 w-full flex-col space-y-2"
+							href="/dashboard/lyrics"
+						>
+							<Search class="h-5 w-5" />
+							<span class="text-sm">Search Lyrics</span>
+						</Button>
+						<Button
+							variant="outline"
+							class="h-16 w-full flex-col space-y-2"
+							href="/dashboard/trends"
+						>
+							<TrendingUp class="h-5 w-5" />
+							<span class="text-sm">View Trends</span>
+						</Button>
+						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard/news">
+							<Newspaper class="h-5 w-5" />
+							<span class="text-sm">Latest News</span>
+						</Button>
+						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard">
+							<Activity class="h-5 w-5" />
+							<span class="text-sm">Dashboard</span>
+						</Button>
 					</div>
 				</Card>
 			</div>
