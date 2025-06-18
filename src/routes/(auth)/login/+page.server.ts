@@ -11,7 +11,7 @@ import {
 	clearFailedAuthAttempts,
 	extractErrorMessage
 } from '$lib/utils/auth-helpers';
-import { VITE_API_AUTHENTICATION_URL } from '$env/static/private';
+import { API_AUTHENTICATION_URL } from '$env/static/private';
 
 export const load = async ({ url, locals }: RequestEvent) => {
 	// Check if user is already logged in
@@ -270,9 +270,9 @@ async function authenticateUser(
 		});
 
 		// Validate environment configuration
-		if (!VITE_API_AUTHENTICATION_URL) {
+		if (!API_AUTHENTICATION_URL) {
 			logError('MISSING_API_CONFIG', {
-				message: 'VITE_API_AUTHENTICATION_URL not configured',
+				message: 'API_AUTHENTICATION_URL not configured',
 				email: loginData.email
 			});
 			return {
@@ -282,11 +282,11 @@ async function authenticateUser(
 		}
 
 		logAuth('API_CALL_START', {
-			url: dev ? VITE_API_AUTHENTICATION_URL : '[REDACTED]',
+			url: dev ? API_AUTHENTICATION_URL : '[REDACTED]',
 			method: 'POST'
 		});
 
-		const response = await fetch(VITE_API_AUTHENTICATION_URL, {
+		const response = await fetch(API_AUTHENTICATION_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

@@ -2,7 +2,6 @@
 <script lang="ts">
 	import { ArrowLeft } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
 	import { cn } from '$lib/utils';
 
 	interface Props {

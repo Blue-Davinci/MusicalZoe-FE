@@ -5,7 +5,7 @@
 
 # Musical Zoe Frontend 🎵
 
-A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API platform. Built with `Svelte` & `Typescript` and designed for optimal user experience across all devices.
+A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API platform. Built with `Svelte` & `Typescript` and designed for optimal user experience across all devices. A quick deployment.
 
 ## ✨ Features
 
@@ -183,27 +183,34 @@ A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API
 3. **Set up environment variables**
 
    ```bash
-   cp .env.example .env.development
-   # Edit .env.development with your configuration
+   cp .env.example .env
+   # Edit .env with your configuration
    ```
 
    **Required Environment Variables:**
 
+   The `.env` file contains both server-side and client-side variables:
+
    ```bash
-   # API Configuration
+   # Server-side API Configuration (used by +server.ts files)
+   API_BASE_URL="http://localhost:4000/v1"
+   API_SIGNUP_URL="${API_BASE_URL}/api"
+   API_ACTIVATION_URL="${API_BASE_URL}/api/activated"
+   API_AUTHENTICATION_URL="${API_BASE_URL}/api/authentication"
+
+   # Server-side Music API Endpoints
+   MUSIC_API_NEWS_URL="${API_BASE_URL}/musical/news"
+   MUSIC_API_TRENDS_URL="${API_BASE_URL}/musical/trends"
+   MUSIC_API_LYRICS_URL="${API_BASE_URL}/musical/lyrics"
+   MUSIC_API_TRACK_INFO_URL="${API_BASE_URL}/musical/track-info"
+
+   # Client-side variables (accessible in browser, prefixed with VITE_)
    VITE_API_BASE_URL="http://localhost:4000/v1"
-   VITE_API_AUTHENTICATION_URL="${VITE_API_BASE_URL}/api/authentication"
-
-   # Music API Endpoints
-   VITE_MUSIC_API_NEWS_URL="${VITE_API_BASE_URL}/musical/news"
-   VITE_MUSIC_API_TRENDS_URL="${VITE_API_BASE_URL}/musical/trends"
-   VITE_MUSIC_API_LYRICS_URL="${VITE_API_BASE_URL}/musical/lyrics"
-   VITE_MUSIC_API_TRACK_INFO_URL="${VITE_API_BASE_URL}/musical/track-info"
-
-   # App Configuration
    VITE_APP_NAME="Musical Zoe"
    VITE_DEBUG_MODE="true"
    ```
+
+   > **Note**: Server-side variables (without VITE* prefix) are only accessible in server files like `+server.ts` and `+page.server.ts`. Client-side variables (with VITE* prefix) are accessible in both server and client code.
 
 4. **Start development server**
 
@@ -264,7 +271,7 @@ src/
 │   └── API_CONFIGURATION.md
 ├── app.css                   # Global styles and theme variables
 ├── app.html                  # App shell
-└── .env.development          # Development environment config
+└── .env                      # Environment configuration (single file)
 ```
 
 ## 🛠️ Development
@@ -376,7 +383,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Secure Authentication**: Bearer token authentication with httpOnly cookies
 - **API Proxying**: Server-side proxies prevent direct API exposure
-- **Environment Isolation**: Separate configurations for development/production
+- **Environment Configuration**: Unified environment variable management for all environments
 - **Input Validation**: Client and server-side validation for all user inputs
 - **CORS Protection**: Proper cross-origin resource sharing configuration
 
@@ -393,5 +400,5 @@ The project follows a comprehensive design system:
 ---
 
 <div align="center">
-  <p>Built with ❤️ using SvelteKit and modern web technologies</p>
+  <p>Built with ❤️ using SvelteKit, and modern web technologies</p>
 </div>

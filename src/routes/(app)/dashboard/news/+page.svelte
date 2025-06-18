@@ -1,15 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import {
-		Newspaper,
-		Filter,
-		Calendar,
-		ExternalLink,
-		Search,
-		Globe,
-		Clock,
-		RefreshCw
-	} from 'lucide-svelte';
+	import { Newspaper, Filter, ExternalLink, Search, Globe, Clock, RefreshCw } from 'lucide-svelte';
 	import Card from '$lib/web-components/ui/Card.svelte';
 	import Button from '$lib/web-components/ui/Button.svelte';
 	import type { MusicNewsResponse } from '$lib/types/music-api';

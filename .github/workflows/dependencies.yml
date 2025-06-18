@@ -26,19 +26,19 @@ jobs:
       - name: Run comprehensive security audit
         run: |
           echo "🔍 Running comprehensive dependency security audit..."
-          
+
           # Run npm audit and capture output
           npm audit --json > audit-results.json || true
-          
+
           # Parse results
           HIGH_VULNS=$(cat audit-results.json | jq '.vulnerabilities | to_entries[] | select(.value.severity == "high") | length' | wc -l)
           CRITICAL_VULNS=$(cat audit-results.json | jq '.vulnerabilities | to_entries[] | select(.value.severity == "critical") | length' | wc -l)
           MODERATE_VULNS=$(cat audit-results.json | jq '.vulnerabilities | to_entries[] | select(.value.severity == "moderate") | length' | wc -l)
-          
+
           echo "Critical vulnerabilities: $CRITICAL_VULNS"
           echo "High vulnerabilities: $HIGH_VULNS"
           echo "Moderate vulnerabilities: $MODERATE_VULNS"
-          
+
           # Fail if critical or high vulnerabilities found
           if [ "$CRITICAL_VULNS" -gt 0 ] || [ "$HIGH_VULNS" -gt 0 ]; then
             echo "❌ Critical or high severity vulnerabilities found!"
@@ -52,31 +52,31 @@ jobs:
         run: |
           echo "📦 Checking for outdated dependencies..."
           npm outdated || true
-          
+
           # Generate update recommendations
           echo "### Dependency Update Report" > dependency-report.md
           echo "Generated on: $(date)" >> dependency-report.md
           echo "" >> dependency-report.md
-          
+
           # Check specific SvelteKit ecosystem packages
           echo "#### SvelteKit Ecosystem:" >> dependency-report.md
           npm list @sveltejs/kit @sveltejs/adapter-auto svelte >> dependency-report.md 2>&1 || true
           echo "" >> dependency-report.md
-          
+
           echo "#### Development Tools:" >> dependency-report.md
           npm list typescript eslint prettier tailwindcss >> dependency-report.md 2>&1 || true
           echo "" >> dependency-report.md
-          
+
           echo "#### Testing Framework:" >> dependency-report.md
           npm list vitest @testing-library/svelte >> dependency-report.md 2>&1 || true
 
       - name: License compliance check
         run: |
           echo "⚖️  Checking license compliance..."
-          
+
           # Install license checker
           npx license-checker --summary --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD' || echo "License check completed with warnings"
-          
+
           # Generate license report
           echo "### License Report" >> dependency-report.md
           echo "" >> dependency-report.md
@@ -85,7 +85,7 @@ jobs:
       - name: Bundle impact analysis
         run: |
           echo "📊 Analyzing bundle impact of dependencies..."
-          
+
           # Create environment file for build
           cat > .env << EOF
           VITE_API_BASE_URL=https://api.test.com/v1
@@ -101,18 +101,18 @@ jobs:
           VITE_APP_VERSION="1.0.0"
           VITE_APP_ENV="test"
           EOF
-          
+
           # Build the project to analyze bundle
           npm run build
-          
+
           # Check bundle size
           BUILD_SIZE=$(du -sh build/ | cut -f1)
           echo "Current build size: $BUILD_SIZE"
-          
+
           echo "### Bundle Analysis" >> dependency-report.md
           echo "Current build size: $BUILD_SIZE" >> dependency-report.md
           echo "" >> dependency-report.md
-          
+
           # List largest files
           echo "#### Largest build files:" >> dependency-report.md
           find build -type f \( -name "*.js" -o -name "*.css" \) -exec ls -lh {} + | sort -k5 -hr | head -10 >> dependency-report.md
@@ -147,10 +147,10 @@ jobs:
         id: update_check
         run: |
           echo "🔄 Updating patch versions..."
-          
+
           # Update only patch versions (safer updates)
           npm update --save
-          
+
           # Check if package-lock.json was modified
           if git diff --quiet package-lock.json; then
             echo "No updates available"
@@ -164,7 +164,7 @@ jobs:
         if: steps.update_check.outputs.has_updates == 'true'
         run: |
           echo "🧪 Testing with updated dependencies..."
-          
+
           # Create environment file for build
           cat > .env << EOF
           VITE_API_BASE_URL=https://api.test.com/v1
@@ -180,13 +180,13 @@ jobs:
           VITE_APP_VERSION="1.0.0"
           VITE_APP_ENV="test"
           EOF
-          
+
           # Run comprehensive tests
           npm run check
           npm run lint
           npm run test
           npm run build
-          
+
           echo "✅ All tests passed with updated dependencies"
 
       - name: Create pull request for updates
@@ -198,14 +198,14 @@ jobs:
           title: '🔄 Automated Dependency Updates'
           body: |
             ## Automated Dependency Updates
-            
+
             This PR contains safe patch-level dependency updates.
-            
+
             ### Changes
             - Updated patch versions of dependencies
             - All tests pass with updated dependencies
             - Security audit passed
-            
+
             ### Verification
             - ✅ TypeScript compilation
             - ✅ ESLint checks
@@ -213,7 +213,7 @@ jobs:
             - ✅ Unit tests
             - ✅ Build process
             - ✅ Security audit
-            
+
             This PR was automatically generated by the dependency management workflow.
           branch: automated-dependency-updates
           delete-branch: true
@@ -234,15 +234,15 @@ jobs:
       - name: Check for security advisories
         run: |
           echo "🛡️  Checking for security advisories..."
-          
+
           # Check npm security advisories
           npm audit --audit-level moderate --json > security-report.json || true
-          
+
           # Generate security summary
           echo "### Security Advisory Report" > security-summary.md
           echo "Generated on: $(date)" >> security-summary.md
           echo "" >> security-summary.md
-          
+
           # Parse and summarize vulnerabilities
           if [ -s security-report.json ]; then
             TOTAL_VULNS=$(cat security-report.json | jq '.metadata.vulnerabilities.total // 0')

@@ -4,7 +4,7 @@ import { signupSchema } from '$lib/schemas/auth';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { logAuth, logSecurity, logError, generateErrorId } from '$lib/utils/logger';
-import { VITE_API_SIGNUP_URL } from '$env/static/private';
+import { API_SIGNUP_URL } from '$env/static/private';
 
 // Types for better code organization
 interface SignupResult {
@@ -161,9 +161,9 @@ async function registerUser(userData: {
 		});
 
 		// Validate environment configuration
-		if (!VITE_API_SIGNUP_URL) {
+		if (!API_SIGNUP_URL) {
 			logError('MISSING_API_CONFIG', {
-				message: 'VITE_API_SIGNUP_URL not configured',
+				message: 'API_SIGNUP_URL not configured',
 				email: userData.email
 			});
 			return {
@@ -173,11 +173,11 @@ async function registerUser(userData: {
 		}
 
 		logAuth('API_CALL_START', {
-			url: dev ? VITE_API_SIGNUP_URL : '[REDACTED]', // Don't log full URL in production
+			url: dev ? API_SIGNUP_URL : '[REDACTED]', // Don't log full URL in production
 			method: 'POST'
 		});
 
-		const response = await fetch(VITE_API_SIGNUP_URL, {
+		const response = await fetch(API_SIGNUP_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
