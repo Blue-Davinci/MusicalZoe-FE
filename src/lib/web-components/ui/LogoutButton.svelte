@@ -18,20 +18,18 @@
 	let isLoggingOut = $state(false);
 </script>
 
-<form method="POST" action="/logout" use:enhance={() => {
-	isLoggingOut = true;
-	return async ({ update }) => {
-		await update();
-		isLoggingOut = false;
-	};
-}}>
-	<Button 
-		type="submit"
-		{variant} 
-		{size}
-		disabled={isLoggingOut}
-		class="flex items-center gap-2"
-	>
+<form
+	method="POST"
+	action="/logout"
+	use:enhance={() => {
+		isLoggingOut = true;
+		return async ({ update }) => {
+			await update();
+			isLoggingOut = false;
+		};
+	}}
+>
+	<Button type="submit" {variant} {size} disabled={isLoggingOut} class="flex items-center gap-2">
 		{#if showIcon}
 			<LogOut class="h-4 w-4" />
 		{/if}

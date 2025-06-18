@@ -14,12 +14,13 @@
 	}>('auth');
 </script>
 
-<Header 
-	user={auth?.user} 
-	isAuthenticated={auth?.isAuthenticated ?? false} 
-	isAdmin={auth?.isAdmin ?? false} 
+<Header
+	user={auth?.user}
+	isAuthenticated={auth?.isAuthenticated ?? false}
+	isAdmin={auth?.isAdmin ?? false}
+	variant="dashboard"
 />
 
-<main class="min-h-screen bg-background">
+<main class="bg-background min-h-screen">
 	{@render children()}
 </main>

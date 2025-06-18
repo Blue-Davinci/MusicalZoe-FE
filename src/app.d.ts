@@ -7,13 +7,13 @@ declare global {
 			user: {
 				name: string;
 				email: string;
+				activated: boolean;
 				created_at: string;
 				// Optional fields for future expansion
 				id?: string;
 				first_name?: string;
 				last_name?: string;
 				role?: string;
-				email_verified?: boolean;
 			} | null;
 			isAuthenticated: boolean;
 			isAdmin: boolean;

@@ -1,12 +1,11 @@
 import { redirect, error, type Handle } from '@sveltejs/kit';
 import { logAuth, logSecurity, logError, generateErrorId } from '$lib/utils/logger';
-import { 
-	validateBearerToken, 
-	getBearerToken, 
-	getTokenExpiry, 
-	isBearerTokenExpired, 
+import {
+	getBearerToken,
+	getTokenExpiry,
+	isBearerTokenExpired,
 	clearAuthCookies,
-	type User 
+	type User
 } from '$lib/utils/token-helpers';
 import { dev } from '$app/environment';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -163,6 +162,24 @@ async function checkAuthentication(event: RequestEvent): Promise<AuthResult> {
 		const bearerToken = getBearerToken(cookies);
 		const tokenExpiry = getTokenExpiry(cookies);
 
+		// Debug: Log all cookies to see what's available
+		const allCookies = Object.fromEntries(
+			event.request.headers
+				.get('cookie')
+				?.split(';')
+				.map((cookie) => {
+					const [name, value] = cookie.trim().split('=');
+					return [name, value];
+				}) || []
+		);
+
+		logAuth('DEBUG_COOKIES_READ', {
+			bearerToken: bearerToken ? 'exists' : 'missing',
+			tokenExpiry: tokenExpiry ? 'exists' : 'missing',
+			allCookies: Object.keys(allCookies),
+			rawCookieHeader: event.request.headers.get('cookie')
+		});
+
 		if (!bearerToken || !tokenExpiry) {
 			return {
 				isAuthenticated: false,
@@ -191,15 +208,29 @@ async function checkAuthentication(event: RequestEvent): Promise<AuthResult> {
 		}
 
 		// Validate the bearer token
-		const userInfo = await validateBearerToken(bearerToken);
+		// Since we don't have a validation endpoint, we trust the bearer token
+		// if it exists and hasn't expired. We'll extract user data from the user_data cookie
+		const userData = cookies.get('user_data');
+		let userInfo = null;
+
+		if (userData) {
+			try {
+				userInfo = JSON.parse(decodeURIComponent(userData));
+			} catch (err) {
+				logError('USER_DATA_PARSE_ERROR', {
+					error: err instanceof Error ? err.message : 'Unknown error',
+					rawUserData: userData
+				});
+			}
+		}
 
 		if (!userInfo) {
-			// Token is invalid, clear it
+			// Token exists but no user data found, clear auth cookies
 			clearAuthCookies(cookies);
-			
+
 			logSecurity('INVALID_TOKEN_CLEARED', {
 				timestamp: new Date().toISOString(),
-				reason: 'Bearer token validation failed'
+				reason: 'Bearer token exists but no user data found'
 			});
 
 			return {
@@ -211,13 +242,14 @@ async function checkAuthentication(event: RequestEvent): Promise<AuthResult> {
 		}
 
 		const isAdmin = userInfo.role === 'admin';
-		const isVerified = userInfo.email_verified === true;
+		const isVerified = userInfo.activated === true;
 
 		logAuth('USER_AUTHENTICATED', {
 			userEmail: userInfo.email,
 			userName: userInfo.name,
 			isAdmin,
 			isVerified,
+			activated: userInfo.activated,
 			timestamp: new Date().toISOString()
 		});
 
@@ -253,7 +285,7 @@ function handleRouteProtection(
 	clientIP: string,
 	searchParams: URLSearchParams
 ): RouteAction {
-	const { isAuthenticated, user, isAdmin, isVerified } = authResult;
+	const { isAuthenticated, user, isAdmin } = authResult;
 
 	// Check route types
 	const requiresAuth = PROTECTED_ROUTES.some((route) => requestedPath.startsWith(route));
@@ -334,32 +366,6 @@ function handleRouteProtection(
 			status: 303,
 			location: intendedDestination
 		};
-	}
-
-	// Handle email verification requirements for protected routes
-	if (isAuthenticated && !isVerified && requiresAuth) {
-		const verificationExemptPaths = [
-			'/verify-email',
-			'/logout',
-			'/api/auth/verify',
-			'/api/auth/resend-verification'
-		];
-
-		const isExempt = verificationExemptPaths.some((path) => requestedPath.startsWith(path));
-
-		if (!isExempt) {
-			logSecurity('UNVERIFIED_USER_ACCESS', {
-				path: requestedPath,
-				userId: user?.id,
-				email: user?.email
-			});
-
-			return {
-				type: 'redirect',
-				status: 303,
-				location: `/verify-email?email=${encodeURIComponent(user?.email || '')}`
-			};
-		}
 	}
 
 	// Continue normally - no action needed

@@ -57,12 +57,7 @@
 	);
 </script>
 
-<button
-	onclick={handleBack}
-	class={classes}
-	aria-label="Go back to previous page"
-	{...restProps}
->
+<button onclick={handleBack} class={classes} aria-label="Go back to previous page" {...restProps}>
 	<ArrowLeft class={cn(iconSizes[size], 'mr-2')} />
 	{text}
 </button>

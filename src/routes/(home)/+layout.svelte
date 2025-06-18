@@ -14,9 +14,10 @@
 	}>('auth');
 </script>
 
-<Header 
-	user={auth?.user} 
-	isAuthenticated={auth?.isAuthenticated ?? false} 
-	isAdmin={auth?.isAdmin ?? false} 
+<Header
+	user={auth?.user}
+	isAuthenticated={auth?.isAuthenticated ?? false}
+	isAdmin={auth?.isAdmin ?? false}
+	variant="home"
 />
 {@render children()}

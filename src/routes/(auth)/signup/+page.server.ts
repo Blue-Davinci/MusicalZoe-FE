@@ -119,7 +119,8 @@ export const actions = {
 
 			return message(form, {
 				success: true,
-				message: 'Account created successfully! Please check your email to verify your account before signing in.',
+				message:
+					'Account created successfully! Please check your email to verify your account before signing in.',
 				data: {
 					email: sanitizedEmail,
 					requiresVerification: true
@@ -180,7 +181,7 @@ async function registerUser(userData: {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			},
 			body: JSON.stringify(userData)
 		});
@@ -194,9 +195,9 @@ async function registerUser(userData: {
 				statusText: response.statusText,
 				error: result.message || result.error
 			});
-			
-			return { 
-				success: false, 
+
+			return {
+				success: false,
 				error: result.message || result.error || 'Registration failed'
 			};
 		}
@@ -207,21 +208,20 @@ async function registerUser(userData: {
 			status: response.status
 		});
 
-		return { 
-			success: true, 
-			user: result.user 
+		return {
+			success: true,
+			user: result.user
 		};
-
 	} catch (error) {
 		logError('BACKEND_SIGNUP_ERROR', {
 			message: error instanceof Error ? error.message : 'Unknown error',
 			stack: error instanceof Error ? error.stack : undefined,
 			email: userData.email
 		});
-		
+
 		return {
 			success: false,
-			error: dev 
+			error: dev
 				? `Registration service error: ${error instanceof Error ? error.message : 'Unknown error'}`
 				: 'Registration service is temporarily unavailable. Please try again later.'
 		};
