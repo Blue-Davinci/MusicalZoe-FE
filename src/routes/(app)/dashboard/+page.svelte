@@ -24,12 +24,14 @@
 	import type { User } from '$lib/utils/token-helpers';
 
 	// Get authentication context function
-	const getAuth = getContext<() => {
-		user: User | null;
-		isAuthenticated: boolean;
-		isAdmin: boolean;
-		isVerified: boolean;
-	}>('auth');
+	const getAuth = getContext<
+		() => {
+			user: User | null;
+			isAuthenticated: boolean;
+			isAdmin: boolean;
+			isVerified: boolean;
+		}
+	>('auth');
 
 	// Create reactive auth data using $derived
 	const auth = $derived(getAuth());
@@ -185,7 +187,9 @@
 			<h1 class="text-foreground text-3xl font-bold">
 				Welcome to MusicalZoe, {userDisplayName}! 🎵
 			</h1>
-			<p class="text-muted-foreground mt-1">Your gateway to lyrics, music news, and trending content.</p>
+			<p class="text-muted-foreground mt-1">
+				Your gateway to lyrics, music news, and trending content.
+			</p>
 		</div>
 		<div class="flex items-center space-x-3">
 			<Button variant="outline" href="/profile">
@@ -250,7 +254,7 @@
 		<!-- Section Header -->
 		<div class="flex items-center justify-between">
 			<div>
-				<h2 class="text-2xl font-bold text-foreground">Music Hub</h2>
+				<h2 class="text-foreground text-2xl font-bold">Music Hub</h2>
 				<p class="text-muted-foreground">Discover trending content and search for lyrics</p>
 			</div>
 			<Button variant="outline" href="/dashboard/trends">
@@ -265,12 +269,12 @@
 			<div class="lg:col-span-3">
 				<TrendingWidget />
 			</div>
-			
+
 			<!-- Quick Actions Column -->
-			<div class="lg:col-span-2 space-y-6">
+			<div class="space-y-6 lg:col-span-2">
 				<!-- Lyrics Search Widget -->
 				<LyricsSearchWidget />
-				
+
 				<!-- Music News Preview -->
 				<MusicNewsWidget />
 			</div>
@@ -282,7 +286,7 @@
 		<!-- Section Header -->
 		<div class="flex items-center justify-between">
 			<div>
-				<h2 class="text-2xl font-bold text-foreground">Activity & Actions</h2>
+				<h2 class="text-foreground text-2xl font-bold">Activity & Actions</h2>
 				<p class="text-muted-foreground">Recent activity and quick access to features</p>
 			</div>
 		</div>
@@ -290,7 +294,7 @@
 		<div class="grid grid-cols-1 gap-8 xl:grid-cols-4">
 			<!-- Recent Activity Feed -->
 			<div class="xl:col-span-3">
-				<Card class="p-6 h-full">
+				<Card class="h-full p-6">
 					<div class="mb-6 flex items-center justify-between">
 						<h3 class="text-foreground text-xl font-semibold">Recent Music Activity</h3>
 						<Button variant="ghost" size="sm" href="/activity">
@@ -328,22 +332,22 @@
 
 			<!-- Quick Music Actions -->
 			<div class="xl:col-span-1">
-				<Card class="p-6 h-full">
+				<Card class="h-full p-6">
 					<h3 class="text-foreground mb-6 text-xl font-semibold">Quick Actions</h3>
 					<div class="space-y-3">
-						<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/search">
+						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/search">
 							<Search class="h-5 w-5" />
 							<span class="text-sm">Search Lyrics</span>
 						</Button>
-						<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/trends">
+						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/trends">
 							<TrendingUp class="h-5 w-5" />
 							<span class="text-sm">View Trends</span>
 						</Button>
-						<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/news">
+						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/news">
 							<Newspaper class="h-5 w-5" />
 							<span class="text-sm">Latest News</span>
 						</Button>
-						<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/favorites">
+						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/favorites">
 							<Activity class="h-5 w-5" />
 							<span class="text-sm">My Favorites</span>
 						</Button>
@@ -363,29 +367,33 @@
 			</Button>
 		</div>
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-			<div class="text-center p-6 rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-200 dark:border-purple-800">
-				<Music class="h-8 w-8 mx-auto mb-3 text-purple-600" />
-				<h3 class="font-semibold text-foreground mb-2">Find Lyrics</h3>
-				<p class="text-sm text-muted-foreground mb-4">Search for lyrics of your favorite songs</p>
-				<Button variant="outline" size="sm" href="/dashboard/lyrics">
-					Get Started
-				</Button>
+			<div
+				class="rounded-lg border border-purple-200 bg-gradient-to-r from-purple-500/10 to-pink-500/10 p-6 text-center dark:border-purple-800"
+			>
+				<Music class="mx-auto mb-3 h-8 w-8 text-purple-600" />
+				<h3 class="text-foreground mb-2 font-semibold">Find Lyrics</h3>
+				<p class="text-muted-foreground mb-4 text-sm">Search for lyrics of your favorite songs</p>
+				<Button variant="outline" size="sm" href="/dashboard/lyrics">Get Started</Button>
 			</div>
-			<div class="text-center p-6 rounded-lg bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200 dark:border-blue-800">
-				<Newspaper class="h-8 w-8 mx-auto mb-3 text-blue-600" />
-				<h3 class="font-semibold text-foreground mb-2">Music News</h3>
-				<p class="text-sm text-muted-foreground mb-4">Stay updated with the latest music industry news</p>
-				<Button variant="outline" size="sm" href="/dashboard/news">
-					Read News
-				</Button>
+			<div
+				class="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 p-6 text-center dark:border-blue-800"
+			>
+				<Newspaper class="mx-auto mb-3 h-8 w-8 text-blue-600" />
+				<h3 class="text-foreground mb-2 font-semibold">Music News</h3>
+				<p class="text-muted-foreground mb-4 text-sm">
+					Stay updated with the latest music industry news
+				</p>
+				<Button variant="outline" size="sm" href="/dashboard/news">Read News</Button>
 			</div>
-			<div class="text-center p-6 rounded-lg bg-gradient-to-r from-green-500/10 to-teal-500/10 border border-green-200 dark:border-green-800">
-				<TrendingUp class="h-8 w-8 mx-auto mb-3 text-green-600" />
-				<h3 class="font-semibold text-foreground mb-2">Trending</h3>
-				<p class="text-sm text-muted-foreground mb-4">Discover what's trending in music right now</p>
-				<Button variant="outline" size="sm" href="/dashboard/trends">
-					See Trends
-				</Button>
+			<div
+				class="rounded-lg border border-green-200 bg-gradient-to-r from-green-500/10 to-teal-500/10 p-6 text-center dark:border-green-800"
+			>
+				<TrendingUp class="mx-auto mb-3 h-8 w-8 text-green-600" />
+				<h3 class="text-foreground mb-2 font-semibold">Trending</h3>
+				<p class="text-muted-foreground mb-4 text-sm">
+					Discover what's trending in music right now
+				</p>
+				<Button variant="outline" size="sm" href="/dashboard/trends">See Trends</Button>
 			</div>
 		</div>
 	</Card>

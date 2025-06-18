@@ -29,19 +29,21 @@
 	}: Props = $props();
 </script>
 
-<Card class="group transition-all duration-300 hover:shadow-lg hover:-translate-y-1 {className}">
+<Card class="group transition-all duration-300 hover:-translate-y-1 hover:shadow-lg {className}">
 	<div class="p-6">
 		<!-- Header -->
 		<div class="flex items-start justify-between">
 			<div class="flex items-center space-x-3">
-				<div class="p-3 rounded-lg bg-gradient-to-br {color}">
+				<div class="rounded-lg bg-gradient-to-br p-3 {color}">
 					<Icon class="h-6 w-6 text-white" />
 				</div>
 				<div>
-					<h3 class="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+					<h3
+						class="text-foreground group-hover:text-primary text-lg font-semibold transition-colors"
+					>
 						{title}
 					</h3>
-					<p class="text-sm text-muted-foreground mt-1">
+					<p class="text-muted-foreground mt-1 text-sm">
 						{description}
 					</p>
 				</div>
@@ -52,15 +54,15 @@
 		{#if stats.length > 0}
 			<div class="mt-6 grid grid-cols-2 gap-4">
 				{#each stats as stat}
-					<div class="text-center p-3 rounded-md bg-muted/30">
-						<div class="text-lg font-bold text-foreground">
+					<div class="bg-muted/30 rounded-md p-3 text-center">
+						<div class="text-foreground text-lg font-bold">
 							{#if loading}
-								<div class="h-5 w-12 bg-muted rounded animate-pulse mx-auto"></div>
+								<div class="bg-muted mx-auto h-5 w-12 animate-pulse rounded"></div>
 							{:else}
 								{stat.value}
 							{/if}
 						</div>
-						<div class="text-xs text-muted-foreground mt-1">
+						<div class="text-muted-foreground mt-1 text-xs">
 							{stat.label}
 						</div>
 					</div>
@@ -71,14 +73,16 @@
 		<!-- Action Button -->
 		{#if href}
 			<div class="mt-6">
-				<Button 
-					variant="outline" 
+				<Button
+					variant="outline"
 					{href}
-					class="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+					class="group-hover:bg-primary group-hover:text-primary-foreground w-full transition-colors"
 					disabled={loading}
 				>
 					{#if loading}
-						<div class="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
+						<div
+							class="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+						></div>
 						Loading...
 					{:else}
 						Explore {title}
@@ -89,10 +93,14 @@
 
 		<!-- Loading Overlay -->
 		{#if loading}
-			<div class="absolute inset-0 bg-background/50 backdrop-blur-sm rounded-lg flex items-center justify-center">
+			<div
+				class="bg-background/50 absolute inset-0 flex items-center justify-center rounded-lg backdrop-blur-sm"
+			>
 				<div class="text-center">
-					<div class="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-					<p class="text-sm text-muted-foreground mt-2">Loading...</p>
+					<div
+						class="border-primary mx-auto h-8 w-8 animate-spin rounded-full border-2 border-t-transparent"
+					></div>
+					<p class="text-muted-foreground mt-2 text-sm">Loading...</p>
 				</div>
 			</div>
 		{/if}

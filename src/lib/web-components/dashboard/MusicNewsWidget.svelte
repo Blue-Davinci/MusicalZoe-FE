@@ -115,15 +115,15 @@
 <Card class="overflow-hidden">
 	<div class="p-6">
 		<!-- Header -->
-		<div class="flex items-center justify-between mb-6">
+		<div class="mb-6 flex items-center justify-between">
 			<div class="flex items-center space-x-3">
-				<div class="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500">
+				<div class="rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 p-2">
 					<Newspaper class="h-5 w-5 text-white" />
 				</div>
 				<div>
-					<h3 class="text-lg font-semibold text-foreground">Music News</h3>
-					<p class="text-sm text-muted-foreground">
-						Latest {type} from {countryOptions.find(c => c.code === country)?.name}
+					<h3 class="text-foreground text-lg font-semibold">Music News</h3>
+					<p class="text-muted-foreground text-sm">
+						Latest {type} from {countryOptions.find((c) => c.code === country)?.name}
 					</p>
 				</div>
 			</div>
@@ -135,7 +135,7 @@
 					bind:value={genre}
 					onchange={loadNews}
 					disabled={loading}
-					class="text-sm border border-border rounded-md px-2 py-1 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+					class="border-border bg-background text-foreground focus:ring-primary rounded-md border px-2 py-1 text-sm focus:ring-2 focus:outline-none"
 				>
 					{#each genreOptions as option}
 						<option value={option.value}>{option.name}</option>
@@ -147,7 +147,7 @@
 					bind:value={country}
 					onchange={loadNews}
 					disabled={loading}
-					class="text-sm border border-border rounded-md px-2 py-1 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+					class="border-border bg-background text-foreground focus:ring-primary rounded-md border px-2 py-1 text-sm focus:ring-2 focus:outline-none"
 				>
 					{#each countryOptions as option}
 						<option value={option.code}>{option.name}</option>
@@ -155,17 +155,27 @@
 				</select>
 
 				<!-- Type Toggle -->
-				<div class="flex border border-border rounded-md overflow-hidden">
+				<div class="border-border flex overflow-hidden rounded-md border">
 					<button
-						onclick={() => { type = 'headlines'; loadNews(); }}
-						class="px-3 py-1 text-sm {type === 'headlines' ? 'bg-primary text-primary-foreground' : 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
+						onclick={() => {
+							type = 'headlines';
+							loadNews();
+						}}
+						class="px-3 py-1 text-sm {type === 'headlines'
+							? 'bg-primary text-primary-foreground'
+							: 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
 						disabled={loading}
 					>
 						Headlines
 					</button>
 					<button
-						onclick={() => { type = 'everything'; loadNews(); }}
-						class="px-3 py-1 text-sm {type === 'everything' ? 'bg-primary text-primary-foreground' : 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
+						onclick={() => {
+							type = 'everything';
+							loadNews();
+						}}
+						class="px-3 py-1 text-sm {type === 'everything'
+							? 'bg-primary text-primary-foreground'
+							: 'bg-background text-muted-foreground hover:text-foreground'} transition-colors"
 						disabled={loading}
 					>
 						All
@@ -178,12 +188,12 @@
 		{#if loading}
 			<div class="space-y-4">
 				{#each Array(3) as _}
-					<div class="flex space-x-4 animate-pulse">
-						<div class="w-24 h-16 bg-muted rounded-md"></div>
+					<div class="flex animate-pulse space-x-4">
+						<div class="bg-muted h-16 w-24 rounded-md"></div>
 						<div class="flex-1">
-							<div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
-							<div class="h-3 bg-muted rounded w-full mb-2"></div>
-							<div class="h-3 bg-muted rounded w-1/2"></div>
+							<div class="bg-muted mb-2 h-4 w-3/4 rounded"></div>
+							<div class="bg-muted mb-2 h-3 w-full rounded"></div>
+							<div class="bg-muted h-3 w-1/2 rounded"></div>
 						</div>
 					</div>
 				{/each}
@@ -192,13 +202,11 @@
 
 		<!-- Error State -->
 		{#if error}
-			<div class="text-center py-8">
-				<div class="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
-					<p class="text-sm text-destructive">{error}</p>
+			<div class="py-8 text-center">
+				<div class="bg-destructive/10 border-destructive/20 rounded-md border p-3">
+					<p class="text-destructive text-sm">{error}</p>
 				</div>
-				<Button variant="outline" onclick={loadNews} class="mt-4">
-					Try Again
-				</Button>
+				<Button variant="outline" onclick={loadNews} class="mt-4">Try Again</Button>
 			</div>
 		{/if}
 
@@ -206,15 +214,17 @@
 		{#if data && data.news.articles.length > 0 && !loading}
 			<div class="space-y-3">
 				{#each data.news.articles.slice(0, limit) as article}
-					<article class="group cursor-pointer border border-border rounded-lg p-3 hover:shadow-md hover:border-primary/50 transition-all">
+					<article
+						class="group border-border hover:border-primary/50 cursor-pointer rounded-lg border p-3 transition-all hover:shadow-md"
+					>
 						<div class="space-y-3">
 							<!-- Article Image -->
 							{#if article.urlToImage}
-								<div class="w-full h-32 flex-shrink-0">
+								<div class="h-32 w-full flex-shrink-0">
 									<img
 										src={article.urlToImage}
 										alt={article.title}
-										class="w-full h-full object-cover rounded-md group-hover:scale-105 transition-transform"
+										class="h-full w-full rounded-md object-cover transition-transform group-hover:scale-105"
 										loading="lazy"
 									/>
 								</div>
@@ -222,21 +232,23 @@
 
 							<!-- Article Content -->
 							<div class="space-y-2">
-								<h4 class="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+								<h4
+									class="text-foreground group-hover:text-primary line-clamp-2 text-sm font-semibold transition-colors"
+								>
 									{article.title}
 								</h4>
-								
+
 								{#if article.description}
-									<p class="text-xs text-muted-foreground line-clamp-2">
+									<p class="text-muted-foreground line-clamp-2 text-xs">
 										{truncateText(article.description, 100)}
 									</p>
 								{/if}
 
 								<!-- Article Meta -->
 								<div class="flex items-center justify-between">
-									<div class="flex items-center space-x-2 text-xs text-muted-foreground">
+									<div class="text-muted-foreground flex items-center space-x-2 text-xs">
 										{#if article.source.name}
-											<span class="font-medium truncate">{article.source.name}</span>
+											<span class="truncate font-medium">{article.source.name}</span>
 										{/if}
 										<span>•</span>
 										<span>{formatDate(article.publishedAt)}</span>
@@ -246,7 +258,7 @@
 										href={article.url}
 										target="_blank"
 										rel="noopener noreferrer"
-										class="flex items-center space-x-1 text-xs text-primary hover:text-primary/80 transition-colors"
+										class="text-primary hover:text-primary/80 flex items-center space-x-1 text-xs transition-colors"
 										onclick={(e) => e.stopPropagation()}
 									>
 										<ExternalLink class="h-3 w-3" />
@@ -260,8 +272,8 @@
 
 			<!-- View More Button -->
 			<div class="mt-6 text-center">
-				<Button 
-					variant="outline" 
+				<Button
+					variant="outline"
 					href="/dashboard/news?country={country}&type={type}&genre={genre}"
 					class="w-full"
 				>
@@ -272,12 +284,10 @@
 
 		<!-- Empty State -->
 		{#if data && data.news.articles.length === 0 && !loading && !error}
-			<div class="text-center py-8">
-				<Newspaper class="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+			<div class="py-8 text-center">
+				<Newspaper class="text-muted-foreground mx-auto mb-4 h-12 w-12" />
 				<p class="text-muted-foreground">No news articles found for the selected filters.</p>
-				<Button variant="outline" onclick={loadNews} class="mt-4">
-					Refresh
-				</Button>
+				<Button variant="outline" onclick={loadNews} class="mt-4">Refresh</Button>
 			</div>
 		{/if}
 	</div>

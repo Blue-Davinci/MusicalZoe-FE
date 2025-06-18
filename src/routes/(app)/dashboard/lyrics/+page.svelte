@@ -13,7 +13,7 @@
 	let error = $state<string | null>(null);
 	let lyricsData = $state<LyricsResponse | null>(null);
 	let includeMetadata = $state(true);
-	let searchHistory = $state<Array<{artist: string, title: string, timestamp: Date}>>([]);
+	let searchHistory = $state<Array<{ artist: string; title: string; timestamp: Date }>>([]);
 
 	// Load search history from localStorage on mount
 	onMount(() => {
@@ -84,7 +84,7 @@
 			});
 
 			const response = await fetch(`/api/music/lyrics?${params}`);
-			
+
 			if (!response.ok) {
 				if (response.status === 404) {
 					throw new Error('Lyrics not found for this song');
@@ -94,10 +94,9 @@
 
 			const data = await response.json();
 			lyricsData = data;
-			
+
 			// Add to search history
 			addToHistory(searchArtist, searchTitle);
-			
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'An unexpected error occurred';
 			lyricsData = null;
@@ -109,7 +108,7 @@
 	// Copy lyrics to clipboard
 	async function copyLyrics() {
 		if (!lyricsData?.lyrics?.lyrics) return;
-		
+
 		try {
 			await navigator.clipboard.writeText(lyricsData.lyrics.lyrics);
 			// Show success feedback (you could add a toast here)
@@ -119,7 +118,7 @@
 	}
 
 	// Search from history
-	function searchFromHistory(item: typeof searchHistory[0]) {
+	function searchFromHistory(item: (typeof searchHistory)[0]) {
 		artist = item.artist;
 		title = item.title;
 		searchQuery = '';
@@ -156,47 +155,47 @@
 	<!-- Header -->
 	<div class="flex items-center justify-between">
 		<div>
-			<h1 class="text-foreground text-3xl font-bold flex items-center gap-2">
+			<h1 class="text-foreground flex items-center gap-2 text-3xl font-bold">
 				<Music class="h-8 w-8 text-purple-600" />
 				Lyrics Search
 			</h1>
 			<p class="text-muted-foreground mt-1">Find lyrics and track information for any song</p>
 		</div>
-		<Button variant="outline" href="/dashboard">
-			← Back to Dashboard
-		</Button>
+		<Button variant="outline" href="/dashboard">← Back to Dashboard</Button>
 	</div>
 
 	<!-- Search Section -->
 	<Card class="p-6">
 		<div class="space-y-6">
 			<!-- Search Methods Toggle -->
-			<div class="flex flex-col sm:flex-row gap-4">
+			<div class="flex flex-col gap-4 sm:flex-row">
 				<div class="flex-1">
-					<label for="quick-search" class="block text-sm font-medium text-foreground mb-2">
+					<label for="quick-search" class="text-foreground mb-2 block text-sm font-medium">
 						Quick Search (Artist - Title)
 					</label>
 					<div class="relative">
-						<Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+						<Search
+							class="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform"
+						/>
 						<input
 							id="quick-search"
 							type="text"
 							bind:value={searchQuery}
 							placeholder="e.g., Coldplay - Yellow"
-							class="w-full pl-10 pr-4 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+							class="border-input bg-background w-full rounded-md border py-2 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-purple-500 focus:outline-none"
 							onkeypress={(e) => e.key === 'Enter' && searchLyrics()}
 						/>
 					</div>
 				</div>
 				<div class="flex items-end">
-					<span class="text-sm text-muted-foreground mb-2 px-4">OR</span>
+					<span class="text-muted-foreground mb-2 px-4 text-sm">OR</span>
 				</div>
 			</div>
 
 			<!-- Separate Fields -->
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<div>
-					<label for="artist-input" class="block text-sm font-medium text-foreground mb-2">
+					<label for="artist-input" class="text-foreground mb-2 block text-sm font-medium">
 						Artist
 					</label>
 					<input
@@ -204,12 +203,12 @@
 						type="text"
 						bind:value={artist}
 						placeholder="Artist name"
-						class="w-full px-4 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+						class="border-input bg-background w-full rounded-md border px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-purple-500 focus:outline-none"
 						onkeypress={(e) => e.key === 'Enter' && searchLyrics()}
 					/>
 				</div>
 				<div>
-					<label for="title-input" class="block text-sm font-medium text-foreground mb-2">
+					<label for="title-input" class="text-foreground mb-2 block text-sm font-medium">
 						Song Title
 					</label>
 					<input
@@ -217,28 +216,23 @@
 						type="text"
 						bind:value={title}
 						placeholder="Song title"
-						class="w-full px-4 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+						class="border-input bg-background w-full rounded-md border px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-purple-500 focus:outline-none"
 						onkeypress={(e) => e.key === 'Enter' && searchLyrics()}
 					/>
 				</div>
 			</div>
 
 			<!-- Options and Search Button -->
-			<div class="flex flex-col sm:flex-row items-start sm:items-end gap-4">
+			<div class="flex flex-col items-start gap-4 sm:flex-row sm:items-end">
 				<label class="flex items-center space-x-2">
 					<input
 						type="checkbox"
 						bind:checked={includeMetadata}
-						class="rounded border-input focus:ring-2 focus:ring-purple-500"
+						class="border-input rounded focus:ring-2 focus:ring-purple-500"
 					/>
-					<span class="text-sm text-foreground">Include track metadata</span>
+					<span class="text-foreground text-sm">Include track metadata</span>
 				</label>
-				<Button 
-					variant="primary" 
-					disabled={loading}
-					onclick={searchLyrics}
-					class="sm:ml-auto"
-				>
+				<Button variant="primary" disabled={loading} onclick={searchLyrics} class="sm:ml-auto">
 					{loading ? 'Searching...' : 'Search Lyrics'}
 				</Button>
 			</div>
@@ -247,54 +241,56 @@
 
 	<!-- Error Display -->
 	{#if error}
-		<Card class="p-4 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
+		<Card class="border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
 			<p class="text-red-600 dark:text-red-400">{error}</p>
 		</Card>
 	{/if}
 
 	<!-- Results and History Grid -->
-	<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+	<div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
 		<!-- Lyrics Results -->
 		{#if lyricsData}
 			<div class="lg:col-span-2">
 				<Card class="overflow-hidden">
 					<!-- Track Header -->
-					<div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6">
+					<div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
 						<div class="flex items-start justify-between">
 							<div class="flex-1">
 								<h2 class="text-2xl font-bold">{lyricsData.lyrics.title}</h2>
-								<p class="text-purple-100 text-lg">by {lyricsData.lyrics.artist}</p>
-								
+								<p class="text-lg text-purple-100">by {lyricsData.lyrics.artist}</p>
+
 								{#if lyricsData.lyrics.metadata?.album}
-									<p class="text-purple-200 text-sm mt-1">
-										<Album class="inline h-4 w-4 mr-1" />
+									<p class="mt-1 text-sm text-purple-200">
+										<Album class="mr-1 inline h-4 w-4" />
 										{lyricsData.lyrics.metadata.album}
 									</p>
 								{/if}
 							</div>
-							
+
 							<!-- Track Image -->
 							{#if lyricsData.lyrics.metadata?.images?.length}
-								<img 
-									src={lyricsData.lyrics.metadata.images.find(img => img.size === 'large')?.['#text'] || lyricsData.lyrics.metadata.images[0]['#text']}
+								<img
+									src={lyricsData.lyrics.metadata.images.find((img) => img.size === 'large')?.[
+										'#text'
+									] || lyricsData.lyrics.metadata.images[0]['#text']}
 									alt="{lyricsData.lyrics.title} album art"
-									class="w-20 h-20 rounded-lg shadow-lg"
+									class="h-20 w-20 rounded-lg shadow-lg"
 								/>
 							{/if}
 						</div>
 
 						<!-- Track Stats -->
 						{#if lyricsData.lyrics.metadata}
-							<div class="flex flex-wrap gap-4 mt-4 text-sm text-purple-100">
+							<div class="mt-4 flex flex-wrap gap-4 text-sm text-purple-100">
 								{#if lyricsData.lyrics.metadata.duration}
 									<span class="flex items-center">
-										<Clock class="h-4 w-4 mr-1" />
+										<Clock class="mr-1 h-4 w-4" />
 										{formatDuration(lyricsData.lyrics.metadata.duration)}
 									</span>
 								{/if}
 								{#if lyricsData.lyrics.metadata.playcount}
 									<span class="flex items-center">
-										<User class="h-4 w-4 mr-1" />
+										<User class="mr-1 h-4 w-4" />
 										{formatPlayCount(lyricsData.lyrics.metadata.playcount)} plays
 									</span>
 								{/if}
@@ -310,38 +306,39 @@
 
 					<!-- Lyrics Content -->
 					<div class="p-6">
-						<div class="flex justify-between items-center mb-4">
-							<h3 class="text-lg font-semibold text-foreground">Lyrics</h3>
+						<div class="mb-4 flex items-center justify-between">
+							<h3 class="text-foreground text-lg font-semibold">Lyrics</h3>
 							<div class="flex gap-2">
 								<Button variant="outline" size="sm" onclick={copyLyrics}>
-									<Copy class="h-4 w-4 mr-1" />
+									<Copy class="mr-1 h-4 w-4" />
 									Copy
 								</Button>
 								{#if lyricsData.lyrics.metadata?.url}
-									<a 
-										href={lyricsData.lyrics.metadata.url} 
-										target="_blank" 
+									<a
+										href={lyricsData.lyrics.metadata.url}
+										target="_blank"
 										rel="noopener noreferrer"
-										class="inline-flex items-center px-3 py-1.5 text-sm border border-input rounded-md bg-background hover:bg-muted transition-colors"
+										class="border-input bg-background hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
 									>
-										<ExternalLink class="h-4 w-4 mr-1" />
+										<ExternalLink class="mr-1 h-4 w-4" />
 										Last.fm
 									</a>
 								{/if}
 							</div>
 						</div>
-						
+
 						<div class="prose dark:prose-invert max-w-none">
-							<pre class="whitespace-pre-wrap font-sans text-foreground leading-relaxed">{lyricsData.lyrics.lyrics}</pre>
+							<pre class="text-foreground font-sans leading-relaxed whitespace-pre-wrap">{lyricsData
+									.lyrics.lyrics}</pre>
 						</div>
 
 						<!-- Tags -->
 						{#if lyricsData.lyrics.metadata?.tags?.length}
 							<div class="mt-6">
-								<h4 class="text-sm font-medium text-foreground mb-2">Tags</h4>
+								<h4 class="text-foreground mb-2 text-sm font-medium">Tags</h4>
 								<div class="flex flex-wrap gap-2">
 									{#each lyricsData.lyrics.metadata.tags as tag}
-										<span class="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full">
+										<span class="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs">
 											{tag}
 										</span>
 									{/each}
@@ -357,16 +354,16 @@
 		<div class={lyricsData ? '' : 'lg:col-span-3'}>
 			{#if searchHistory.length > 0}
 				<Card class="p-6">
-					<h3 class="text-lg font-semibold text-foreground mb-4">Recent Searches</h3>
+					<h3 class="text-foreground mb-4 text-lg font-semibold">Recent Searches</h3>
 					<div class="space-y-2">
 						{#each searchHistory.slice(0, 8) as item}
 							<button
 								onclick={() => searchFromHistory(item)}
-								class="w-full text-left p-3 rounded-lg border border-border hover:bg-muted transition-colors"
+								class="border-border hover:bg-muted w-full rounded-lg border p-3 text-left transition-colors"
 							>
-								<div class="font-medium text-foreground text-sm">{item.title}</div>
+								<div class="text-foreground text-sm font-medium">{item.title}</div>
 								<div class="text-muted-foreground text-xs">by {item.artist}</div>
-								<div class="text-muted-foreground text-xs mt-1">
+								<div class="text-muted-foreground mt-1 text-xs">
 									{item.timestamp.toLocaleDateString()}
 								</div>
 							</button>
