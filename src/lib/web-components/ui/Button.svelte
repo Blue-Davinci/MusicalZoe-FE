@@ -31,8 +31,10 @@
 	const variants = {
 		primary:
 			'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl focus:ring-blue-500',
-		secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-md hover:shadow-lg focus:ring-secondary',
-		outline: 'border border-border bg-background text-foreground hover:bg-muted hover:text-foreground hover:border-muted-foreground shadow-sm hover:shadow-md focus:ring-ring',
+		secondary:
+			'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-md hover:shadow-lg focus:ring-secondary',
+		outline:
+			'border border-border bg-background text-foreground hover:bg-muted hover:text-foreground hover:border-muted-foreground shadow-sm hover:shadow-md focus:ring-ring',
 		ghost: 'text-foreground hover:bg-muted hover:text-foreground focus:ring-ring'
 	};
 

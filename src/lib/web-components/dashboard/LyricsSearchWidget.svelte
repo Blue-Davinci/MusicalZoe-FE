@@ -51,8 +51,8 @@
 	}
 </script>
 
-<Card class="h-full flex flex-col">
-	<div class="p-6 flex-1 flex flex-col overflow-y-auto">
+<Card class="flex h-full flex-col">
+	<div class="flex flex-1 flex-col overflow-y-auto p-6">
 		<!-- Header -->
 		<div class="mb-6 flex items-center space-x-3">
 			<div class="rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 p-2">
@@ -65,7 +65,7 @@
 		</div>
 
 		<!-- Search Form -->
-		<div class="space-y-4 flex-shrink-0">
+		<div class="flex-shrink-0 space-y-4">
 			<div class="space-y-3">
 				<div>
 					<label for="artist" class="text-foreground mb-1 block text-sm font-medium">
@@ -120,26 +120,28 @@
 
 		<!-- Error Display -->
 		{#if error}
-			<div class="bg-destructive/10 border-destructive/20 mt-4 rounded-md border p-3 flex-shrink-0">
+			<div class="bg-destructive/10 border-destructive/20 mt-4 flex-shrink-0 rounded-md border p-3">
 				<p class="text-destructive text-sm">{error}</p>
 			</div>
 		{/if}
 
 		<!-- Results Display -->
 		{#if result && result.lyrics}
-			<div class="border-border flex-shrink-0 mt-6 border-t pt-4">
+			<div class="border-border mt-6 flex-shrink-0 border-t pt-4">
 				<!-- Track Info Header -->
-				<div class="flex items-start space-x-4 mb-6">
+				<div class="mb-6 flex items-start space-x-4">
 					{#if result.lyrics.metadata?.images?.length}
 						<img
 							src={result.lyrics.metadata.images.find((img) => img.size === 'large')?.['#text'] ||
 								result.lyrics.metadata.images[0]['#text']}
 							alt="{result.lyrics.title} by {result.lyrics.artist}"
-							class="h-16 w-16 rounded-md object-cover flex-shrink-0 shadow-sm"
+							class="h-16 w-16 flex-shrink-0 rounded-md object-cover shadow-sm"
 							loading="lazy"
 						/>
 					{:else}
-						<div class="bg-muted flex h-16 w-16 items-center justify-center rounded-md flex-shrink-0 shadow-sm">
+						<div
+							class="bg-muted flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-md shadow-sm"
+						>
 							<Music class="text-muted-foreground h-8 w-8" />
 						</div>
 					{/if}
@@ -171,33 +173,32 @@
 				</div>
 
 				<!-- Lyrics Container with Beautiful Styling -->
-				<div class="bg-gradient-to-br from-muted/30 to-muted/50 border border-border/50 rounded-lg shadow-sm mb-6 overflow-hidden">
+				<div
+					class="from-muted/30 to-muted/50 border-border/50 mb-6 overflow-hidden rounded-lg border bg-gradient-to-br shadow-sm"
+				>
 					<!-- Lyrics Header -->
-					<div class="bg-muted/80 border-b border-border/50 px-4 py-3">
+					<div class="bg-muted/80 border-border/50 border-b px-4 py-3">
 						<div class="flex items-center space-x-2">
 							<Music class="text-primary h-4 w-4" />
 							<span class="text-foreground text-sm font-medium">Song Lyrics</span>
 						</div>
 					</div>
-					
+
 					<!-- Lyrics Content -->
-					<div class="p-6 max-h-80 overflow-y-auto">
+					<div class="max-h-80 overflow-y-auto p-6">
 						<div class="prose prose-sm max-w-none">
-							<p class="text-foreground whitespace-pre-line text-sm leading-relaxed font-medium tracking-wide">
+							<p
+								class="text-foreground text-sm leading-relaxed font-medium tracking-wide whitespace-pre-line"
+							>
 								{result.lyrics.lyrics}
 							</p>
 						</div>
 					</div>
 				</div>
-				
+
 				<!-- Action Button -->
 				<div class="flex justify-center">
-					<Button 
-						variant="outline" 
-						size="sm" 
-						href="/dashboard/lyrics"
-						class="shadow-sm"
-					>
+					<Button variant="outline" size="sm" href="/dashboard/lyrics" class="shadow-sm">
 						<Music class="mr-2 h-4 w-4" />
 						Open in Full Lyrics Page
 					</Button>
