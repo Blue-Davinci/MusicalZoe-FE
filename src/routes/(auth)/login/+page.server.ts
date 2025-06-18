@@ -1,7 +1,7 @@
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { loginSchema } from '$lib/schemas/auth';
-import { fail, type RequestEvent } from '@sveltejs/kit';
+import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { logAuth, logSecurity, logError, generateErrorId } from '$lib/utils/logger';
 import { 
@@ -14,11 +14,11 @@ import {
 import { VITE_API_AUTHENTICATION_URL } from '$env/static/private';
 
 export const load = async ({ url, locals }: RequestEvent) => {
-	// Check if user is already logged in (uncomment when auth is implemented)
-	/*if (locals.user) {
+	// Check if user is already logged in
+	if (locals.isAuthenticated) {
 		const redirectTo = url.searchParams.get('redirectTo') || '/dashboard';
 		return redirect(303, redirectTo);
-	}*/
+	}
 
 	logSecurity('LOGIN_PAGE_ACCESS', {
 		timestamp: new Date().toISOString(),
@@ -107,29 +107,40 @@ export const actions = {
 			// Success - clear failed attempts
 			clearFailedAuthAttempts(sanitizedEmail, clientIP, 'login');
 
-			// Set authentication cookies
-			if (authResult.session?.access_token) {
-				const maxAge = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24; // 30 days or 1 day
+			// log response from authentication API
+			logAuth('Login Detailed Info', {
+				api_key: authResult.api_key,
+				userId: authResult.user?.id,
+				email: sanitizedEmail,
+				clientIP,
+				duration: Date.now() - startTime,
+				rememberMe
+			});
+			// Set authentication cookies based on bearer token response
+			if (authResult.api_key) {
+				const { token, expiry } = authResult.api_key;
+				const expiryDate = new Date(expiry);
+				const maxAge = Math.floor((expiryDate.getTime() - Date.now()) / 1000); // Convert to seconds
 
-				cookies.set('access_token', authResult.session.access_token, {
+				// Set bearer token cookie
+				cookies.set('bearer_token', token, {
 					path: '/',
 					httpOnly: true,
 					secure: !dev,
 					sameSite: 'lax',
-					maxAge
+					maxAge: maxAge > 0 ? maxAge : 60 * 60 * 24 // Fallback to 1 day if calculation fails
 				});
 
-				if (authResult.session.refresh_token) {
-					cookies.set('refresh_token', authResult.session.refresh_token, {
-						path: '/',
-						httpOnly: true,
-						secure: !dev,
-						sameSite: 'lax',
-						maxAge: 60 * 60 * 24 * 30 // 30 days for refresh token
-					});
-				}
+				// Set token expiry cookie for easy checking
+				cookies.set('token_expiry', expiry, {
+					path: '/',
+					httpOnly: true,
+					secure: !dev,
+					sameSite: 'lax',
+					maxAge: maxAge > 0 ? maxAge : 60 * 60 * 24
+				});
 
-				// Set remember preference
+				// Set remember preference if requested
 				if (rememberMe) {
 					cookies.set('remember_me', 'true', {
 						path: '/',
@@ -242,20 +253,17 @@ async function authenticateUser(
 		}
 
 		logAuth('BACKEND_LOGIN_SUCCESS', {
-			userId: result.user?.id,
-			email: result.user?.email,
+			userEmail: result.user?.email,
+			userName: result.user?.name,
 			status: response.status,
 			clientIP
 		});
 
 		return {
 			success: true,
-			message: result.message || 'Login successful!',
+			message: 'Login successful!',
 			user: result.user,
-			session: result.session || {
-				access_token: result.access_token,
-				refresh_token: result.refresh_token
-			}
+			api_key: result.api_key
 		};
 
 	} catch (error) {

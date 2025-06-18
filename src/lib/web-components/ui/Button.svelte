@@ -6,6 +6,8 @@
 		variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
 		size?: 'sm' | 'md' | 'lg';
 		href?: string;
+		type?: 'button' | 'submit' | 'reset';
+		disabled?: boolean;
 		class?: string;
 		children: any;
 		onclick?: () => void;
@@ -15,6 +17,8 @@
 		variant = 'primary',
 		size = 'md',
 		href,
+		type = 'button',
+		disabled,
 		class: className,
 		children,
 		onclick,
@@ -45,7 +49,7 @@
 		{@render children()}
 	</a>
 {:else}
-	<button class={classes} {onclick} {...restProps}>
+	<button {type} class={classes} {disabled} {onclick} {...restProps}>
 		{@render children()}
 	</button>
 {/if}
