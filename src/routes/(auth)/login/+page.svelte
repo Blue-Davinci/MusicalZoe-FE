@@ -17,7 +17,7 @@
 	import BackButton from '$lib/web-components/ui/BackButton.svelte';
 	import Container from '$lib/web-components/ui/Container.svelte';
 	import Card from '$lib/web-components/ui/Card.svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 
 	interface Props {
@@ -35,13 +35,16 @@
 	const { form, errors, enhance, submitting, message } = superForm(data.form, {
 		validators: zodClient(loginSchema),
 		dataType: 'json',
-		onUpdated({ form }) {
+		async onUpdated({ form }) {
 			if ($message?.success) {
 				// Clear form data after successful login for security
 				form.data.email = '';
 				form.data.password = '';
 				form.data.rememberMe = false;
 				showPassword = false;
+
+				// Invalidate all data to refresh authentication state
+				await invalidateAll();
 
 				// Redirect to dashboard automatically
 				const name = $message.data?.name || $message.data?.email || 'User';

@@ -5,19 +5,22 @@
 
 	let { children } = $props();
 
-	// Get authentication context
-	const auth = getContext<{
+	// Get authentication context function
+	const getAuth = getContext<() => {
 		user: User | null;
 		isAuthenticated: boolean;
 		isAdmin: boolean;
 		isVerified: boolean;
 	}>('auth');
+
+	// Create reactive auth data using $derived
+	const auth = $derived(getAuth());
 </script>
 
 <Header
-	user={auth?.user}
-	isAuthenticated={auth?.isAuthenticated ?? false}
-	isAdmin={auth?.isAdmin ?? false}
+	user={auth.user}
+	isAuthenticated={auth.isAuthenticated}
+	isAdmin={auth.isAdmin}
 	variant="dashboard"
 />
 

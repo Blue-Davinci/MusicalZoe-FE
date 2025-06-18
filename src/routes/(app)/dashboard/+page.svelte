@@ -14,13 +14,16 @@
 	import Button from '$lib/web-components/ui/Button.svelte';
 	import type { User } from '$lib/utils/token-helpers';
 
-	// Get authentication context
-	const auth = getContext<{
+	// Get authentication context function
+	const getAuth = getContext<() => {
 		user: User | null;
 		isAuthenticated: boolean;
 		isAdmin: boolean;
 		isVerified: boolean;
 	}>('auth');
+
+	// Create reactive auth data using $derived
+	const auth = $derived(getAuth());
 
 	// Dashboard stats using $state for reactivity
 	let stats = $state([
@@ -102,17 +105,17 @@
 
 	// User display name using $derived
 	const userDisplayName = $derived(
-		auth?.user?.first_name && auth?.user?.last_name
+		auth.user?.first_name && auth.user?.last_name
 			? `${auth.user.first_name} ${auth.user.last_name}`
-			: auth?.user?.first_name
+			: auth.user?.first_name
 				? auth.user.first_name
-				: auth?.user?.name || (auth?.user?.email ? auth.user.email.split('@')[0] : 'User')
+				: auth.user?.name || (auth.user?.email ? auth.user.email.split('@')[0] : 'User')
 	);
 </script>
 
 <div class="container mx-auto space-y-8 px-4 py-8">
 	<!-- Activation Warning for Unactivated Users -->
-	{#if auth?.user && !auth.user.activated}
+	{#if auth.user && !auth.user.activated}
 		<div
 			class="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20"
 		>
