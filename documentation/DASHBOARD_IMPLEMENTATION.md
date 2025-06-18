@@ -89,6 +89,35 @@ src/
 - **Loading States**: Skeleton loaders and progress indicators
 - **Error Boundaries**: Graceful error handling with user feedback
 
+### Layout Architecture
+The dashboard uses a sophisticated responsive grid system that eliminates layout issues across all screen sizes:
+
+#### 🎯 **Hero Layout System**
+- **Large screens (lg+)**: 5-column grid with smart content distribution
+- **Medium screens**: 2-column layout that avoids awkward "T" shapes
+- **Mobile**: Single column (optimal for mobile use)
+
+#### 📊 **Content Distribution Strategy**
+1. **Trending Widget**: Takes 3/5 columns (60%) - accommodates longer content lists
+2. **Sidebar Column**: Takes 2/5 columns (40%) with stacked widgets:
+   - Lyrics Search (compact vertical form)
+   - Music News Preview (fewer articles, vertical card layout)
+
+#### 🎨 **Visual Hierarchy**
+- **Section Headers**: "Music Hub" and "Activity & Actions" for clear organization
+- **Consistent Heights**: All widgets use `h-full` for balanced appearance
+- **Typography Scale**: h1 (page title) → h2 (sections) → h3 (widgets)
+
+#### 📱 **Responsive Behavior**
+- **Mobile (< lg)**: Single column, natural stacking order
+- **Medium (lg)**: 3:2 ratio prevents gaps and awkward layouts  
+- **Large (xl+)**: Full utilization with balanced content distribution
+
+#### 🔧 **Widget Optimizations**
+- **Lyrics Search**: Vertical form layout instead of side-by-side inputs
+- **Music News**: Reduced to 4 articles with vertical cards (w-full h-32 images)
+- **Bottom Section**: 4-column layout (75% activity feed, 25% quick actions)
+
 ### Accessibility
 - **ARIA Labels**: Proper form labeling and screen reader support
 - **Keyboard Navigation**: Full keyboard accessibility
@@ -117,6 +146,19 @@ src/
 3. **Live Widgets**: Real-time previews of each service
 4. **Quick Actions**: Fast access to common tasks
 5. **Activity Feed**: Recent user activity tracking
+
+### Layout Problem Solved
+**Issue**: The previous dashboard layout created an awkward "T" shape on medium screen sizes:
+- Lyrics Search widget on the left
+- Trending widget (longest) on the right, extending much further down
+- Music News appeared below Lyrics Search, leaving empty space on the right
+- Result: Unbalanced, disorganized appearance on medium screens
+
+**Solution**: Implemented a hero layout system with:
+- **Smart Grid**: 5-column layout (3:2 ratio) for optimal content distribution
+- **Content Hierarchy**: Trending widget gets 60% width, sidebar gets 40%
+- **Visual Balance**: No awkward gaps or excessive whitespace on any screen size
+- **Professional Appearance**: Clear sections with descriptive headers
 
 ### Search Experience
 - **Smart Parsing**: Intelligent "Artist - Title" format recognition

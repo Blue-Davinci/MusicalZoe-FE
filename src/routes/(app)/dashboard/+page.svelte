@@ -246,86 +246,110 @@
 	</div>
 
 	<!-- Main Dashboard Widgets -->
-	<div class="grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3">
-		<!-- Lyrics Search Widget -->
-		<div class="xl:col-span-1">
-			<LyricsSearchWidget />
+	<div class="space-y-8">
+		<!-- Section Header -->
+		<div class="flex items-center justify-between">
+			<div>
+				<h2 class="text-2xl font-bold text-foreground">Music Hub</h2>
+				<p class="text-muted-foreground">Discover trending content and search for lyrics</p>
+			</div>
+			<Button variant="outline" href="/dashboard/trends">
+				<TrendingUp class="mr-2 h-4 w-4" />
+				View All Trends
+			</Button>
 		</div>
-		
-		<!-- Trending Widget -->
-		<div class="xl:col-span-1">
-			<TrendingWidget />
-		</div>
-		
-		<!-- Music News Widget -->
-		<div class="xl:col-span-1">
-			<MusicNewsWidget />
+
+		<!-- Hero Widget Section - Trending takes more space as it's content-heavy -->
+		<div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
+			<!-- Trending Widget - Takes more space as it's content-heavy -->
+			<div class="lg:col-span-3">
+				<TrendingWidget />
+			</div>
+			
+			<!-- Quick Actions Column -->
+			<div class="lg:col-span-2 space-y-6">
+				<!-- Lyrics Search Widget -->
+				<LyricsSearchWidget />
+				
+				<!-- Music News Preview -->
+				<MusicNewsWidget />
+			</div>
 		</div>
 	</div>
 
 	<!-- Bottom Section: Activity Feed and Quick Actions -->
-	<div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-		<!-- Recent Activity Feed -->
-		<div class="lg:col-span-2">
-			<Card class="p-6">
-				<div class="mb-6 flex items-center justify-between">
-					<h2 class="text-foreground text-xl font-semibold">Recent Music Activity</h2>
-					<Button variant="ghost" size="sm" href="/activity">
-						<Activity class="mr-2 h-4 w-4" />
-						View All
-					</Button>
-				</div>
-				<div class="space-y-4">
-					{#each recentActivities as activity}
-						<div class="flex items-start space-x-3">
-							<div class="rounded-full p-2 {getActivityStyles(activity.type)}">
-								{#if activity.icon === Music}
-									<Music class="h-4 w-4" />
-								{:else if activity.icon === TrendingUp}
-									<TrendingUp class="h-4 w-4" />
-								{:else if activity.icon === Newspaper}
-									<Newspaper class="h-4 w-4" />
-								{:else if activity.icon === BarChart3}
-									<BarChart3 class="h-4 w-4" />
-								{/if}
-							</div>
-							<div class="min-w-0 flex-1">
-								<p class="text-foreground text-sm font-medium">
-									{activity.message}
-								</p>
-								<p class="text-muted-foreground mt-1 text-xs">
-									{activity.time}
-								</p>
-							</div>
-						</div>
-					{/each}
-				</div>
-			</Card>
+	<div class="space-y-6">
+		<!-- Section Header -->
+		<div class="flex items-center justify-between">
+			<div>
+				<h2 class="text-2xl font-bold text-foreground">Activity & Actions</h2>
+				<p class="text-muted-foreground">Recent activity and quick access to features</p>
+			</div>
 		</div>
 
-		<!-- Quick Music Actions -->
-		<div>
-			<Card class="p-6">
-				<h2 class="text-foreground mb-6 text-xl font-semibold">Quick Actions</h2>
-				<div class="space-y-3">
-					<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/search">
-						<Search class="h-5 w-5" />
-						<span class="text-sm">Search Lyrics</span>
-					</Button>
-					<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/trends">
-						<TrendingUp class="h-5 w-5" />
-						<span class="text-sm">View Trends</span>
-					</Button>
-					<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/news">
-						<Newspaper class="h-5 w-5" />
-						<span class="text-sm">Latest News</span>
-					</Button>
-					<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/favorites">
-						<Activity class="h-5 w-5" />
-						<span class="text-sm">My Favorites</span>
-					</Button>
-				</div>
-			</Card>
+		<div class="grid grid-cols-1 gap-8 xl:grid-cols-4">
+			<!-- Recent Activity Feed -->
+			<div class="xl:col-span-3">
+				<Card class="p-6 h-full">
+					<div class="mb-6 flex items-center justify-between">
+						<h3 class="text-foreground text-xl font-semibold">Recent Music Activity</h3>
+						<Button variant="ghost" size="sm" href="/activity">
+							<Activity class="mr-2 h-4 w-4" />
+							View All
+						</Button>
+					</div>
+					<div class="space-y-4">
+						{#each recentActivities as activity}
+							<div class="flex items-start space-x-3">
+								<div class="rounded-full p-2 {getActivityStyles(activity.type)}">
+									{#if activity.icon === Music}
+										<Music class="h-4 w-4" />
+									{:else if activity.icon === TrendingUp}
+										<TrendingUp class="h-4 w-4" />
+									{:else if activity.icon === Newspaper}
+										<Newspaper class="h-4 w-4" />
+									{:else if activity.icon === BarChart3}
+										<BarChart3 class="h-4 w-4" />
+									{/if}
+								</div>
+								<div class="min-w-0 flex-1">
+									<p class="text-foreground text-sm font-medium">
+										{activity.message}
+									</p>
+									<p class="text-muted-foreground mt-1 text-xs">
+										{activity.time}
+									</p>
+								</div>
+							</div>
+						{/each}
+					</div>
+				</Card>
+			</div>
+
+			<!-- Quick Music Actions -->
+			<div class="xl:col-span-1">
+				<Card class="p-6 h-full">
+					<h3 class="text-foreground mb-6 text-xl font-semibold">Quick Actions</h3>
+					<div class="space-y-3">
+						<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/search">
+							<Search class="h-5 w-5" />
+							<span class="text-sm">Search Lyrics</span>
+						</Button>
+						<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/trends">
+							<TrendingUp class="h-5 w-5" />
+							<span class="text-sm">View Trends</span>
+						</Button>
+						<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/news">
+							<Newspaper class="h-5 w-5" />
+							<span class="text-sm">Latest News</span>
+						</Button>
+						<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/favorites">
+							<Activity class="h-5 w-5" />
+							<span class="text-sm">My Favorites</span>
+						</Button>
+					</div>
+				</Card>
+			</div>
 		</div>
 	</div>
 
