@@ -1,4 +1,4 @@
-<!-- Hero Section Component -->
+
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import { Music, Search, TrendingUp, Headphones } from 'lucide-svelte';
