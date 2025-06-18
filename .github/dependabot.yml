@@ -1,0 +1,64 @@
+# Dependabot configuration for Musical Zoe
+# This file configures Dependabot to automatically create pull requests
+# for dependency updates
+
+version: 2
+updates:
+  # NPM dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Blue-Davinci"
+    assignees:
+      - "Blue-Davinci"
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    # Group updates for related packages
+    groups:
+      svelte:
+        patterns:
+          - "@sveltejs/*"
+          - "svelte*"
+      tailwind:
+        patterns:
+          - "tailwind*"
+          - "@tailwindcss/*"
+      testing:
+        patterns:
+          - "@testing-library/*"
+          - "vitest*"
+          - "jest*"
+      eslint:
+        patterns:
+          - "eslint*"
+          - "@eslint/*"
+      typescript:
+        patterns:
+          - "typescript*"
+          - "@types/*"
+    # Allow only certain types of updates
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 2
+    labels:
+      - "github-actions"
+      - "automated"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
