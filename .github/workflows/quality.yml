@@ -45,6 +45,18 @@ jobs:
           
           # Create environment file for build
           cat > .env << EOF
+          # Server-side variables
+          API_BASE_URL=https://api.test.com/v1
+          API_SIGNUP_URL=https://api.test.com/v1/api
+          API_ACTIVATION_URL=https://api.test.com/v1/api/activated
+          API_AUTHENTICATION_URL=https://api.test.com/v1/api/authentication
+          MUSIC_API_NEWS_URL=https://api.test.com/v1/musical/news
+          MUSIC_API_TRENDS_URL=https://api.test.com/v1/musical/trends
+          MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
+          MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
+          MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
+          
+          # Client-side variables
           VITE_API_BASE_URL=https://api.test.com/v1
           VITE_API_SIGNUP_URL=https://api.test.com/v1/api
           VITE_API_ACTIVATION_URL=https://api.test.com/v1/api/activated

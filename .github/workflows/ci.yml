@@ -83,6 +83,18 @@ jobs:
         run: |
           cat > .env << EOF
           # Test environment variables for CI build
+          # Server-side variables (accessible via \$env/static/private)
+          API_BASE_URL=https://api.test.com/v1
+          API_SIGNUP_URL=https://api.test.com/v1/api
+          API_ACTIVATION_URL=https://api.test.com/v1/api/activated
+          API_AUTHENTICATION_URL=https://api.test.com/v1/api/authentication
+          MUSIC_API_NEWS_URL=https://api.test.com/v1/musical/news
+          MUSIC_API_TRENDS_URL=https://api.test.com/v1/musical/trends
+          MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
+          MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
+          MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
+          
+          # Client-side variables (accessible via \$env/static/public)
           VITE_API_BASE_URL=https://api.test.com/v1
           VITE_API_SIGNUP_URL=https://api.test.com/v1/api
           VITE_API_ACTIVATION_URL=https://api.test.com/v1/api/activated
@@ -168,8 +180,7 @@ jobs:
           
           # Check essential files
           test -f "src/lib/types/music-api.ts" && echo "Music API types exist"
-          test -f ".env.development" && echo "Development environment file exists"
-          test -f ".env.production" && echo "Production environment file exists"
+          test -f ".env" && echo "Environment configuration file exists"
           test -f "README.md" && echo "README exists"
           
           # Check component files
@@ -187,14 +198,15 @@ jobs:
       - name: Check environment variables structure
         run: |
           echo "Validating environment variables..."
-          if [ -f ".env.development" ]; then
-            echo "Development environment variables:"
-            grep -E "^[A-Z_]+" .env.development | cut -d'=' -f1 | sort
-          fi
-          
-          if [ -f ".env.production" ]; then
-            echo "Production environment variables:"
-            grep -E "^[A-Z_]+" .env.production | cut -d'=' -f1 | sort
+          if [ -f ".env" ]; then
+            echo "Environment variables in .env:"
+            grep -E "^[A-Z_]+" .env | cut -d'=' -f1 | sort
+            echo "Server-side variables (non-VITE_):"
+            grep -E "^[A-Z_]+=" .env | grep -v "^VITE_" | cut -d'=' -f1 | sort
+            echo "Client-side variables (VITE_):"
+            grep -E "^VITE_[A-Z_]+=" .env | cut -d'=' -f1 | sort
+          else
+            echo "No .env file found!"
           fi
 
   # Job 6: Documentation Check

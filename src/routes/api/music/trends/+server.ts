@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getBearerToken } from '$lib/utils/token-helpers';
 import { logAuth, logError, generateErrorId } from '$lib/utils/logger';
-import { VITE_MUSIC_API_TRENDS_URL } from '$env/static/private';
+import { MUSIC_API_TRENDS_URL } from '$env/static/private';
 
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	const startTime = Date.now();
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 		const type = url.searchParams.get('type') || 'tracks';
 
 		// Build API URL
-		const apiUrl = new URL(VITE_MUSIC_API_TRENDS_URL);
+		const apiUrl = new URL(MUSIC_API_TRENDS_URL);
 		apiUrl.searchParams.set('limit', limit);
 		apiUrl.searchParams.set('type', type);
 		if (period) {
