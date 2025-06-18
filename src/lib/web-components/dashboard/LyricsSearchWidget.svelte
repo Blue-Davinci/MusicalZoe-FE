@@ -49,22 +49,10 @@
 			searchLyrics();
 		}
 	}
-
-	function clearSearch() {
-		artist = '';
-		title = '';
-		result = null;
-		error = null;
-	}
-
-	function truncateText(text: string, maxLength: number): string {
-		if (text.length <= maxLength) return text;
-		return text.slice(0, maxLength).trim() + '...';
-	}
 </script>
 
-<Card class="overflow-hidden">
-	<div class="p-6">
+<Card class="h-full flex flex-col">
+	<div class="p-6 flex-1 flex flex-col overflow-y-auto">
 		<!-- Header -->
 		<div class="mb-6 flex items-center space-x-3">
 			<div class="rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 p-2">
@@ -77,7 +65,7 @@
 		</div>
 
 		<!-- Search Form -->
-		<div class="space-y-4">
+		<div class="space-y-4 flex-shrink-0">
 			<div class="space-y-3">
 				<div>
 					<label for="artist" class="text-foreground mb-1 block text-sm font-medium">
@@ -123,33 +111,35 @@
 						Search Lyrics
 					{/if}
 				</Button>
-				{#if artist || title || result}
-					<Button variant="outline" onclick={clearSearch} disabled={loading}>Clear</Button>
-				{/if}
+				<Button variant="outline" href="/dashboard/lyrics">
+					<Music class="mr-2 h-4 w-4" />
+					Full Page
+				</Button>
 			</div>
 		</div>
 
 		<!-- Error Display -->
 		{#if error}
-			<div class="bg-destructive/10 border-destructive/20 mt-4 rounded-md border p-3">
+			<div class="bg-destructive/10 border-destructive/20 mt-4 rounded-md border p-3 flex-shrink-0">
 				<p class="text-destructive text-sm">{error}</p>
 			</div>
 		{/if}
 
 		<!-- Results Display -->
-		{#if result}
-			<div class="border-border mt-6 border-t pt-6">
-				<div class="flex items-start space-x-4">
+		{#if result && result.lyrics}
+			<div class="border-border flex-shrink-0 mt-6 border-t pt-4">
+				<!-- Track Info Header -->
+				<div class="flex items-start space-x-4 mb-6">
 					{#if result.lyrics.metadata?.images?.length}
 						<img
 							src={result.lyrics.metadata.images.find((img) => img.size === 'large')?.['#text'] ||
 								result.lyrics.metadata.images[0]['#text']}
 							alt="{result.lyrics.title} by {result.lyrics.artist}"
-							class="h-16 w-16 rounded-md object-cover"
+							class="h-16 w-16 rounded-md object-cover flex-shrink-0 shadow-sm"
 							loading="lazy"
 						/>
 					{:else}
-						<div class="bg-muted flex h-16 w-16 items-center justify-center rounded-md">
+						<div class="bg-muted flex h-16 w-16 items-center justify-center rounded-md flex-shrink-0 shadow-sm">
 							<Music class="text-muted-foreground h-8 w-8" />
 						</div>
 					{/if}
@@ -170,25 +160,46 @@
 					</div>
 				</div>
 
-				<!-- Lyrics Preview -->
-				{#if result.lyrics.lyrics}
-					<div class="bg-muted/50 mt-4 rounded-md p-4">
-						<h5 class="text-foreground mb-2 text-sm font-medium">Lyrics Preview:</h5>
-						<p class="text-muted-foreground text-sm whitespace-pre-wrap">
-							{truncateText(result.lyrics.lyrics, 200)}
-						</p>
+				<!-- Divider -->
+				<div class="relative mb-6">
+					<div class="absolute inset-0 flex items-center">
+						<div class="border-border w-full border-t"></div>
 					</div>
-				{/if}
+					<div class="relative flex justify-center text-xs uppercase">
+						<span class="bg-background text-muted-foreground px-3">Lyrics</span>
+					</div>
+				</div>
 
-				<div class="mt-4">
-					<Button
-						variant="outline"
-						href="/dashboard/lyrics?artist={encodeURIComponent(
-							result.lyrics.artist
-						)}&title={encodeURIComponent(result.lyrics.title)}"
-						class="w-full"
+				<!-- Lyrics Container with Beautiful Styling -->
+				<div class="bg-gradient-to-br from-muted/30 to-muted/50 border border-border/50 rounded-lg shadow-sm mb-6 overflow-hidden">
+					<!-- Lyrics Header -->
+					<div class="bg-muted/80 border-b border-border/50 px-4 py-3">
+						<div class="flex items-center space-x-2">
+							<Music class="text-primary h-4 w-4" />
+							<span class="text-foreground text-sm font-medium">Song Lyrics</span>
+						</div>
+					</div>
+					
+					<!-- Lyrics Content -->
+					<div class="p-6 max-h-80 overflow-y-auto">
+						<div class="prose prose-sm max-w-none">
+							<p class="text-foreground whitespace-pre-line text-sm leading-relaxed font-medium tracking-wide">
+								{result.lyrics.lyrics}
+							</p>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Action Button -->
+				<div class="flex justify-center">
+					<Button 
+						variant="outline" 
+						size="sm" 
+						href="/dashboard/lyrics"
+						class="shadow-sm"
 					>
-						View Full Lyrics & Details
+						<Music class="mr-2 h-4 w-4" />
+						Open in Full Lyrics Page
 					</Button>
 				</div>
 			</div>

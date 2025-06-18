@@ -187,9 +187,6 @@
 		{#if data && items.length > 0 && !loading}
 			<div class="space-y-3">
 				{#each items.slice(0, limit) as item, index}
-					{@const track = item as Track}
-					{@const artist = item as Artist}
-
 					<div
 						class="hover:bg-muted/50 group flex cursor-pointer items-center space-x-3 rounded-lg p-3 transition-colors"
 					>
@@ -204,7 +201,7 @@
 						<div class="relative">
 							<img
 								src={getImageUrl(item.image)}
-								alt={type === 'tracks' ? track.name : artist.name}
+								alt={type === 'tracks' ? (item as Track).name : (item as Artist).name}
 								class="h-12 w-12 rounded-md object-cover"
 								loading="lazy"
 							/>
@@ -219,22 +216,34 @@
 
 						<!-- Content -->
 						<div class="min-w-0 flex-1">
-							<h4
-								class="text-foreground group-hover:text-primary truncate text-sm font-medium transition-colors"
-							>
-								{type === 'tracks' ? track.name : artist.name}
-							</h4>
-							<p class="text-muted-foreground truncate text-xs">
-								{type === 'tracks'
-									? track.artist.name
-									: `${formatNumber(artist.listeners)} listeners`}
-							</p>
+							{#if type === 'tracks'}
+								{@const track = item as Track}
+								<h4
+									class="text-foreground group-hover:text-primary truncate text-sm font-medium transition-colors"
+								>
+									{track.name}
+								</h4>
+								<p class="text-muted-foreground truncate text-xs">
+									{track.artist.name}
+								</p>
+							{:else}
+								{@const artist = item as Artist}
+								<h4
+									class="text-foreground group-hover:text-primary truncate text-sm font-medium transition-colors"
+								>
+									{artist.name}
+								</h4>
+								<p class="text-muted-foreground truncate text-xs">
+									{formatNumber(artist.listeners)} listeners
+								</p>
+							{/if}
 						</div>
 
 						<!-- Stats -->
 						<div class="text-right">
 							<div class="text-muted-foreground flex items-center space-x-2 text-xs">
 								{#if type === 'tracks'}
+									{@const track = item as Track}
 									<div class="flex items-center space-x-1">
 										<Users class="h-3 w-3" />
 										<span>{formatNumber(track.listeners)}</span>
@@ -246,6 +255,7 @@
 										</div>
 									{/if}
 								{:else}
+									{@const artist = item as Artist}
 									<div class="flex items-center space-x-1">
 										<TrendingUp class="h-3 w-3" />
 										<span>{formatNumber(artist.playcount)}</span>

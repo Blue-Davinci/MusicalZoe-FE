@@ -1,8 +1,23 @@
 <!-- Hero Section Component -->
 <script lang="ts">
+	import { getContext } from 'svelte';
 	import { Music, Search, TrendingUp, Headphones } from 'lucide-svelte';
 	import Button from '$lib/web-components/ui/Button.svelte';
 	import Container from '$lib/web-components/ui/Container.svelte';
+	import type { User } from '$lib/utils/token-helpers';
+
+	// Get authentication context function
+	const getAuth = getContext<
+		() => {
+			user: User | null;
+			isAuthenticated: boolean;
+			isAdmin: boolean;
+			isVerified: boolean;
+		}
+	>('auth');
+
+	// Create reactive auth data using $derived
+	const auth = $derived(getAuth());
 
 	let searchQuery = $state('');
 
@@ -49,20 +64,33 @@
 		<div class="text-center">
 			<!-- Logo and Main Heading -->
 			<div class="mb-8">
-				<!-- Logo -->
+				<!-- Musical Logo Design -->
 				<div class="mb-6 flex justify-center">
-					<img
-						src="https://i.ibb.co/zhMky0qT/musical-zoe-high-resolution-logo-transparent.png"
-						alt="Musical Zoe Logo"
-						class="h-20 w-auto drop-shadow-xl sm:h-24 md:h-28 lg:h-32"
-					/>
+					<div class="relative">
+						<!-- Animated background glow -->
+						<div class="absolute inset-0 animate-pulse">
+							<div class="h-24 w-24 rounded-full bg-gradient-to-br from-purple-500/30 via-pink-500/30 to-blue-500/30 blur-xl sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36"></div>
+						</div>
+						
+						<!-- Main logo container -->
+						<div class="relative flex flex-col items-center space-y-2">
+							<!-- Musical note icon with gradient background -->
+							<div class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 via-pink-500 to-blue-500 shadow-2xl sm:h-20 sm:w-20 md:h-24 md:w-24">
+								<Music class="h-8 w-8 text-white sm:h-10 sm:w-10 md:h-12 md:w-12" />
+							</div>
+							
+							<!-- Musical Zoe text with enhanced styling -->
+							<div class="text-center">
+								<h1 class="bg-gradient-to-r from-slate-800 via-purple-700 to-blue-700 dark:from-white dark:via-purple-200 dark:to-blue-200 bg-clip-text text-4xl font-bold text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
+									Musical Zoe
+								</h1>
+								<!-- Musical accent line -->
+								<div class="mx-auto mt-2 h-1 w-24 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 sm:w-32 md:w-40"></div>
+							</div>
+						</div>
+					</div>
 				</div>
 
-				<h1
-					class="mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 bg-clip-text text-6xl font-bold text-transparent md:text-7xl lg:text-8xl"
-				>
-					Musical Zoe
-				</h1>
 				<p class="text-muted-foreground mx-auto max-w-3xl text-xl leading-relaxed md:text-2xl">
 					Your ultimate destination for music discovery. Explore trending tracks, get lyrics
 					instantly, and stay updated with the latest music news.
@@ -100,9 +128,11 @@
 
 			<!-- CTA Buttons -->
 			<div class="mb-16 flex flex-col items-center justify-center gap-4 sm:flex-row">
-				<Button variant="primary" size="lg" href="/auth/signup" class="px-8 py-4">
-					Get Started Free
-				</Button>
+				{#if !auth.isAuthenticated}
+					<Button variant="primary" size="lg" href="/auth/signup" class="px-8 py-4">
+						Get Started Free
+					</Button>
+				{/if}
 				<Button variant="outline" size="lg" href="#features" class="px-8 py-4">
 					Explore Features
 				</Button>
