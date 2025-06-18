@@ -55,11 +55,12 @@
 		<!-- Services Grid -->
 		<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
 			{#each services as service}
+				{@const IconComponent = service.icon}
 				<Card class="h-full">
 					<div class="flex items-start space-x-4">
 						<div class="flex-shrink-0">
 							<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
-								<svelte:component this={service.icon} class="h-6 w-6 text-blue-600" />
+								<IconComponent class="h-6 w-6 text-blue-600" />
 							</div>
 						</div>
 

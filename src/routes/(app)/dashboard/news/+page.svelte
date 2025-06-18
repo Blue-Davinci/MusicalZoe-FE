@@ -148,7 +148,8 @@
 </script>
 
 <svelte:head>
-	<title>Music News - MusicalZoe</title>
+	<title>Music News - Musical Zoe</title>
+	<meta name="description" content="Stay updated with the latest music industry news from around the world." />
 </svelte:head>
 
 <div class="container mx-auto space-y-8 px-4 py-8">

@@ -40,7 +40,7 @@
 	];
 </script>
 
-<footer class="bg-secondary text-secondary-foreground">
+<footer class="bg-slate-900 dark:bg-slate-950 text-slate-100">
 	<Container size="xl">
 		<!-- Main Footer Content -->
 		<div class="py-16">
@@ -53,10 +53,10 @@
 							alt="Musical Zoe Logo"
 							class="h-10 w-auto"
 						/>
-						<span class="text-2xl font-bold">Musical Zoe</span>
+						<span class="text-2xl font-bold text-white">Musical Zoe</span>
 					</div>
 
-					<p class="mb-6 leading-relaxed text-gray-400 dark:text-gray-500">
+					<p class="mb-6 leading-relaxed text-slate-300">
 						Your ultimate destination for music discovery. Explore trending tracks, get lyrics
 						instantly, and stay updated with the latest music news.
 					</p>
@@ -64,12 +64,13 @@
 					<!-- Social Links -->
 					<div class="flex space-x-4">
 						{#each socialLinks as social}
+							{@const IconComponent = social.icon}
 							<a
 								href={social.href}
-								class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-800 transition-colors duration-200 hover:bg-blue-600 dark:bg-slate-800 dark:hover:bg-blue-600"
+								class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 text-slate-300 hover:text-white transition-all duration-200"
 								aria-label={social.name}
 							>
-								<svelte:component this={social.icon} class="h-5 w-5" />
+								<IconComponent class="h-5 w-5" />
 							</a>
 						{/each}
 					</div>
@@ -84,7 +85,7 @@
 								<li>
 									<a
 										href={link.href}
-										class="text-gray-400 transition-colors duration-200 hover:text-white"
+										class="text-slate-300 transition-colors duration-200 hover:text-purple-300"
 									>
 										{link.name}
 									</a>
@@ -100,7 +101,7 @@
 								<li>
 									<a
 										href={link.href}
-										class="text-gray-400 transition-colors duration-200 hover:text-white"
+										class="text-slate-300 transition-colors duration-200 hover:text-purple-300"
 									>
 										{link.name}
 									</a>
@@ -116,7 +117,7 @@
 								<li>
 									<a
 										href={link.href}
-										class="text-gray-400 transition-colors duration-200 hover:text-white"
+										class="text-slate-300 transition-colors duration-200 hover:text-purple-300"
 									>
 										{link.name}
 									</a>
@@ -132,7 +133,7 @@
 								<li>
 									<a
 										href={link.href}
-										class="text-gray-400 transition-colors duration-200 hover:text-white"
+										class="text-slate-300 transition-colors duration-200 hover:text-purple-300"
 									>
 										{link.name}
 									</a>
@@ -145,13 +146,13 @@
 		</div>
 
 		<!-- Bottom Section -->
-		<div class="border-t border-gray-800 py-8">
+		<div class="border-t border-slate-800 py-8">
 			<div class="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
-				<div class="text-sm text-gray-400">
+				<div class="text-sm text-slate-400">
 					© {currentYear} Musical Zoe. All rights reserved.
 				</div>
 
-				<div class="flex items-center space-x-6 text-sm text-gray-400">
+				<div class="flex items-center space-x-6 text-sm text-slate-400">
 					<span>Built with ❤️ using SvelteKit</span>
 					<span>•</span>
 					<span>Powered by Last.fm API</span>

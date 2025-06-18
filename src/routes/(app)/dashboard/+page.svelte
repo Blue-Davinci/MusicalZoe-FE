@@ -161,6 +161,11 @@
 	);
 </script>
 
+<svelte:head>
+	<title>Dashboard - Musical Zoe</title>
+	<meta name="description" content="Your personalized music dashboard with lyrics search, trending content, and latest music news." />
+</svelte:head>
+
 <div class="container mx-auto space-y-8 px-4 py-8">
 	<!-- Activation Warning for Unactivated Users -->
 	{#if auth.user && !auth.user.activated}
@@ -196,7 +201,7 @@
 				<Users class="mr-2 h-4 w-4" />
 				Profile
 			</Button>
-			<Button variant="primary" href="/explore">
+			<Button variant="primary" href="/dashboard/trends">
 				<Music class="mr-2 h-4 w-4" />
 				Explore Music
 			</Button>
@@ -263,20 +268,24 @@
 			</Button>
 		</div>
 
-		<!-- Hero Widget Section - Trending takes more space as it's content-heavy -->
+		<!-- Hero Widget Section - Better balanced layout -->
 		<div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
 			<!-- Trending Widget - Takes more space as it's content-heavy -->
 			<div class="lg:col-span-3">
 				<TrendingWidget />
 			</div>
 
-			<!-- Quick Actions Column -->
+			<!-- Quick Actions Column - Set consistent heights -->
 			<div class="space-y-6 lg:col-span-2">
-				<!-- Lyrics Search Widget -->
-				<LyricsSearchWidget />
+				<!-- Lyrics Search Widget with fixed height -->
+				<div class="h-[480px]">
+					<LyricsSearchWidget />
+				</div>
 
-				<!-- Music News Preview -->
-				<MusicNewsWidget />
+				<!-- Music News Preview with fixed height -->
+				<div class="h-[480px]">
+					<MusicNewsWidget />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -296,11 +305,10 @@
 			<div class="xl:col-span-3">
 				<Card class="h-full p-6">
 					<div class="mb-6 flex items-center justify-between">
-						<h3 class="text-foreground text-xl font-semibold">Recent Music Activity</h3>
-						<Button variant="ghost" size="sm" href="/activity">
-							<Activity class="mr-2 h-4 w-4" />
-							View All
-						</Button>
+						<h3 class="text-foreground text-xl font-semibold">Recent Music Activity</h3>					<Button variant="ghost" size="sm" href="/dashboard">
+						<Activity class="mr-2 h-4 w-4" />
+						View Dashboard
+					</Button>
 					</div>
 					<div class="space-y-4">
 						{#each recentActivities as activity}
@@ -334,23 +342,22 @@
 			<div class="xl:col-span-1">
 				<Card class="h-full p-6">
 					<h3 class="text-foreground mb-6 text-xl font-semibold">Quick Actions</h3>
-					<div class="space-y-3">
-						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/search">
-							<Search class="h-5 w-5" />
-							<span class="text-sm">Search Lyrics</span>
-						</Button>
-						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/trends">
-							<TrendingUp class="h-5 w-5" />
-							<span class="text-sm">View Trends</span>
-						</Button>
-						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/news">
-							<Newspaper class="h-5 w-5" />
-							<span class="text-sm">Latest News</span>
-						</Button>
-						<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/favorites">
-							<Activity class="h-5 w-5" />
-							<span class="text-sm">My Favorites</span>
-						</Button>
+					<div class="space-y-3">					<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard/lyrics">
+						<Search class="h-5 w-5" />
+						<span class="text-sm">Search Lyrics</span>
+					</Button>
+					<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard/trends">
+						<TrendingUp class="h-5 w-5" />
+						<span class="text-sm">View Trends</span>
+					</Button>
+					<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard/news">
+						<Newspaper class="h-5 w-5" />
+						<span class="text-sm">Latest News</span>
+					</Button>
+					<Button variant="outline" class="h-16 w-full flex-col space-y-2" href="/dashboard">
+						<Activity class="h-5 w-5" />
+						<span class="text-sm">Dashboard</span>
+					</Button>
 					</div>
 				</Card>
 			</div>
@@ -361,9 +368,9 @@
 	<Card class="p-6">
 		<div class="mb-6 flex items-center justify-between">
 			<h2 class="text-foreground text-xl font-semibold">Discover New Music</h2>
-			<Button variant="outline" href="/discover">
+			<Button variant="outline" href="/dashboard/trends">
 				<Music class="mr-2 h-4 w-4" />
-				Explore More
+				Explore Trends
 			</Button>
 		</div>
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
