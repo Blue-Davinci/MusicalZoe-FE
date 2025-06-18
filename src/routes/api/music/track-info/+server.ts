@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getBearerToken } from '$lib/utils/token-helpers';
 import { logAuth, logError, generateErrorId } from '$lib/utils/logger';
-import { VITE_API_BASE_URL } from '$env/static/private';
+import { VITE_MUSIC_API_TRACK_INFO_URL } from '$env/static/private';
 
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	const startTime = Date.now();
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 		}
 
 		// Build API URL
-		const apiUrl = new URL(`${VITE_API_BASE_URL}/musical/track-info`);
+		const apiUrl = new URL(VITE_MUSIC_API_TRACK_INFO_URL);
 		apiUrl.searchParams.set('artist', artist);
 		if (title) {
 			apiUrl.searchParams.set('title', title);
