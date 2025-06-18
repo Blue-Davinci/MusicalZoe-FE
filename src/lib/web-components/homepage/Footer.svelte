@@ -40,7 +40,7 @@
 	];
 </script>
 
-<footer class="bg-slate-900 dark:bg-slate-950 text-slate-100">
+<footer class="bg-slate-900 text-slate-100 dark:bg-slate-950">
 	<Container size="xl">
 		<!-- Main Footer Content -->
 		<div class="py-16">
@@ -67,7 +67,7 @@
 							{@const IconComponent = social.icon}
 							<a
 								href={social.href}
-								class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 text-slate-300 hover:text-white transition-all duration-200"
+								class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-slate-300 transition-all duration-200 hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white"
 								aria-label={social.name}
 							>
 								<IconComponent class="h-5 w-5" />
