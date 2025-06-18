@@ -7,6 +7,7 @@ The Musical Zoe frontend has been configured with a modular approach to API endp
 ### Environment Files
 
 #### Development (`.env.development`)
+
 ```bash
 # Base API Configuration
 VITE_API_BASE_URL="http://localhost:4000/v1"
@@ -23,6 +24,7 @@ VITE_MUSIC_API_HEALTH_URL="${VITE_API_BASE_URL}/health"
 ```
 
 #### Production (`.env.production`)
+
 ```bash
 # Base API Configuration
 VITE_API_BASE_URL="https://api.musical-zoe.com/v1"
@@ -43,6 +45,7 @@ VITE_MUSIC_API_HEALTH_URL="${VITE_API_BASE_URL}/health"
 Each server route imports its specific endpoint URL directly from the environment variables:
 
 ### News API (`/api/music/news/+server.ts`)
+
 ```typescript
 import { VITE_MUSIC_API_NEWS_URL } from '$env/static/private';
 
@@ -51,6 +54,7 @@ const apiUrl = new URL(VITE_MUSIC_API_NEWS_URL);
 ```
 
 ### Trends API (`/api/music/trends/+server.ts`)
+
 ```typescript
 import { VITE_MUSIC_API_TRENDS_URL } from '$env/static/private';
 
@@ -59,6 +63,7 @@ const apiUrl = new URL(VITE_MUSIC_API_TRENDS_URL);
 ```
 
 ### Lyrics API (`/api/music/lyrics/+server.ts`)
+
 ```typescript
 import { VITE_MUSIC_API_LYRICS_URL } from '$env/static/private';
 
@@ -67,6 +72,7 @@ const apiUrl = new URL(VITE_MUSIC_API_LYRICS_URL);
 ```
 
 ### Track Info API (`/api/music/track-info/+server.ts`)
+
 ```typescript
 import { VITE_MUSIC_API_TRACK_INFO_URL } from '$env/static/private';
 
@@ -88,14 +94,16 @@ const apiUrl = new URL(VITE_MUSIC_API_TRACK_INFO_URL);
 To add a new API endpoint:
 
 1. Add the environment variable to both `.env.development` and `.env.production`:
+
    ```bash
    VITE_MUSIC_API_NEW_ENDPOINT_URL="${VITE_API_BASE_URL}/musical/new-endpoint"
    ```
 
 2. Create a new server route that imports the variable:
+
    ```typescript
    import { VITE_MUSIC_API_NEW_ENDPOINT_URL } from '$env/static/private';
-   
+
    const apiUrl = new URL(VITE_MUSIC_API_NEW_ENDPOINT_URL);
    ```
 
@@ -104,6 +112,7 @@ To add a new API endpoint:
 ## Configuration Validation
 
 All server routes include:
+
 - Bearer token authentication
 - Query parameter validation
 - Error handling and logging

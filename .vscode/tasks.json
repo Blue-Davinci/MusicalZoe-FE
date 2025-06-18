@@ -7,9 +7,7 @@
 			"command": "npm run dev",
 			"group": "build",
 			"isBackground": true,
-			"problemMatcher": [
-				"$tsc"
-			],
+			"problemMatcher": ["$tsc"],
 			"args": []
 		}
 	]

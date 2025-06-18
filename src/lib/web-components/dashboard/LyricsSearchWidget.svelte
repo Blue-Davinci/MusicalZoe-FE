@@ -66,13 +66,13 @@
 <Card class="overflow-hidden">
 	<div class="p-6">
 		<!-- Header -->
-		<div class="flex items-center space-x-3 mb-6">
-			<div class="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
+		<div class="mb-6 flex items-center space-x-3">
+			<div class="rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 p-2">
 				<Music class="h-5 w-5 text-white" />
 			</div>
 			<div>
-				<h3 class="text-lg font-semibold text-foreground">Quick Lyrics Search</h3>
-				<p class="text-sm text-muted-foreground">Find lyrics and track information</p>
+				<h3 class="text-foreground text-lg font-semibold">Quick Lyrics Search</h3>
+				<p class="text-muted-foreground text-sm">Find lyrics and track information</p>
 			</div>
 		</div>
 
@@ -80,7 +80,7 @@
 		<div class="space-y-4">
 			<div class="space-y-3">
 				<div>
-					<label for="artist" class="block text-sm font-medium text-foreground mb-1">
+					<label for="artist" class="text-foreground mb-1 block text-sm font-medium">
 						Artist
 					</label>
 					<input
@@ -89,12 +89,12 @@
 						bind:value={artist}
 						onkeypress={handleKeyPress}
 						placeholder="e.g., Coldplay"
-						class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+						class="border-border bg-background text-foreground placeholder-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 transition-colors focus:border-transparent focus:ring-2 focus:outline-none"
 						disabled={loading}
 					/>
 				</div>
 				<div>
-					<label for="title" class="block text-sm font-medium text-foreground mb-1">
+					<label for="title" class="text-foreground mb-1 block text-sm font-medium">
 						Song Title
 					</label>
 					<input
@@ -103,69 +103,67 @@
 						bind:value={title}
 						onkeypress={handleKeyPress}
 						placeholder="e.g., Yellow"
-						class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+						class="border-border bg-background text-foreground placeholder-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 transition-colors focus:border-transparent focus:ring-2 focus:outline-none"
 						disabled={loading}
 					/>
 				</div>
 			</div>
 
 			<div class="flex space-x-3">
-				<Button 
+				<Button
 					onclick={searchLyrics}
 					disabled={loading || !artist.trim() || !title.trim()}
 					class="flex-1"
 				>
 					{#if loading}
-						<Loader2 class="h-4 w-4 mr-2 animate-spin" />
+						<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 						Searching...
 					{:else}
-						<Search class="h-4 w-4 mr-2" />
+						<Search class="mr-2 h-4 w-4" />
 						Search Lyrics
 					{/if}
 				</Button>
 				{#if artist || title || result}
-					<Button variant="outline" onclick={clearSearch} disabled={loading}>
-						Clear
-					</Button>
+					<Button variant="outline" onclick={clearSearch} disabled={loading}>Clear</Button>
 				{/if}
 			</div>
 		</div>
 
 		<!-- Error Display -->
 		{#if error}
-			<div class="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
-				<p class="text-sm text-destructive">{error}</p>
+			<div class="bg-destructive/10 border-destructive/20 mt-4 rounded-md border p-3">
+				<p class="text-destructive text-sm">{error}</p>
 			</div>
 		{/if}
 
 		<!-- Results Display -->
 		{#if result}
-			<div class="mt-6 border-t border-border pt-6">
+			<div class="border-border mt-6 border-t pt-6">
 				<div class="flex items-start space-x-4">
 					{#if result.lyrics.metadata?.images?.length}
 						<img
-							src={result.lyrics.metadata.images.find(img => img.size === 'large')?.['#text'] || 
-								 result.lyrics.metadata.images[0]['#text']}
+							src={result.lyrics.metadata.images.find((img) => img.size === 'large')?.['#text'] ||
+								result.lyrics.metadata.images[0]['#text']}
 							alt="{result.lyrics.title} by {result.lyrics.artist}"
-							class="w-16 h-16 rounded-md object-cover"
+							class="h-16 w-16 rounded-md object-cover"
 							loading="lazy"
 						/>
 					{:else}
-						<div class="w-16 h-16 rounded-md bg-muted flex items-center justify-center">
-							<Music class="h-8 w-8 text-muted-foreground" />
+						<div class="bg-muted flex h-16 w-16 items-center justify-center rounded-md">
+							<Music class="text-muted-foreground h-8 w-8" />
 						</div>
 					{/if}
 
-					<div class="flex-1 min-w-0">
-						<h4 class="text-lg font-semibold text-foreground">
+					<div class="min-w-0 flex-1">
+						<h4 class="text-foreground text-lg font-semibold">
 							{result.lyrics.title}
 						</h4>
 						<p class="text-muted-foreground">
 							by {result.lyrics.artist}
 						</p>
-						
+
 						{#if result.lyrics.metadata?.album}
-							<p class="text-sm text-muted-foreground mt-1">
+							<p class="text-muted-foreground mt-1 text-sm">
 								Album: {result.lyrics.metadata.album}
 							</p>
 						{/if}
@@ -174,18 +172,20 @@
 
 				<!-- Lyrics Preview -->
 				{#if result.lyrics.lyrics}
-					<div class="mt-4 p-4 bg-muted/50 rounded-md">
-						<h5 class="text-sm font-medium text-foreground mb-2">Lyrics Preview:</h5>
-						<p class="text-sm text-muted-foreground whitespace-pre-wrap">
+					<div class="bg-muted/50 mt-4 rounded-md p-4">
+						<h5 class="text-foreground mb-2 text-sm font-medium">Lyrics Preview:</h5>
+						<p class="text-muted-foreground text-sm whitespace-pre-wrap">
 							{truncateText(result.lyrics.lyrics, 200)}
 						</p>
 					</div>
 				{/if}
 
 				<div class="mt-4">
-					<Button 
-						variant="outline" 
-						href="/dashboard/lyrics?artist={encodeURIComponent(result.lyrics.artist)}&title={encodeURIComponent(result.lyrics.title)}"
+					<Button
+						variant="outline"
+						href="/dashboard/lyrics?artist={encodeURIComponent(
+							result.lyrics.artist
+						)}&title={encodeURIComponent(result.lyrics.title)}"
 						class="w-full"
 					>
 						View Full Lyrics & Details
