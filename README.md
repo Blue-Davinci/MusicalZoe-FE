@@ -210,7 +210,7 @@ A modern, beautiful, and secure SvelteKit frontend for the Musical Zoe music API
    VITE_DEBUG_MODE="true"
    ```
 
-   > **Note**: Server-side variables (without VITE_ prefix) are only accessible in server files like `+server.ts` and `+page.server.ts`. Client-side variables (with VITE_ prefix) are accessible in both server and client code.
+   > **Note**: Server-side variables (without VITE* prefix) are only accessible in server files like `+server.ts` and `+page.server.ts`. Client-side variables (with VITE* prefix) are accessible in both server and client code.
 
 4. **Start development server**
 

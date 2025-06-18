@@ -2,9 +2,9 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [main, development]
   pull_request:
-    branches: [ main, development ]
+    branches: [main, development]
 
 env:
   NODE_VERSION: '20'
@@ -93,7 +93,7 @@ jobs:
           MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
           MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
           MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
-          
+
           # Client-side variables (accessible via \$env/static/public)
           VITE_API_BASE_URL=https://api.test.com/v1
           VITE_API_SIGNUP_URL=https://api.test.com/v1/api
@@ -172,27 +172,27 @@ jobs:
       - name: Validate project structure
         run: |
           echo "Validating Musical Zoe project structure..."
-          
+
           # Check essential directories
           test -d "src/lib/web-components" && echo "Components directory exists"
           test -d "src/routes/api/music" && echo "Music API routes exist"
           test -d "documentation" && echo "Documentation directory exists"
-          
+
           # Check essential files
           test -f "src/lib/types/music-api.ts" && echo "Music API types exist"
           test -f ".env" && echo "Environment configuration file exists"
           test -f "README.md" && echo "README exists"
-          
+
           # Check component files
           test -f "src/lib/web-components/dashboard/LyricsSearchWidget.svelte" && echo "LyricsSearchWidget exists"
           test -f "src/lib/web-components/dashboard/MusicNewsWidget.svelte" && echo "MusicNewsWidget exists"
           test -f "src/lib/web-components/dashboard/TrendingWidget.svelte" && echo "TrendingWidget exists"
-          
+
           # Check API endpoints
           test -f "src/routes/api/music/lyrics/+server.ts" && echo "Lyrics API endpoint exists"
           test -f "src/routes/api/music/news/+server.ts" && echo "News API endpoint exists"
           test -f "src/routes/api/music/trends/+server.ts" && echo "Trends API endpoint exists"
-          
+
           echo "Project structure validation completed!"
 
       - name: Check environment variables structure
@@ -220,28 +220,28 @@ jobs:
       - name: Check documentation completeness
         run: |
           echo "Checking documentation..."
-          
+
           # Check main documentation files
           test -f "README.md" && echo "Main README exists"
           test -f "documentation/DASHBOARD_IMPLEMENTATION.md" && echo "Dashboard docs exist"
           test -f "documentation/API_CONFIGURATION.md" && echo "API docs exist"
-          
+
           # Check README content
           if grep -q "Musical Zoe" README.md; then
             echo "README contains project name"
           fi
-          
+
           if grep -q "SvelteKit" README.md; then
             echo "README mentions SvelteKit"
           fi
-          
+
           # Check for TODO items
           TODO_COUNT=$(find . -name "*.md" -o -name "*.ts" -o -name "*.svelte" | xargs grep -i "todo\|fixme" | wc -l)
           echo "Found $TODO_COUNT TODO/FIXME items"
-          
+
           echo "Documentation validation completed!"
 
-# Summary job that requires all others to pass
+  # Summary job that requires all others to pass
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest

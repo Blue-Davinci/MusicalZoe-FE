@@ -5,12 +5,14 @@
 Dependabot is GitHub's built-in robot that watches your `package.json` file for outdated packages and automatically creates pull requests to update them.
 
 ### How it works (completely automatic):
+
 1. **Scans weekly** - Every Monday at 9 AM, it checks if you have outdated packages
 2. **Creates PRs** - If it finds updates, it creates pull requests for you
 3. **Groups packages** - Related packages (like all Svelte stuff) get grouped into one PR
 4. **You decide** - You review the PR and merge it if everything looks good
 
 ### What you'll see:
+
 - Pull requests with titles like "chore: bump @sveltejs/kit from 2.16.0 to 2.17.0"
 - Maximum 5 PRs at once (so it doesn't spam you)
 - Automatic labels: `dependencies`, `automated`
@@ -26,8 +28,10 @@ Think of workflows as **automated helpers** that run checks on your code. They'r
 ### The 3 Main Workflows:
 
 ## 1. CI Workflow (`ci.yml`)
+
 **When:** Runs every time you push code or create a pull request  
 **What it does:**
+
 - Checks code formatting with Prettier
 - Runs ESLint to catch potential bugs
 - Validates TypeScript types
@@ -40,8 +44,10 @@ Think of workflows as **automated helpers** that run checks on your code. They'r
 **Think of it as:** Your personal code reviewer that never sleeps
 
 ## 2. Quality Workflow (`quality.yml`)
+
 **When:** Runs with every push/PR + weekly on Mondays  
 **What it does:**
+
 - Analyzes code complexity (warns if files get too big)
 - Checks bundle size (how big your built app is)
 - Scans for accessibility issues (alt text, ARIA labels, etc.)
@@ -53,8 +59,10 @@ Think of workflows as **automated helpers** that run checks on your code. They'r
 **Think of it as:** A health checkup for your codebase
 
 ## 3. Dependencies Workflow (`dependencies.yml`)
+
 **When:** Runs weekly on Mondays + you can trigger it manually  
 **What it does:**
+
 - Scans for security vulnerabilities in your packages
 - Checks if packages have compatible licenses
 - Automatically updates safe packages (patch versions only)
@@ -89,16 +97,19 @@ Monday 9 AM: Quality workflow does health checkup
 ## What You Need to Do:
 
 ### Daily:
+
 - **Nothing!** Just push your code normally
 - Check if workflows pass (green checkmarks in GitHub)
 - Fix any issues if workflows fail (red X)
 
 ### Weekly:
+
 - Review Dependabot PRs (usually safe to merge)
 - Check quality reports if you want insights
 - Review any security alerts
 
 ### Never:
+
 - You don't need to configure anything
 - You don't need to change GitHub settings
 - Everything is automatic
@@ -113,6 +124,7 @@ Monday 9 AM: Quality workflow does health checkup
 4. **Quality reports** - Download from completed workflow runs
 
 The workflows are specifically designed for Musical Zoe, so they understand your:
+
 - Svelte components and widgets
 - Music API endpoints
 - Dashboard layout

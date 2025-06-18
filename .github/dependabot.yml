@@ -5,60 +5,60 @@
 version: 2
 updates:
   # NPM dependencies
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
     open-pull-requests-limit: 5
     reviewers:
-      - "Blue-Davinci"
+      - 'Blue-Davinci'
     assignees:
-      - "Blue-Davinci"
+      - 'Blue-Davinci'
     labels:
-      - "dependencies"
-      - "automated"
+      - 'dependencies'
+      - 'automated'
     commit-message:
-      prefix: "chore"
-      include: "scope"
+      prefix: 'chore'
+      include: 'scope'
     # Group updates for related packages
     groups:
       svelte:
         patterns:
-          - "@sveltejs/*"
-          - "svelte*"
+          - '@sveltejs/*'
+          - 'svelte*'
       tailwind:
         patterns:
-          - "tailwind*"
-          - "@tailwindcss/*"
+          - 'tailwind*'
+          - '@tailwindcss/*'
       testing:
         patterns:
-          - "@testing-library/*"
-          - "vitest*"
-          - "jest*"
+          - '@testing-library/*'
+          - 'vitest*'
+          - 'jest*'
       eslint:
         patterns:
-          - "eslint*"
-          - "@eslint/*"
+          - 'eslint*'
+          - '@eslint/*'
       typescript:
         patterns:
-          - "typescript*"
-          - "@types/*"
+          - 'typescript*'
+          - '@types/*'
     # Allow only certain types of updates
     allow:
-      - dependency-type: "direct"
-      - dependency-type: "indirect"
+      - dependency-type: 'direct'
+      - dependency-type: 'indirect'
 
   # GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "monthly"
+      interval: 'monthly'
     open-pull-requests-limit: 2
     labels:
-      - "github-actions"
-      - "automated"
+      - 'github-actions'
+      - 'automated'
     commit-message:
-      prefix: "ci"
-      include: "scope"
+      prefix: 'ci'
+      include: 'scope'
