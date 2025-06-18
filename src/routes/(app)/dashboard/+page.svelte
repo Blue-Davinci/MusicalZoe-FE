@@ -1,17 +1,26 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import {
+		Music,
+		Newspaper,
+		TrendingUp,
+		Search,
 		BarChart3,
 		Users,
 		Activity,
 		Calendar,
-		TrendingUp,
 		Clock,
 		AlertCircle,
-		CheckCircle
+		CheckCircle,
+		Headphones,
+		Radio
 	} from 'lucide-svelte';
 	import Card from '$lib/web-components/ui/Card.svelte';
 	import Button from '$lib/web-components/ui/Button.svelte';
+	import ServiceCard from '$lib/web-components/ui/ServiceCard.svelte';
+	import LyricsSearchWidget from '$lib/web-components/dashboard/LyricsSearchWidget.svelte';
+	import TrendingWidget from '$lib/web-components/dashboard/TrendingWidget.svelte';
+	import MusicNewsWidget from '$lib/web-components/dashboard/MusicNewsWidget.svelte';
 	import type { User } from '$lib/utils/token-helpers';
 
 	// Get authentication context function
@@ -25,67 +34,104 @@
 	// Create reactive auth data using $derived
 	const auth = $derived(getAuth());
 
+	// Service cards configuration
+	const serviceCards = [
+		{
+			title: 'Lyrics Search',
+			description: 'Find lyrics and track information',
+			icon: Music,
+			href: '/dashboard/lyrics',
+			color: 'from-purple-500 to-pink-500',
+			stats: [
+				{ label: 'Searches Today', value: '24' },
+				{ label: 'Success Rate', value: '98%' }
+			]
+		},
+		{
+			title: 'Music News',
+			description: 'Latest industry news and updates',
+			icon: Newspaper,
+			href: '/dashboard/news',
+			color: 'from-blue-500 to-indigo-500',
+			stats: [
+				{ label: 'Articles Today', value: '156' },
+				{ label: 'Sources', value: '25+' }
+			]
+		},
+		{
+			title: 'Trending Content',
+			description: 'Popular tracks and artists',
+			icon: TrendingUp,
+			href: '/dashboard/trends',
+			color: 'from-green-500 to-teal-500',
+			stats: [
+				{ label: 'Top Tracks', value: '200' },
+				{ label: 'Trending Artists', value: '150' }
+			]
+		}
+	];
+
 	// Dashboard stats using $state for reactivity
 	let stats = $state([
 		{
-			title: 'Total Sessions',
+			title: 'Lyrics Searches',
 			value: 1247,
 			change: '+12%',
-			icon: Users,
-			color: 'text-blue-600'
-		},
-		{
-			title: 'Active Projects',
-			value: 8,
-			change: '+3',
-			icon: BarChart3,
-			color: 'text-green-600'
-		},
-		{
-			title: 'Monthly Growth',
-			value: '24.8%',
-			change: '+4.2%',
-			icon: TrendingUp,
+			icon: Search,
 			color: 'text-purple-600'
 		},
 		{
-			title: 'System Health',
-			value: '98.2%',
-			change: '+0.1%',
-			icon: Activity,
-			color: 'text-emerald-600'
+			title: 'Songs Discovered',
+			value: 432,
+			change: '+24',
+			icon: Headphones,
+			color: 'text-blue-600'
+		},
+		{
+			title: 'News Articles',
+			value: 156,
+			change: '+8%',
+			icon: Newspaper,
+			color: 'text-green-600'
+		},
+		{
+			title: 'Trending Tracks',
+			value: 89,
+			change: '+15',
+			icon: Radio,
+			color: 'text-orange-600'
 		}
 	]);
 
-	// Recent activities
+	// Recent music activities
 	let recentActivities = $state([
 		{
 			id: 1,
 			type: 'success',
-			message: 'New user registration completed',
+			message: 'Found lyrics for "Bohemian Rhapsody"',
 			time: '2 minutes ago',
-			icon: CheckCircle
+			icon: Music
 		},
 		{
 			id: 2,
-			type: 'warning',
-			message: 'Server memory usage at 85%',
+			type: 'info',
+			message: 'New trending artist: The Weeknd',
 			time: '5 minutes ago',
-			icon: AlertCircle
+			icon: TrendingUp
 		},
 		{
 			id: 3,
-			type: 'info',
-			message: 'Daily backup completed successfully',
+			type: 'success',
+			message: 'Music news updated with 12 new articles',
 			time: '1 hour ago',
-			icon: Clock
+			icon: Newspaper
 		},
 		{
 			id: 4,
-			type: 'success',
-			message: 'API endpoint response time improved',
+			type: 'info',
+			message: 'Daily trending charts refreshed',
 			time: '2 hours ago',
-			icon: TrendingUp
+			icon: BarChart3
 		}
 	]);
 
@@ -137,20 +183,23 @@
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-foreground text-3xl font-bold">
-				Welcome back, {userDisplayName}! 👋
+				Welcome to MusicalZoe, {userDisplayName}! 🎵
 			</h1>
-			<p class="text-muted-foreground mt-1">Here's what's happening with your projects today.</p>
+			<p class="text-muted-foreground mt-1">Your gateway to lyrics, music news, and trending content.</p>
 		</div>
 		<div class="flex items-center space-x-3">
-			<Button variant="outline" href="/settings">
-				<Calendar class="mr-2 h-4 w-4" />
-				Schedule
+			<Button variant="outline" href="/profile">
+				<Users class="mr-2 h-4 w-4" />
+				Profile
 			</Button>
-			<Button variant="primary" href="/projects/new">New Project</Button>
+			<Button variant="primary" href="/explore">
+				<Music class="mr-2 h-4 w-4" />
+				Explore Music
+			</Button>
 		</div>
 	</div>
 
-	<!-- Stats Grid -->
+	<!-- Music Stats Grid -->
 	<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
 		{#each stats as stat}
 			<Card class="p-6 transition-shadow duration-200 hover:shadow-lg">
@@ -167,14 +216,14 @@
 						</p>
 					</div>
 					<div class="bg-muted rounded-lg p-3">
-						{#if stat.icon === Users}
-							<Users class="h-6 w-6 {stat.color}" />
-						{:else if stat.icon === BarChart3}
-							<BarChart3 class="h-6 w-6 {stat.color}" />
-						{:else if stat.icon === TrendingUp}
-							<TrendingUp class="h-6 w-6 {stat.color}" />
-						{:else if stat.icon === Activity}
-							<Activity class="h-6 w-6 {stat.color}" />
+						{#if stat.icon === Search}
+							<Search class="h-6 w-6 {stat.color}" />
+						{:else if stat.icon === Headphones}
+							<Headphones class="h-6 w-6 {stat.color}" />
+						{:else if stat.icon === Newspaper}
+							<Newspaper class="h-6 w-6 {stat.color}" />
+						{:else if stat.icon === Radio}
+							<Radio class="h-6 w-6 {stat.color}" />
 						{/if}
 					</div>
 				</div>
@@ -182,45 +231,62 @@
 		{/each}
 	</div>
 
-	<!-- Main Content Grid -->
+	<!-- Service Cards Grid -->
+	<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+		{#each serviceCards as service}
+			<ServiceCard
+				title={service.title}
+				description={service.description}
+				icon={service.icon}
+				href={service.href}
+				color={service.color}
+				stats={service.stats}
+			/>
+		{/each}
+	</div>
+
+	<!-- Main Dashboard Widgets -->
+	<div class="grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3">
+		<!-- Lyrics Search Widget -->
+		<div class="xl:col-span-1">
+			<LyricsSearchWidget />
+		</div>
+		
+		<!-- Trending Widget -->
+		<div class="xl:col-span-1">
+			<TrendingWidget />
+		</div>
+		
+		<!-- Music News Widget -->
+		<div class="xl:col-span-1">
+			<MusicNewsWidget />
+		</div>
+	</div>
+
+	<!-- Bottom Section: Activity Feed and Quick Actions -->
 	<div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-		<!-- Chart Section -->
+		<!-- Recent Activity Feed -->
 		<div class="lg:col-span-2">
 			<Card class="p-6">
 				<div class="mb-6 flex items-center justify-between">
-					<h2 class="text-foreground text-xl font-semibold">Analytics Overview</h2>
-					<div class="flex space-x-2">
-						<Button variant="ghost" size="sm">7D</Button>
-						<Button variant="ghost" size="sm">30D</Button>
-						<Button variant="outline" size="sm">90D</Button>
-					</div>
+					<h2 class="text-foreground text-xl font-semibold">Recent Music Activity</h2>
+					<Button variant="ghost" size="sm" href="/activity">
+						<Activity class="mr-2 h-4 w-4" />
+						View All
+					</Button>
 				</div>
-				<div class="bg-muted flex h-80 items-center justify-center rounded-lg">
-					<div class="text-muted-foreground text-center">
-						<BarChart3 class="mx-auto mb-4 h-12 w-12 opacity-50" />
-						<p class="text-lg font-medium">Chart Component</p>
-						<p class="text-sm">Analytics visualization will be displayed here</p>
-					</div>
-				</div>
-			</Card>
-		</div>
-
-		<!-- Activity Feed -->
-		<div>
-			<Card class="p-6">
-				<h2 class="text-foreground mb-6 text-xl font-semibold">Recent Activity</h2>
 				<div class="space-y-4">
 					{#each recentActivities as activity}
 						<div class="flex items-start space-x-3">
 							<div class="rounded-full p-2 {getActivityStyles(activity.type)}">
-								{#if activity.icon === CheckCircle}
-									<CheckCircle class="h-4 w-4" />
-								{:else if activity.icon === AlertCircle}
-									<AlertCircle class="h-4 w-4" />
-								{:else if activity.icon === Clock}
-									<Clock class="h-4 w-4" />
+								{#if activity.icon === Music}
+									<Music class="h-4 w-4" />
 								{:else if activity.icon === TrendingUp}
 									<TrendingUp class="h-4 w-4" />
+								{:else if activity.icon === Newspaper}
+									<Newspaper class="h-4 w-4" />
+								{:else if activity.icon === BarChart3}
+									<BarChart3 class="h-4 w-4" />
 								{/if}
 							</div>
 							<div class="min-w-0 flex-1">
@@ -234,29 +300,69 @@
 						</div>
 					{/each}
 				</div>
-				<div class="border-border mt-6 border-t pt-4">
-					<Button variant="ghost" class="w-full">View all activities</Button>
+			</Card>
+		</div>
+
+		<!-- Quick Music Actions -->
+		<div>
+			<Card class="p-6">
+				<h2 class="text-foreground mb-6 text-xl font-semibold">Quick Actions</h2>
+				<div class="space-y-3">
+					<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/search">
+						<Search class="h-5 w-5" />
+						<span class="text-sm">Search Lyrics</span>
+					</Button>
+					<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/trends">
+						<TrendingUp class="h-5 w-5" />
+						<span class="text-sm">View Trends</span>
+					</Button>
+					<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/news">
+						<Newspaper class="h-5 w-5" />
+						<span class="text-sm">Latest News</span>
+					</Button>
+					<Button variant="outline" class="w-full h-16 flex-col space-y-2" href="/favorites">
+						<Activity class="h-5 w-5" />
+						<span class="text-sm">My Favorites</span>
+					</Button>
 				</div>
 			</Card>
 		</div>
 	</div>
 
-	<!-- Quick Actions -->
+	<!-- Music Discovery Section -->
 	<Card class="p-6">
-		<h2 class="text-foreground mb-6 text-xl font-semibold">Quick Actions</h2>
+		<div class="mb-6 flex items-center justify-between">
+			<h2 class="text-foreground text-xl font-semibold">Discover New Music</h2>
+			<Button variant="outline" href="/discover">
+				<Music class="mr-2 h-4 w-4" />
+				Explore More
+			</Button>
+		</div>
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-			<Button variant="outline" class="h-24 flex-col space-y-2">
-				<Users class="h-6 w-6" />
-				<span>Invite Team</span>
-			</Button>
-			<Button variant="outline" class="h-24 flex-col space-y-2">
-				<BarChart3 class="h-6 w-6" />
-				<span>View Reports</span>
-			</Button>
-			<Button variant="outline" class="h-24 flex-col space-y-2">
-				<Activity class="h-6 w-6" />
-				<span>System Health</span>
-			</Button>
+			<div class="text-center p-6 rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-200 dark:border-purple-800">
+				<Music class="h-8 w-8 mx-auto mb-3 text-purple-600" />
+				<h3 class="font-semibold text-foreground mb-2">Find Lyrics</h3>
+				<p class="text-sm text-muted-foreground mb-4">Search for lyrics of your favorite songs</p>
+				<Button variant="outline" size="sm" href="/dashboard/lyrics">
+					Get Started
+				</Button>
+			</div>
+			<div class="text-center p-6 rounded-lg bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200 dark:border-blue-800">
+				<Newspaper class="h-8 w-8 mx-auto mb-3 text-blue-600" />
+				<h3 class="font-semibold text-foreground mb-2">Music News</h3>
+				<p class="text-sm text-muted-foreground mb-4">Stay updated with the latest music industry news</p>
+				<Button variant="outline" size="sm" href="/dashboard/news">
+					Read News
+				</Button>
+			</div>
+			<div class="text-center p-6 rounded-lg bg-gradient-to-r from-green-500/10 to-teal-500/10 border border-green-200 dark:border-green-800">
+				<TrendingUp class="h-8 w-8 mx-auto mb-3 text-green-600" />
+				<h3 class="font-semibold text-foreground mb-2">Trending</h3>
+				<p class="text-sm text-muted-foreground mb-4">Discover what's trending in music right now</p>
+				<Button variant="outline" size="sm" href="/dashboard/trends">
+					See Trends
+				</Button>
+			</div>
 		</div>
 	</Card>
 </div>
