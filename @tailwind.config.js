@@ -1,6 +1,6 @@
 export default {
-  darkMode: 'class',
-  theme: {
-    extend: {}
-  }
-}
+	darkMode: 'class',
+	theme: {
+		extend: {}
+	}
+};

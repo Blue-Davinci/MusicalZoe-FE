@@ -4,10 +4,10 @@ import { loginSchema } from '$lib/schemas/auth';
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { logAuth, logSecurity, logError, generateErrorId } from '$lib/utils/logger';
-import { 
-	type AuthResult, 
-	checkAuthRateLimit, 
-	recordFailedAuthAttempt, 
+import {
+	type AuthResult,
+	checkAuthRateLimit,
+	recordFailedAuthAttempt,
 	clearFailedAuthAttempts,
 	extractErrorMessage
 } from '$lib/utils/auth-helpers';
@@ -56,7 +56,7 @@ export const actions = {
 			const rateLimit = checkAuthRateLimit(sanitizedEmail, clientIP, 'login');
 			if (!rateLimit.allowed) {
 				const waitMinutes = Math.ceil(rateLimit.waitTime / (1000 * 60));
-				
+
 				logSecurity('LOGIN_RATE_LIMITED', {
 					email: sanitizedEmail,
 					clientIP,
@@ -78,17 +78,23 @@ export const actions = {
 			});
 
 			// Authenticate user
-			const authResult = await authenticateUser({
-				email: sanitizedEmail,
-				password,
-				rememberMe
-			}, clientIP);
+			const authResult = await authenticateUser(
+				{
+					email: sanitizedEmail,
+					password,
+					rememberMe
+				},
+				clientIP
+			);
 
 			// Handle authentication result
 			if (!authResult.success) {
 				recordFailedAuthAttempt(sanitizedEmail, clientIP, 'login');
 
-				const errorMessage = extractErrorMessage(authResult.error, 'Login failed. Please try again.');
+				const errorMessage = extractErrorMessage(
+					authResult.error,
+					'Login failed. Please try again.'
+				);
 
 				logAuth('LOGIN_FAILED', {
 					email: sanitizedEmail,
@@ -107,6 +113,23 @@ export const actions = {
 			// Success - clear failed attempts
 			clearFailedAuthAttempts(sanitizedEmail, clientIP, 'login');
 
+			// Check if user is activated before proceeding
+			if (authResult.user && !authResult.user.activated) {
+				logAuth('LOGIN_UNACTIVATED_USER', {
+					email: sanitizedEmail,
+					clientIP,
+					userName: authResult.user.name,
+					createdAt: authResult.user.created_at,
+					duration: Date.now() - startTime
+				});
+
+				return message(form, {
+					success: false,
+					message:
+						'Account not activated. Please check your email and click the activation link to complete your registration.'
+				});
+			}
+
 			// log response from authentication API
 			logAuth('Login Detailed Info', {
 				api_key: authResult.api_key,
@@ -114,13 +137,31 @@ export const actions = {
 				email: sanitizedEmail,
 				clientIP,
 				duration: Date.now() - startTime,
-				rememberMe
+				rememberMe,
+				userActivated: authResult.user?.activated
 			});
+
+			// Debug logging to check what we're getting
+			logAuth('DEBUG_AUTH_RESULT', {
+				hasApiKey: !!authResult.api_key,
+				apiKeyStructure: authResult.api_key ? Object.keys(authResult.api_key) : 'none',
+				userActivated: authResult.user?.activated,
+				fullResult: authResult
+			});
+
 			// Set authentication cookies based on bearer token response
 			if (authResult.api_key) {
 				const { token, expiry } = authResult.api_key;
 				const expiryDate = new Date(expiry);
 				const maxAge = Math.floor((expiryDate.getTime() - Date.now()) / 1000); // Convert to seconds
+
+				logAuth('DEBUG_COOKIE_SETTING', {
+					token: token ? 'exists' : 'missing',
+					expiry,
+					expiryDate: expiryDate.toISOString(),
+					maxAge,
+					dev
+				});
 
 				// Set bearer token cookie
 				cookies.set('bearer_token', token, {
@@ -129,6 +170,11 @@ export const actions = {
 					secure: !dev,
 					sameSite: 'lax',
 					maxAge: maxAge > 0 ? maxAge : 60 * 60 * 24 // Fallback to 1 day if calculation fails
+				});
+
+				logAuth('DEBUG_BEARER_TOKEN_COOKIE_SET', {
+					cookieName: 'bearer_token',
+					value: token ? 'set' : 'empty'
 				});
 
 				// Set token expiry cookie for easy checking
@@ -140,6 +186,25 @@ export const actions = {
 					maxAge: maxAge > 0 ? maxAge : 60 * 60 * 24
 				});
 
+				logAuth('DEBUG_EXPIRY_COOKIE_SET', {
+					cookieName: 'token_expiry',
+					value: expiry
+				});
+
+				// Set user data cookie for debugging
+				cookies.set('user_data', JSON.stringify(authResult.user), {
+					path: '/',
+					httpOnly: true,
+					secure: !dev,
+					sameSite: 'lax',
+					maxAge: maxAge > 0 ? maxAge : 60 * 60 * 24
+				});
+
+				logAuth('DEBUG_USER_DATA_COOKIE_SET', {
+					cookieName: 'user_data',
+					userData: authResult.user
+				});
+
 				// Set remember preference if requested
 				if (rememberMe) {
 					cookies.set('remember_me', 'true', {
@@ -148,6 +213,11 @@ export const actions = {
 						secure: !dev,
 						sameSite: 'lax',
 						maxAge: 60 * 60 * 24 * 365 // 1 year
+					});
+
+					logAuth('DEBUG_REMEMBER_COOKIE_SET', {
+						cookieName: 'remember_me',
+						value: 'true'
 					});
 				}
 			}
@@ -166,7 +236,6 @@ export const actions = {
 				message: 'Login successful! Welcome back.',
 				data: authResult.user
 			});
-
 		} catch (error) {
 			const errorId = generateErrorId();
 
@@ -186,7 +255,7 @@ export const actions = {
 			});
 		}
 	}
-}
+};
 
 // Helper function to call the authentication API
 async function authenticateUser(
@@ -221,7 +290,7 @@ async function authenticateUser(
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			},
 			body: JSON.stringify({
 				email: loginData.email,
@@ -239,15 +308,15 @@ async function authenticateUser(
 				error: result.message || result.error,
 				clientIP
 			});
-			
+
 			// Extract proper error message
 			const errorMessage = extractErrorMessage(
-				result.message || result.error, 
+				result.message || result.error,
 				'Invalid email or password'
 			);
-			
-			return { 
-				success: false, 
+
+			return {
+				success: false,
 				error: errorMessage
 			};
 		}
@@ -255,6 +324,7 @@ async function authenticateUser(
 		logAuth('BACKEND_LOGIN_SUCCESS', {
 			userEmail: result.user?.email,
 			userName: result.user?.name,
+			userActivated: result.user?.activated,
 			status: response.status,
 			clientIP
 		});
@@ -265,7 +335,6 @@ async function authenticateUser(
 			user: result.user,
 			api_key: result.api_key
 		};
-
 	} catch (error) {
 		logError('LOGIN_API_ERROR', {
 			error: error instanceof Error ? error.message : 'Unknown error',

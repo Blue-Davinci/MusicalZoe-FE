@@ -2,7 +2,17 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { signupSchema } from '$lib/schemas/auth';
-	import { Eye, EyeOff, User, Mail, Lock, CheckCircle, AlertCircle, Music, Sparkles } from 'lucide-svelte';
+	import {
+		Eye,
+		EyeOff,
+		User,
+		Mail,
+		Lock,
+		CheckCircle,
+		AlertCircle,
+		Music,
+		Sparkles
+	} from 'lucide-svelte';
 	import Button from '$lib/web-components/ui/Button.svelte';
 	import BackButton from '$lib/web-components/ui/BackButton.svelte';
 	import Container from '$lib/web-components/ui/Container.svelte';
@@ -77,65 +87,81 @@
 	<meta name="description" content="Create your Musical Zoe account and start discovering music" />
 </svelte:head>
 
-<section class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50 dark:from-background dark:via-muted/30 dark:to-card/30 flex items-center py-12 relative overflow-hidden">
+<section
+	class="dark:from-background dark:via-muted/30 dark:to-card/30 relative flex min-h-screen items-center overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50 py-12"
+>
 	<!-- Background Elements -->
-	<div class="absolute inset-0 overflow-hidden pointer-events-none">
+	<div class="pointer-events-none absolute inset-0 overflow-hidden">
 		<div class="absolute top-20 left-10 animate-bounce delay-100">
-			<Music class="w-8 h-8 text-blue-400/30 dark:text-blue-300/20" />
+			<Music class="h-8 w-8 text-blue-400/30 dark:text-blue-300/20" />
 		</div>
 		<div class="absolute top-40 right-20 animate-bounce delay-300">
-			<Sparkles class="w-6 h-6 text-purple-400/30 dark:text-purple-300/20" />
+			<Sparkles class="h-6 w-6 text-purple-400/30 dark:text-purple-300/20" />
 		</div>
 		<div class="absolute bottom-40 left-20 animate-bounce delay-500">
-			<Music class="w-10 h-10 text-cyan-400/30 dark:text-cyan-300/20" />
+			<Music class="h-10 w-10 text-cyan-400/30 dark:text-cyan-300/20" />
 		</div>
 	</div>
 
 	<Container size="lg" class="relative z-10">
-		<div class="max-w-md mx-auto">
+		<div class="mx-auto max-w-md">
 			<!-- Back Button -->
 			<div class="mb-6">
-				<BackButton 
-					href="/" 
+				<BackButton
+					href="/"
 					variant="ghost"
-					class="group hover:bg-white/20 dark:hover:bg-white/10 backdrop-blur-sm border border-white/20 dark:border-white/10"
+					class="group border border-white/20 backdrop-blur-sm hover:bg-white/20 dark:border-white/10 dark:hover:bg-white/10"
 					text="Back to Home"
 				/>
 			</div>
 
 			<!-- Header -->
-			<div class="text-center mb-8">
+			<div class="mb-8 text-center">
 				<div class="mb-6">
 					<div class="relative">
-						<div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-20 animate-pulse"></div>
-						<img 
-							src="https://i.ibb.co/zhMky0qT/musical-zoe-high-resolution-logo-transparent.png" 
-							alt="Musical Zoe Logo" 
-							class="h-16 w-auto mx-auto relative z-10 drop-shadow-lg"
+						<div
+							class="absolute inset-0 animate-pulse rounded-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-20 blur-lg"
+						></div>
+						<img
+							src="https://i.ibb.co/zhMky0qT/musical-zoe-high-resolution-logo-transparent.png"
+							alt="Musical Zoe Logo"
+							class="relative z-10 mx-auto h-16 w-auto drop-shadow-lg"
 						/>
 					</div>
 				</div>
-				<h1 class="text-3xl font-bold text-foreground mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">
+				<h1
+					class="text-foreground mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 bg-clip-text text-3xl font-bold text-transparent"
+				>
 					Create Your Account
 				</h1>
 				<p class="text-muted-foreground">Join Musical Zoe and start your music discovery journey</p>
 			</div>
 
 			<!-- Signup Form -->
-			<Card class="p-8 shadow-xl border-0 bg-card/80 backdrop-blur-sm">
+			<Card class="bg-card/80 border-0 p-8 shadow-xl backdrop-blur-sm">
 				<!-- Success Message -->
 				{#if $message?.success}
-					<div class="mb-6 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg animate-in slide-in-from-top duration-300">
+					<div
+						class="animate-in slide-in-from-top mb-6 rounded-lg border border-green-200 bg-green-50 p-6 duration-300 dark:border-green-800 dark:bg-green-900/20"
+					>
 						<div class="flex items-start space-x-3">
-							<CheckCircle class="h-6 w-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+							<CheckCircle
+								class="mt-0.5 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400"
+							/>
 							<div class="flex-1">
-								<p class="text-green-800 dark:text-green-200 text-sm font-medium mb-2">
+								<p class="mb-2 text-sm font-medium text-green-800 dark:text-green-200">
 									{$message.message}
 								</p>
-								<div class="text-green-700 dark:text-green-300 text-sm space-y-1">
+								<div class="space-y-1 text-sm text-green-700 dark:text-green-300">
 									<p>• Check your spam/junk folder if you don't see the email</p>
 									<p>• The verification link will expire in 24 hours</p>
-									<p>• Once verified, you can <a href="/auth/login" class="underline font-medium hover:text-green-600 dark:hover:text-green-200 transition-colors">sign in here</a></p>
+									<p>
+										• Once verified, you can <a
+											href="/auth/login"
+											class="font-medium underline transition-colors hover:text-green-600 dark:hover:text-green-200"
+											>sign in here</a
+										>
+									</p>
 								</div>
 							</div>
 						</div>
@@ -144,10 +170,12 @@
 
 				<!-- Error Message -->
 				{#if $message && !$message.success}
-					<div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg animate-in slide-in-from-top duration-300">
+					<div
+						class="animate-in slide-in-from-top mb-6 rounded-lg border border-red-200 bg-red-50 p-4 duration-300 dark:border-red-800 dark:bg-red-900/20"
+					>
 						<div class="flex items-center space-x-2">
 							<AlertCircle class="h-5 w-5 text-red-600 dark:text-red-400" />
-							<p class="text-red-800 dark:text-red-200 text-sm font-medium">
+							<p class="text-sm font-medium text-red-800 dark:text-red-200">
 								{$message.message}
 							</p>
 						</div>
@@ -158,19 +186,24 @@
 					<form method="POST" use:enhance class="space-y-6">
 						<!-- Name Field -->
 						<div class="group">
-							<label for="name" class="block text-sm font-medium text-foreground mb-2 group-focus-within:text-primary transition-colors duration-200">
+							<label
+								for="name"
+								class="text-foreground group-focus-within:text-primary mb-2 block text-sm font-medium transition-colors duration-200"
+							>
 								Full Name
 							</label>
 							<div class="relative">
-								<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<User class="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
+								<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+									<User
+										class="text-muted-foreground group-focus-within:text-primary h-5 w-5 transition-colors duration-200"
+									/>
 								</div>
 								<input
 									id="name"
 									name="name"
 									type="text"
 									bind:value={$form.name}
-									class="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 bg-background text-foreground placeholder:text-muted-foreground hover:border-ring/50 focus:shadow-lg focus:shadow-ring/10"
+									class="border-border focus:ring-ring bg-background text-foreground placeholder:text-muted-foreground hover:border-ring/50 focus:shadow-ring/10 w-full rounded-lg border py-3 pr-4 pl-10 transition-all duration-200 focus:border-transparent focus:shadow-lg focus:ring-2"
 									placeholder="Enter your full name"
 									required
 								/>
@@ -182,19 +215,19 @@
 
 						<!-- Email Field -->
 						<div>
-							<label for="email" class="block text-sm font-medium text-foreground mb-2">
+							<label for="email" class="text-foreground mb-2 block text-sm font-medium">
 								Email Address
 							</label>
 							<div class="relative">
-								<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<Mail class="h-5 w-5 text-muted-foreground" />
+								<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+									<Mail class="text-muted-foreground h-5 w-5" />
 								</div>
 								<input
 									id="email"
 									name="email"
 									type="email"
 									bind:value={$form.email}
-									class="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200 bg-background text-foreground placeholder:text-muted-foreground"
+									class="border-border focus:ring-ring bg-background text-foreground placeholder:text-muted-foreground w-full rounded-lg border py-3 pr-4 pl-10 transition-colors duration-200 focus:border-transparent focus:ring-2"
 									placeholder="Enter your email address"
 									required
 								/>
@@ -206,51 +239,62 @@
 
 						<!-- Password Field -->
 						<div>
-							<label for="password" class="block text-sm font-medium text-foreground mb-2">
+							<label for="password" class="text-foreground mb-2 block text-sm font-medium">
 								Password
 							</label>
 							<div class="relative">
-								<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<Lock class="h-5 w-5 text-muted-foreground" />
+								<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+									<Lock class="text-muted-foreground h-5 w-5" />
 								</div>
 								<input
 									id="password"
 									name="password"
 									type={showPassword ? 'text' : 'password'}
 									bind:value={$form.password}
-									class="w-full pl-10 pr-12 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-colors duration-200 bg-background text-foreground placeholder:text-muted-foreground"
+									class="border-border focus:ring-ring bg-background text-foreground placeholder:text-muted-foreground w-full rounded-lg border py-3 pr-12 pl-10 transition-colors duration-200 focus:border-transparent focus:ring-2"
 									placeholder="Create a strong password"
 									required
 								/>
 								<button
 									type="button"
-									onclick={() => showPassword = !showPassword}
-									class="absolute inset-y-0 right-0 pr-3 flex items-center"
+									onclick={() => (showPassword = !showPassword)}
+									class="absolute inset-y-0 right-0 flex items-center pr-3"
 								>
 									{#if showPassword}
-										<EyeOff class="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+										<EyeOff
+											class="text-muted-foreground hover:text-foreground h-5 w-5 transition-colors"
+										/>
 									{:else}
-										<Eye class="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+										<Eye
+											class="text-muted-foreground hover:text-foreground h-5 w-5 transition-colors"
+										/>
 									{/if}
 								</button>
 							</div>
-							
+
 							<!-- Password Strength Indicator -->
 							{#if $form.password}
 								<div class="mt-2">
-									<div class="flex items-center justify-between mb-1">
-										<span class="text-xs text-muted-foreground">Password strength:</span>
-										<span class="text-xs font-medium {getStrengthColor(passwordStrength).replace('bg-', 'text-')}">{getStrengthText(passwordStrength)}</span>
+									<div class="mb-1 flex items-center justify-between">
+										<span class="text-muted-foreground text-xs">Password strength:</span>
+										<span
+											class="text-xs font-medium {getStrengthColor(passwordStrength).replace(
+												'bg-',
+												'text-'
+											)}">{getStrengthText(passwordStrength)}</span
+										>
 									</div>
-									<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-										<div 
-											class="h-2 rounded-full transition-all duration-300 {getStrengthColor(passwordStrength)}"
+									<div class="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+										<div
+											class="h-2 rounded-full transition-all duration-300 {getStrengthColor(
+												passwordStrength
+											)}"
 											style="width: {passwordStrength}%"
 										></div>
 									</div>
 								</div>
 							{/if}
-							
+
 							{#if $errors.password}
 								<p class="mt-1 text-sm text-red-600 dark:text-red-400">{$errors.password[0]}</p>
 							{/if}
@@ -259,11 +303,13 @@
 						<!-- Submit Button -->
 						<button
 							type="submit"
-							class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 text-lg rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+							class="focus:ring-primary w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-lg font-medium text-white transition-all duration-200 hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 							disabled={$submitting}
 						>
 							{#if $submitting}
-								<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 inline-block"></div>
+								<div
+									class="mr-2 inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+								></div>
 								Creating Account...
 							{:else}
 								Create Account
@@ -275,7 +321,10 @@
 					<div class="mt-6 text-center">
 						<p class="text-muted-foreground text-sm">
 							Already have an account?
-							<a href="/login" class="text-primary hover:text-primary/80 font-medium transition-colors">
+							<a
+								href="/login"
+								class="text-primary hover:text-primary/80 font-medium transition-colors"
+							>
 								Sign in here
 							</a>
 						</p>
@@ -284,21 +333,24 @@
 					<!-- Post-signup actions -->
 					<div class="space-y-6 text-center">
 						<div class="space-y-3">
-							<div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-								<p class="text-blue-800 dark:text-blue-200 text-sm">
-									<strong>Next step:</strong> Check your email and click the verification link to activate your account.
+							<div
+								class="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20"
+							>
+								<p class="text-sm text-blue-800 dark:text-blue-200">
+									<strong>Next step:</strong> Check your email and click the verification link to activate
+									your account.
 								</p>
 							</div>
-							<Button 
-								href="/login" 
-								class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+							<Button
+								href="/login"
+								class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
 								size="lg"
 							>
 								Continue to Sign In
 							</Button>
-							<Button 
-								variant="outline" 
-								onclick={() => signupSuccessful = false}
+							<Button
+								variant="outline"
+								onclick={() => (signupSuccessful = false)}
 								class="w-full"
 								size="lg"
 							>
@@ -311,11 +363,15 @@
 
 			<!-- Terms -->
 			<div class="mt-6 text-center">
-				<p class="text-xs text-muted-foreground">
+				<p class="text-muted-foreground text-xs">
 					By creating an account, you agree to our
-					<a href="/terms" class="text-primary hover:text-primary/80 transition-colors">Terms of Service</a>
+					<a href="/terms" class="text-primary hover:text-primary/80 transition-colors"
+						>Terms of Service</a
+					>
 					and
-					<a href="/privacy" class="text-primary hover:text-primary/80 transition-colors">Privacy Policy</a>
+					<a href="/privacy" class="text-primary hover:text-primary/80 transition-colors"
+						>Privacy Policy</a
+					>
 				</p>
 			</div>
 		</div>
