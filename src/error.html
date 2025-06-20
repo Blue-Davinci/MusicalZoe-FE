@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Error %sveltekit.status% - Musical Zoe</title>
+
+		<!-- Meta tags -->
+		<meta
+			name="description"
+			content="Oops! Something went wrong on Musical Zoe. We're working to fix it."
+		/>
+		<meta name="robots" content="noindex, nofollow" />
+
+		<!-- Fonts -->
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+			rel="stylesheet"
+		/>
+
+		<!-- Tailwind CSS -->
+		<script src="https://cdn.tailwindcss.com"></script>
+
+		<!-- Tailwind Config -->
+		<script>
+			tailwind.config = {
+				darkMode: 'class',
+				theme: {
+					extend: {
+						colors: {
+							purple: {
+								400: '#c084fc',
+								500: '#a855f7',
+								600: '#9333ea'
+							},
+							pink: {
+								400: '#f472b6',
+								500: '#ec4899',
+								600: '#db2777'
+							},
+							blue: {
+								400: '#60a5fa',
+								500: '#3b82f6',
+								600: '#2563eb'
+							}
+						},
+						fontFamily: {
+							sans: ['Inter', 'system-ui', 'sans-serif']
+						}
+					}
+				}
+			};
+		</script>
+
+		<!-- Custom Styles -->
+		<style>
+			.text-gradient {
+				background: linear-gradient(135deg, #c084fc, #f472b6, #60a5fa);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+
+			.bg-dots {
+				background-image: radial-gradient(circle, rgba(192, 132, 252, 0.1) 1px, transparent 1px);
+				background-size: 20px 20px;
+			}
+
+			.animate-float {
+				animation: float 3s ease-in-out infinite;
+			}
+
+			.animate-pulse-slow {
+				animation: pulse 4s ease-in-out infinite;
+			}
+
+			.animate-music-note {
+				animation: musicNote 2s ease-in-out infinite;
+			}
+
+			@keyframes float {
+				0%,
+				100% {
+					transform: translateY(0px);
+				}
+				50% {
+					transform: translateY(-10px);
+				}
+			}
+
+			@keyframes musicNote {
+				0%,
+				100% {
+					transform: rotate(-5deg) scale(1);
+				}
+				50% {
+					transform: rotate(5deg) scale(1.1);
+				}
+			}
+
+			.backdrop-blur-xl {
+				backdrop-filter: blur(24px);
+			}
+
+			.glass {
+				background: rgba(15, 23, 42, 0.7);
+				backdrop-filter: blur(24px);
+				border: 1px solid rgba(148, 163, 184, 0.1);
+			}
+		</style>
+	</head>
+
+	<body class="overflow-hidden bg-slate-950 font-sans text-white">
+		<!-- Background Effects -->
+		<div class="bg-dots fixed inset-0 opacity-20"></div>
+
+		<!-- Animated Background Elements -->
+		<div class="pointer-events-none fixed inset-0 overflow-hidden">
+			<div
+				class="animate-pulse-slow absolute top-20 left-20 h-96 w-96 rounded-full bg-purple-500/10 blur-3xl"
+			></div>
+			<div
+				class="animate-pulse-slow absolute right-20 bottom-20 h-96 w-96 rounded-full bg-pink-500/10 blur-3xl"
+				style="animation-delay: 2s"
+			></div>
+			<div
+				class="animate-pulse-slow absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-500/5 blur-3xl"
+				style="animation-delay: 4s"
+			></div>
+		</div>
+
+		<!-- Main Container -->
+		<div class="relative flex min-h-screen flex-col">
+			<!-- Header -->
+			<header class="relative z-10 p-6 lg:p-8">
+				<div class="flex items-center">
+					<a href="/" class="group flex items-center" aria-label="Musical Zoe home page">
+						<!-- Music Note Icon -->
+						<div
+							class="animate-music-note mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 transition-transform duration-300 group-hover:scale-110"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-6 w-6 text-white"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+								/>
+							</svg>
+						</div>
+						<div class="flex flex-col">
+							<span
+								class="text-xl font-bold text-purple-400 transition-colors group-hover:text-purple-300"
+								>Musical</span
+							>
+							<span
+								class="-mt-1 text-xl font-bold text-pink-400 transition-colors group-hover:text-pink-300"
+								>Zoe</span
+							>
+						</div>
+					</a>
+				</div>
+			</header>
+
+			<!-- Main Content -->
+			<main class="flex flex-1 items-center justify-center p-6 lg:p-8">
+				<div class="mx-auto max-w-4xl text-center">
+					<!-- Error Card -->
+					<div class="glass animate-float rounded-2xl p-6 shadow-2xl sm:p-8 lg:rounded-3xl lg:p-12">
+						<!-- Error Icon/Animation -->
+						<div class="mb-6 sm:mb-8">
+							<div class="relative inline-block">
+								<!-- Musical Note with Error -->
+								<div
+									class="relative mx-auto mb-4 h-24 w-24 sm:mb-6 sm:h-28 sm:w-28 md:h-32 md:w-32"
+								>
+									<div
+										class="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 shadow-2xl"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											class="h-10 w-10 text-white sm:h-12 sm:w-12 md:h-16 md:w-16"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+											/>
+										</svg>
+									</div>
+									<!-- Floating music notes around the icon -->
+									<div
+										class="absolute -top-1 -right-1 h-3 w-3 animate-ping rounded-full bg-purple-400 sm:-top-2 sm:-right-2 sm:h-4 sm:w-4"
+									></div>
+									<div
+										class="absolute -bottom-1 -left-1 h-2 w-2 animate-ping rounded-full bg-pink-400 sm:-bottom-2 sm:-left-2 sm:h-3 sm:w-3"
+										style="animation-delay: 1s"
+									></div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Error Code -->
+						<div class="mb-6">
+							<h1
+								class="text-gradient mb-4 text-4xl leading-none font-black sm:text-5xl md:text-6xl lg:text-7xl"
+							>
+								%sveltekit.status%
+							</h1>
+							<div
+								class="mx-auto h-1 w-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 sm:w-20 md:w-24"
+							></div>
+						</div>
+
+						<!-- Error Message -->
+						<div class="mb-8 space-y-4">
+							<h2 class="mb-4 text-xl font-bold text-white sm:text-2xl lg:text-3xl">
+								The music stopped playing!
+							</h2>
+							<p class="mx-auto max-w-2xl text-base leading-relaxed text-gray-300 sm:text-lg">
+								%sveltekit.error.message%
+							</p>
+							<div
+								class="inline-flex items-center rounded-full border border-slate-700 bg-slate-800/50 px-3 py-2 sm:px-4"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="mr-2 h-4 w-4 text-gray-400"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+									/>
+								</svg>
+								<span class="text-xs text-gray-400 sm:text-sm"
+									>We'll get your music back on track!</span
+								>
+							</div>
+						</div>
+
+						<!-- Action Buttons -->
+						<div
+							class="flex flex-col space-y-3 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4"
+						>
+							<!-- Primary Action -->
+							<a
+								href="/"
+								class="group inline-flex transform items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-purple-700 hover:to-pink-700 hover:shadow-xl sm:px-8 sm:py-4"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1 sm:h-5 sm:w-5"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+									/>
+								</svg>
+								<span class="text-sm sm:text-base">Back to Home</span>
+							</a>
+
+							<!-- Secondary Action -->
+							<button
+								onclick="window.history.back()"
+								class="group inline-flex transform items-center justify-center rounded-xl border border-slate-600 bg-slate-800/50 px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 hover:border-slate-500 hover:bg-slate-700/50 sm:px-8 sm:py-4"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1 sm:h-5 sm:w-5"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M10 19l-7-7m0 0l7-7m-7 7h18"
+									/>
+								</svg>
+								<span class="text-sm sm:text-base">Go Back</span>
+							</button>
+						</div>
+
+						<!-- Help Section -->
+						<div class="mt-6 border-t border-slate-700/50 pt-6 sm:mt-8">
+							<p class="mb-4 text-xs text-gray-400 sm:text-sm">
+								Still having trouble? We're here to help!
+							</p>
+							<div
+								class="flex flex-col items-center gap-2 text-xs sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4 sm:text-sm"
+							>
+								<a
+									href="/help"
+									class="flex items-center text-emerald-400 transition-colors hover:text-emerald-300"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="mr-1 h-3 w-3 sm:h-4 sm:w-4"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+										/>
+									</svg>
+									Help Center
+								</a>
+								<span class="hidden text-slate-600 sm:inline">•</span>
+								<a
+									href="/contact"
+									class="flex items-center text-emerald-400 transition-colors hover:text-emerald-300"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="mr-1 h-3 w-3 sm:h-4 sm:w-4"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+										/>
+									</svg>
+									Contact Support
+								</a>
+								<span class="hidden text-slate-600 sm:inline">•</span>
+								<a
+									href="/status"
+									class="flex items-center text-emerald-400 transition-colors hover:text-emerald-300"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="mr-1 h-3 w-3 sm:h-4 sm:w-4"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 00-2-2z"
+										/>
+									</svg>
+									Status Page
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+
+			<!-- Footer -->
+			<footer class="relative z-10 p-4 sm:p-6 lg:p-8">
+				<div class="text-center">
+					<p class="text-xs text-gray-400 sm:text-sm">
+						&copy; 2024 Musical Zoe. All rights reserved.
+					</p>
+					<div
+						class="mt-2 flex flex-col items-center space-y-2 text-xs sm:mt-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-6 sm:text-sm"
+					>
+						<a href="/terms" class="text-gray-400 transition-colors hover:text-emerald-400"
+							>Terms</a
+						>
+						<a href="/privacy" class="text-gray-400 transition-colors hover:text-emerald-400"
+							>Privacy</a
+						>
+						<a href="/help" class="text-gray-400 transition-colors hover:text-emerald-400">Help</a>
+					</div>
+				</div>
+			</footer>
+		</div>
+
+		<!-- JavaScript for additional interactivity -->
+		<script>
+			// Add some interactive eleaments
+			document.addEventListener('DOMContentLoaded', function () {
+				// Refresh page button functionality
+				const refreshBtn = document.createElement('button');
+				refreshBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Try Again
+      `;
+				refreshBtn.className =
+					'inline-flex items-center px-8 py-4 bg-slate-800/50 hover:bg-slate-700/50 text-white font-semibold rounded-xl border border-slate-600 hover:border-slate-500 transition-all duration-300 transform hover:scale-105 group ml-4';
+				refreshBtn.onclick = () => window.location.reload();
+
+				// Add refresh button after the go back button
+				const goBackBtn = document.querySelector('button[onclick="window.history.back()"]');
+				if (goBackBtn && goBackBtn.parentNode) {
+					goBackBtn.parentNode.appendChild(refreshBtn);
+				}
+			});
+
+			// Add keyboard shortcutss
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'h' || e.key === 'H') {
+					window.location.href = '/';
+				} else if (e.key === 'r' || e.key === 'R') {
+					window.location.reload();
+				} else if (e.key === 'Escape') {
+					window.history.back();
+				}
+			});
+
+			// Console message for devs
+			console.log(`
+    � Musical Zoe Error Page
+    ========================
+    
+    Error: %sveltekit.status% - %sveltekit.error.message%
+    
+    Keyboard shortcuts:
+    • H - Go to homepage
+    • R - Refresh page  
+    • ESC - Go back
+    
+    Need help? Contact our support team!
+    `);
+		</script>
+	</body>
+</html>
