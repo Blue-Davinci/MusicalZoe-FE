@@ -7,52 +7,21 @@
 <!-- Mark the relevant option with an "x" -->
 
 - [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
-- [ ] ✨ New feature (non-breaking change which adds functionality)
-- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] 📚 Documentation update
-- [ ] 🎨 Style/UI changes
-- [ ] ♻️ Code refactoring (no functional changes)
-- [ ] ⚡ Performance improvements
-- [ ] 🧪 Adding or updating tests
-- [ ] 🔧 Chore (maintenance, dependencies, etc.)
 
 ## Musical Zoe Components Affected
 
 <!-- Check all that apply -->
 
-- [ ] 🎵 LyricsSearchWidget
-- [ ] 📰 MusicNewsWidget
-- [ ] 📈 TrendingWidget
-- [ ] 🏠 Dashboard layout
-- [ ] 🔌 API routes (/api/music/\*)
-- [ ] 🎨 UI components (Button, Card, etc.)
-- [ ] 📱 Responsive design
-- [ ] 🌙 Theme/styling
-- [ ] 📄 Documentation
 - [ ] 🔧 Configuration (env, build, etc.)
 
 ## Testing Checklist
 
 <!-- Verify that your changes work correctly -->
 
-- [ ] ✅ Code builds without errors (`npm run build`)
-- [ ] 🔍 Linting passes (`npm run lint`)
-- [ ] 🎯 Type checking passes (`npm run check`)
-- [ ] 🧪 Tests pass (`npm run test`)
-- [ ] 📱 Responsive design tested (mobile, tablet, desktop)
-- [ ] ♿ Accessibility tested (keyboard navigation, screen readers)
-- [ ] 🌙 Dark/light theme compatibility verified
-- [ ] 🔄 Widget scrollability works correctly
 
 ## API Changes (if applicable)
 
 <!-- If you modified any API routes -->
-
-- [ ] 📝 Updated API documentation
-- [ ] 🔐 Environment variables documented
-- [ ] 🧪 API endpoints tested manually
-- [ ] 🛡️ Error handling implemented
-- [ ] 📊 Response types updated in music-api.ts
 
 ## Screenshots/Demo
 
@@ -92,10 +61,4 @@ Related to #<!-- issue number -->
 ## Review Checklist (for reviewers)
 
 - [ ] 🎯 Code follows project conventions
-- [ ] 📝 Changes are well documented
-- [ ] 🧪 Adequate test coverage
-- [ ] ♿ Accessibility standards met
-- [ ] 📱 Mobile responsiveness verified
-- [ ] 🎨 UI/UX consistency maintained
-- [ ] 🔒 Security best practices followed
-- [ ] 📈 Performance impact considered
+

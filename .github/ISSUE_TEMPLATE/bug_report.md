@@ -14,14 +14,6 @@ assignees: []
 
 <!-- Which part of Musical Zoe is affected? -->
 
-- [ ] LyricsSearchWidget
-- [ ] MusicNewsWidget
-- [ ] TrendingWidget
-- [ ] Dashboard layout
-- [ ] API endpoints
-- [ ] Navigation/routing
-- [ ] Responsive design
-- [ ] Other: \***\*\_\_\_\*\***
 
 ## 🔄 Steps to Reproduce
 
@@ -56,8 +48,6 @@ assignees: []
 
 - [ ] Issue occurs with all music searches
 - [ ] Issue occurs with specific songs/artists: \***\*\_\_\_\*\***
-- [ ] Issue occurs intermittently
-- [ ] Network connection: [e.g. WiFi, Mobile data, Slow connection]
 
 ## 📱 Device-Specific Details (if mobile)
 

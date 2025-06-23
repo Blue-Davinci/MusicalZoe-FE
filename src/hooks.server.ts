@@ -288,7 +288,8 @@ function handleRouteProtection(
 	const { isAuthenticated, user, isAdmin } = authResult;
 
 	// Check route types
-	const requiresAuth = PROTECTED_ROUTES.some((route) => requestedPath.startsWith(route));
+	const isHealthEndpoint = requestedPath === '/api/health' || requestedPath === '/health';
+	const requiresAuth = !isHealthEndpoint && PROTECTED_ROUTES.some((route) => requestedPath.startsWith(route));
 	const isAuthRoute = AUTH_ROUTES.some((route) => requestedPath.startsWith(route));
 	const isAdminRoute = ADMIN_ROUTES.some((route) => requestedPath.startsWith(route));
 
