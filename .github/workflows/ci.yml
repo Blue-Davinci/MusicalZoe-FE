@@ -86,10 +86,10 @@ jobs:
         run: |
           # Create deployment directory structure
           mkdir -p deployment
-          
+
           # Copy build output
           cp -r build deployment/
-          
+
           # Create deployment metadata
           cat > deployment/deployment-info.json << EOF
           {
@@ -100,12 +100,12 @@ jobs:
             "environment": "production"
           }
           EOF
-          
+
           # Create deployment archive
           cd deployment
           zip -r ../${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}.zip .
           cd ..
-          
+
           # Verify archive contents
           echo "Archive contents:"
           unzip -l ${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}.zip
@@ -142,12 +142,12 @@ jobs:
       - name: Upload artifact to S3
         run: |
           ARTIFACT_KEY="deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip"
-          
+
           echo "Uploading to S3..."
           aws s3 cp ${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip \
             s3://${{ secrets.S3_BUCKET_NAME }}/${ARTIFACT_KEY} \
             --metadata "version=${{ needs.test.outputs.build-version }},commit=${{ github.sha }},branch=${{ github.ref_name }}"
-          
+
           echo "Artifact uploaded to s3://${{ secrets.S3_BUCKET_NAME }}/${ARTIFACT_KEY}"
 
       - name: Trigger deployment via SSM
@@ -156,10 +156,10 @@ jobs:
           ASG_NAME: ${{ secrets.ASG_NAME }}
         run: |
           echo "Starting deployment automation..."
-          
+
           # Build parameters for SSM document
           PARAMS="S3Bucket=${{ secrets.S3_BUCKET_NAME }},ArtifactKey=deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip,Version=${{ needs.test.outputs.build-version }},Environment=production"
-          
+
           # Add ASG parameter if provided
           if [ -n "${ASG_NAME}" ]; then
             PARAMS="${PARAMS},AutoScalingGroupName=${ASG_NAME}"
@@ -167,22 +167,22 @@ jobs:
           else
             echo "No ASG specified - SSM document will use tag-based targeting"
           fi
-          
+
           echo "SSM Parameters: ${PARAMS}"
-          
+
           EXECUTION_ID=$(aws ssm start-automation-execution \
             --document-name "${{ secrets.SSM_DOCUMENT_NAME }}" \
             --parameters "${PARAMS}" \
             --query 'AutomationExecutionId' \
             --output text)
-          
+
           echo "Deployment automation started with ID: ${EXECUTION_ID}"
           echo "execution-id=${EXECUTION_ID}" >> $GITHUB_OUTPUT
 
       - name: Wait for deployment completion
         run: |
           echo "Monitoring deployment progress..."
-          
+
           # Wait for deployment to complete (max 10 minutes)
           timeout 600 bash -c '
             while true; do
