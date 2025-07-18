@@ -9,7 +9,6 @@ export const load = async ({ fetch }) => {
 			healthData: result.healthData,
 			error: result.error
 		};
-
 	} catch (error) {
 		return {
 			success: false,

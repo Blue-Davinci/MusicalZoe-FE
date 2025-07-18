@@ -5,6 +5,7 @@ A simplified guide for local development and testing of the Musical Zoe SvelteKi
 ## 🚀 Quick Start
 
 ### Local Development (Simple)
+
 ```bash
 # Install dependencies
 npm install
@@ -16,6 +17,7 @@ npm run dev
 ```
 
 ### Local Testing with NGINX (Production-like)
+
 ```bash
 # Install NGINX first (if not installed)
 # Ubuntu/Debian: sudo apt-get install nginx
@@ -51,20 +53,24 @@ chmod +x test-local.sh
 ## 🔧 Available Scripts
 
 ### Development
+
 - `npm run dev` - Start development server (port 5173)
 - `npm run build` - Build for production
 - `npm run preview` - Preview built application (port 4173)
 
 ### Testing & Quality
+
 - `npm run check` - Type checking
 - `npm run lint` - ESLint checking
 - `npm run format` - Format code with Prettier
 - `npm test` - Run unit tests
 
 ### Local NGINX Testing
+
 - `nginx/test-local.sh` - Test with NGINX proxy locally
 
 ### Production Deployment
+
 - `scripts/setup-ec2.sh` - Set up EC2 server (run once)
 - `scripts/build-package.sh` - Build and package for deployment
 - `scripts/deploy.sh` - Deploy to EC2 server
@@ -72,6 +78,7 @@ chmod +x test-local.sh
 ## 🌐 Development Workflow
 
 ### 1. Daily Development
+
 ```bash
 # Start development server
 npm run dev
@@ -81,6 +88,7 @@ npm run dev
 ```
 
 ### 2. Test Before Deployment
+
 ```bash
 # Build and test locally
 npm run build
@@ -91,6 +99,7 @@ cd nginx && ./test-local.sh
 ```
 
 ### 3. Deploy to EC2
+
 ```bash
 # Build and package
 ./scripts/build-package.sh
@@ -104,18 +113,21 @@ cd nginx && ./test-local.sh
 The `nginx/test-local.sh` script provides a production-like environment locally:
 
 ### What it does:
+
 1. **Builds** your SvelteKit application
 2. **Starts** SvelteKit server on port 3000
 3. **Configures** NGINX to proxy requests
 4. **Tests** the complete setup
 
 ### Access URLs:
+
 - **Main App**: http://localhost:8080 (via NGINX)
 - **Direct App**: http://localhost:3000 (direct to SvelteKit)
 - **Health Check**: http://localhost:8080/health
-- **API Endpoints**: http://localhost:8080/api/*
+- **API Endpoints**: http://localhost:8080/api/\*
 
 ### Requirements:
+
 - System NGINX installed
 - Ports 3000 and 8080 available
 
@@ -139,6 +151,7 @@ VITE_APP_ENV="development"
 ## 🏗️ Production Deployment
 
 ### Architecture
+
 ```
 Internet → EC2 Instance
            ├── NGINX (Port 80/443) → Reverse Proxy
@@ -147,6 +160,7 @@ Internet → EC2 Instance
 ```
 
 ### Setup Steps
+
 1. **Prepare EC2**: Run `scripts/setup-ec2.sh`
 2. **Build**: Run `scripts/build-package.sh`
 3. **Deploy**: Run `scripts/deploy.sh`
@@ -154,15 +168,18 @@ Internet → EC2 Instance
 ## 📊 Monitoring & Logs
 
 ### Local Development
+
 - Development server logs in terminal
 - Browser DevTools for client-side debugging
 
 ### Local NGINX Testing
+
 - NGINX Access Log: `/tmp/nginx-access.log`
 - NGINX Error Log: `/tmp/nginx-error.log`
 - SvelteKit logs in terminal
 
 ### Production (EC2)
+
 - PM2 process logs: `pm2 logs`
 - NGINX logs: `/var/log/nginx/`
 - Application logs: `/opt/musicalzoe/logs/`
@@ -170,6 +187,7 @@ Internet → EC2 Instance
 ## 🆘 Troubleshooting
 
 ### Port Already In Use
+
 ```bash
 # Check what's using the port
 sudo lsof -i :3000
@@ -180,6 +198,7 @@ sudo lsof -ti :3000 | xargs kill
 ```
 
 ### NGINX Issues
+
 ```bash
 # Check NGINX status
 sudo systemctl status nginx
@@ -192,6 +211,7 @@ sudo tail -f /var/log/nginx/error.log
 ```
 
 ### Build Issues
+
 ```bash
 # Clean build
 rm -rf .svelte-kit node_modules

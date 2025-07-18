@@ -30,31 +30,36 @@ export async function GET() {
 			}
 		};
 
-		return json({
-			success: true,
-			status: overallStatus,
-			healthData,
-			error: null
-		}, {
-			status: overallStatus === 'healthy' ? 200 : 503
-		});
-
+		return json(
+			{
+				success: true,
+				status: overallStatus,
+				healthData,
+				error: null
+			},
+			{
+				status: overallStatus === 'healthy' ? 200 : 503
+			}
+		);
 	} catch (error) {
-		return json({
-			success: false,
-			status: 'unhealthy',
-			error: error instanceof Error ? error.message : 'Unknown error occurred',
-			healthData: null
-		}, {
-			status: 503
-		});
+		return json(
+			{
+				success: false,
+				status: 'unhealthy',
+				error: error instanceof Error ? error.message : 'Unknown error occurred',
+				healthData: null
+			},
+			{
+				status: 503
+			}
+		);
 	}
 }
 
 // Helper function to check music API health
 async function checkMusicApiHealth() {
 	const startTime = Date.now();
-	
+
 	try {
 		if (!MUSIC_API_HEALTH_URL) {
 			return {
@@ -67,7 +72,7 @@ async function checkMusicApiHealth() {
 		const response = await fetch(MUSIC_API_HEALTH_URL, {
 			method: 'GET',
 			headers: {
-				'Accept': 'application/json',
+				Accept: 'application/json',
 				'User-Agent': 'Musical-Zoe-Frontend/1.0.0'
 			},
 			// Timeout after 5 seconds

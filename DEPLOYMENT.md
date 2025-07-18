@@ -13,12 +13,12 @@ Internet → ALB/CloudFront → EC2 Instance
 
 ## Deployment Options Comparison
 
-| Method | Complexity | Speed | Cost | Best For |
-|--------|------------|-------|------|----------|
-| **Traditional EC2** | Low | Fast | Low | Demos, MVP, Small Apps |
-| Docker on EC2 | Medium | Medium | Low | Standardized Deployments |
-| ECS Fargate | High | Medium | Medium | Scalable Production |
-| EKS | Very High | Slow | High | Enterprise, Microservices |
+| Method              | Complexity | Speed  | Cost   | Best For                  |
+| ------------------- | ---------- | ------ | ------ | ------------------------- |
+| **Traditional EC2** | Low        | Fast   | Low    | Demos, MVP, Small Apps    |
+| Docker on EC2       | Medium     | Medium | Low    | Standardized Deployments  |
+| ECS Fargate         | High       | Medium | Medium | Scalable Production       |
+| EKS                 | Very High  | Slow   | High   | Enterprise, Microservices |
 
 **Recommendation**: Traditional EC2 for this demo due to simplicity and speed.
 
@@ -42,6 +42,7 @@ sudo ./scripts/setup-ec2.sh
 ```
 
 This script will:
+
 - Install Node.js, NGINX, PM2, and dependencies
 - Create application user and directories
 - Configure firewall and security
@@ -124,6 +125,7 @@ The deployment includes optimized NGINX configurations:
 - **Local Config**: `nginx/sites-available/local.conf` - Docker Compose testing
 
 Key features:
+
 - Static file serving from `.svelte-kit/output/client/`
 - Reverse proxy to Node.js server at `.svelte-kit/output/server/index.js`
 - Rate limiting for API and auth endpoints
@@ -145,6 +147,7 @@ PM2 configuration (`nginx/ecosystem.config.js`):
 ```
 
 Key features:
+
 - Cluster mode for load balancing
 - Automatic restarts on crashes
 - Memory management
@@ -194,6 +197,7 @@ docker run -d \
 ### Automatic Updates
 
 The CI/CD workflow can be configured to:
+
 1. Build and test on push
 2. Create deployment package
 3. Upload to S3

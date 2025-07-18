@@ -72,7 +72,7 @@ jobs:
         if: steps.update_check.outputs.has_updates == 'true'
         run: |
           echo "Testing with updated dependencies..."
-          
+
           # Create environment file for testing
           cat > .env << EOF
           API_BASE_URL=https://api.test.com/v1

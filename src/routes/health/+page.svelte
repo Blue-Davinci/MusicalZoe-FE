@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { CheckCircle, AlertCircle, XCircle, Activity, Server, Clock, RefreshCw } from 'lucide-svelte';
+	import {
+		CheckCircle,
+		AlertCircle,
+		XCircle,
+		Activity,
+		Server,
+		Clock,
+		RefreshCw
+	} from 'lucide-svelte';
 	import Button from '$lib/web-components/ui/Button.svelte';
 	import BackButton from '$lib/web-components/ui/BackButton.svelte';
 	import Card from '$lib/web-components/ui/Card.svelte';
@@ -34,8 +42,11 @@
 
 	// Determine overall status
 	let overallStatus = $derived(
-		data.success && data.healthData?.overall.status === 'healthy' ? 'healthy' : 
-		data.success && data.healthData?.overall.status === 'degraded' ? 'degraded' : 'unhealthy'
+		data.success && data.healthData?.overall.status === 'healthy'
+			? 'healthy'
+			: data.success && data.healthData?.overall.status === 'degraded'
+				? 'degraded'
+				: 'unhealthy'
 	) as 'healthy' | 'degraded' | 'unhealthy';
 
 	// Status colors
@@ -76,12 +87,12 @@
 
 	<!-- Content Container -->
 	<div class="relative z-10 px-4 py-8">
-		<div class="max-w-4xl mx-auto">
+		<div class="mx-auto max-w-4xl">
 			<!-- Header -->
 			<div class="mb-8">
 				<BackButton href="/" class="mb-4 text-white hover:text-purple-300" />
-				<div class="flex items-center gap-3 mb-2">
-					<Activity class="w-8 h-8 text-purple-400" />
+				<div class="mb-2 flex items-center gap-3">
+					<Activity class="h-8 w-8 text-purple-400" />
 					<h1 class="text-3xl font-bold text-white">System Health Status</h1>
 				</div>
 				<p class="text-slate-300">Real-time monitoring of Musical Zoe platform services</p>
@@ -89,48 +100,64 @@
 
 			{#if data.success && data.healthData}
 				<!-- Overall Status Card -->
-				<Card class="mb-6 bg-slate-800/50 border-slate-700 backdrop-blur-sm {overallStatus === 'healthy' ? 'ring-2 ring-emerald-500/50' : 
-					overallStatus === 'degraded' ? 'ring-2 ring-amber-500/50' : 'ring-2 ring-red-500/50'}">
+				<Card
+					class="mb-6 border-slate-700 bg-slate-800/50 backdrop-blur-sm {overallStatus === 'healthy'
+						? 'ring-2 ring-emerald-500/50'
+						: overallStatus === 'degraded'
+							? 'ring-2 ring-amber-500/50'
+							: 'ring-2 ring-red-500/50'}"
+				>
 					<div class="flex items-center justify-between">
 						<div class="flex items-center gap-3">
 							{#if overallStatus === 'healthy'}
-								<CheckCircle class="w-8 h-8 text-emerald-400" />
+								<CheckCircle class="h-8 w-8 text-emerald-400" />
 							{:else if overallStatus === 'degraded'}
-								<AlertCircle class="w-8 h-8 text-amber-400" />
+								<AlertCircle class="h-8 w-8 text-amber-400" />
 							{:else}
-								<XCircle class="w-8 h-8 text-red-400" />
+								<XCircle class="h-8 w-8 text-red-400" />
 							{/if}
 							<div>
 								<h2 class="text-xl font-semibold text-white">
-									System Status: <span class="{overallStatus === 'healthy' ? 'text-emerald-400' : 
-										overallStatus === 'degraded' ? 'text-amber-400' : 'text-red-400'}">{data.healthData.overall.status.toUpperCase()}</span>
+									System Status: <span
+										class={overallStatus === 'healthy'
+											? 'text-emerald-400'
+											: overallStatus === 'degraded'
+												? 'text-amber-400'
+												: 'text-red-400'}>{data.healthData.overall.status.toUpperCase()}</span
+									>
 								</h2>
 								<p class="text-sm text-slate-400">
 									Last updated: {new Date(data.healthData.overall.timestamp).toLocaleString()}
 								</p>
 							</div>
 						</div>
-						<Button variant="outline" onclick={refreshHealth} class="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white">
-							<RefreshCw class="w-4 h-4 mr-2" />
+						<Button
+							variant="outline"
+							onclick={refreshHealth}
+							class="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
+						>
+							<RefreshCw class="mr-2 h-4 w-4" />
 							Refresh
 						</Button>
 					</div>
 				</Card>
 
 				<!-- Service Details -->
-				<div class="grid md:grid-cols-2 gap-6">
+				<div class="grid gap-6 md:grid-cols-2">
 					<!-- Frontend Health -->
-					<Card class="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-						<div class="flex items-center gap-3 mb-4">
-							<Server class="w-6 h-6 text-blue-400" />
+					<Card class="border-slate-700 bg-slate-800/50 backdrop-blur-sm">
+						<div class="mb-4 flex items-center gap-3">
+							<Server class="h-6 w-6 text-blue-400" />
 							<h3 class="text-lg font-semibold text-white">Frontend Service</h3>
 						</div>
-						
+
 						<div class="space-y-3">
 							<div class="flex justify-between">
 								<span class="text-slate-400">Status:</span>
-								<span class="font-medium capitalize 
-									{data.healthData.frontend.status === 'healthy' ? 'text-emerald-400' : 'text-red-400'}">
+								<span
+									class="font-medium capitalize
+									{data.healthData.frontend.status === 'healthy' ? 'text-emerald-400' : 'text-red-400'}"
+								>
 									{data.healthData.frontend.status}
 								</span>
 							</div>
@@ -144,12 +171,14 @@
 							</div>
 							<div class="flex justify-between">
 								<span class="text-slate-400">Environment:</span>
-								<span class="font-medium text-white capitalize">{data.healthData.frontend.environment}</span>
+								<span class="font-medium text-white capitalize"
+									>{data.healthData.frontend.environment}</span
+								>
 							</div>
 							<div class="flex justify-between">
 								<span class="text-slate-400">Response Time:</span>
-								<span class="font-medium text-white flex items-center gap-1">
-									<Clock class="w-4 h-4 text-slate-400" />
+								<span class="flex items-center gap-1 font-medium text-white">
+									<Clock class="h-4 w-4 text-slate-400" />
 									{formatResponseTime(data.healthData.frontend.responseTime)}
 								</span>
 							</div>
@@ -157,32 +186,40 @@
 					</Card>
 
 					<!-- Music API Health -->
-					<Card class="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-						<div class="flex items-center gap-3 mb-4">
-							<Activity class="w-6 h-6 text-purple-400" />
+					<Card class="border-slate-700 bg-slate-800/50 backdrop-blur-sm">
+						<div class="mb-4 flex items-center gap-3">
+							<Activity class="h-6 w-6 text-purple-400" />
 							<h3 class="text-lg font-semibold text-white">Music API Service</h3>
 						</div>
-						
+
 						<div class="space-y-3">
 							<div class="flex justify-between">
 								<span class="text-slate-400">Status:</span>
-								<span class="font-medium capitalize 
-									{data.healthData.musicApi.status === 'healthy' ? 'text-emerald-400' : 
-									 data.healthData.musicApi.status === 'degraded' ? 'text-amber-400' : 'text-red-400'}">
+								<span
+									class="font-medium capitalize
+									{data.healthData.musicApi.status === 'healthy'
+										? 'text-emerald-400'
+										: data.healthData.musicApi.status === 'degraded'
+											? 'text-amber-400'
+											: 'text-red-400'}"
+								>
 									{data.healthData.musicApi.status}
 								</span>
 							</div>
 							<div class="flex justify-between">
 								<span class="text-slate-400">Message:</span>
-								<span class="font-medium text-white text-right max-w-48 truncate" title={data.healthData.musicApi.message}>
+								<span
+									class="max-w-48 truncate text-right font-medium text-white"
+									title={data.healthData.musicApi.message}
+								>
 									{data.healthData.musicApi.message}
 								</span>
 							</div>
 							{#if data.healthData.musicApi.responseTime}
 								<div class="flex justify-between">
 									<span class="text-slate-400">Response Time:</span>
-									<span class="font-medium text-white flex items-center gap-1">
-										<Clock class="w-4 h-4 text-slate-400" />
+									<span class="flex items-center gap-1 font-medium text-white">
+										<Clock class="h-4 w-4 text-slate-400" />
 										{formatResponseTime(data.healthData.musicApi.responseTime)}
 									</span>
 								</div>
@@ -190,20 +227,23 @@
 						</div>
 					</Card>
 				</div>
-
 			{:else}
 				<!-- Error State -->
-				<Card class="bg-red-900/50 border-red-700 backdrop-blur-sm">
-					<div class="flex items-center gap-3 mb-4">
-						<XCircle class="w-8 h-8 text-red-400" />
+				<Card class="border-red-700 bg-red-900/50 backdrop-blur-sm">
+					<div class="mb-4 flex items-center gap-3">
+						<XCircle class="h-8 w-8 text-red-400" />
 						<h2 class="text-xl font-semibold text-red-400">Health Check Failed</h2>
 					</div>
-					
-					<p class="text-red-300 mb-4">
+
+					<p class="mb-4 text-red-300">
 						{data.error || 'Unable to retrieve system health status'}
 					</p>
-					
-					<Button onclick={refreshHealth} variant="secondary" class="bg-slate-700 text-white hover:bg-slate-600">
+
+					<Button
+						onclick={refreshHealth}
+						variant="secondary"
+						class="bg-slate-700 text-white hover:bg-slate-600"
+					>
 						Try Again
 					</Button>
 				</Card>

@@ -55,7 +55,7 @@ jobs:
           VITE_APP_VERSION="1.0.0"
           VITE_APP_ENV="test"
           EOF
-          
+
           npm run build
 
       - name: Run tests

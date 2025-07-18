@@ -1,7 +1,7 @@
 <!-- System Health Status Card -->
 <script lang="ts">
 	import { Activity, CheckCircle, AlertTriangle, XCircle, Clock } from 'lucide-svelte';
-	
+
 	export let title: string;
 	export let status: 'healthy' | 'unhealthy' | 'degraded' | 'unknown';
 	export let message: string = '';
@@ -46,18 +46,20 @@
 </script>
 
 <div class="rounded-lg border p-6 {statusBgColor}">
-	<div class="flex items-center justify-between mb-4">
+	<div class="mb-4 flex items-center justify-between">
 		<div class="flex items-center gap-3">
 			<svelte:component this={statusIcon} class="h-6 w-6 {statusColor}" />
 			<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
 		</div>
-		<span class="px-3 py-1 rounded-full text-sm font-medium {statusColor} bg-white dark:bg-gray-800 border">
+		<span
+			class="rounded-full px-3 py-1 text-sm font-medium {statusColor} border bg-white dark:bg-gray-800"
+		>
 			{status.charAt(0).toUpperCase() + status.slice(1)}
 		</span>
 	</div>
 
 	{#if message}
-		<p class="text-gray-700 dark:text-gray-300 mb-4">{message}</p>
+		<p class="mb-4 text-gray-700 dark:text-gray-300">{message}</p>
 	{/if}
 
 	<div class="grid grid-cols-2 gap-4 text-sm">
@@ -83,12 +85,12 @@
 	</div>
 
 	{#if Object.keys(details).length > 0}
-		<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-			<h4 class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Additional Details</h4>
+		<div class="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
+			<h4 class="mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Additional Details</h4>
 			<dl class="grid grid-cols-1 gap-2 text-sm">
 				{#each Object.entries(details) as [key, value]}
 					<div class="flex justify-between">
-						<dt class="text-gray-600 dark:text-gray-400 capitalize">
+						<dt class="text-gray-600 capitalize dark:text-gray-400">
 							{key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
 						</dt>
 						<dd class="font-medium text-gray-900 dark:text-gray-100">

@@ -15,6 +15,7 @@ nginx/
 ## 🚀 Quick Start
 
 ### 1. **Local Development (Simple)**
+
 ```bash
 # From project root
 npm run dev
@@ -22,6 +23,7 @@ npm run dev
 ```
 
 ### 2. **Test with NGINX Locally**
+
 ```bash
 # Install NGINX first (if not installed)
 # Ubuntu/Debian: sudo apt-get install nginx
@@ -39,12 +41,14 @@ chmod +x test-local.sh
 ## 🔧 Configuration Files
 
 ### **nginx.conf** - Main Configuration
+
 - Security optimizations and headers
 - Performance tuning (gzip, caching)
 - Rate limiting protection
 - Enhanced logging format
 
 ### **sites-available/musicalzoe.conf** - Production Site
+
 - Virtual host configuration for production
 - Static file serving with caching
 - Reverse proxy to SvelteKit application
@@ -52,6 +56,7 @@ chmod +x test-local.sh
 - SSL/TLS configuration ready
 
 ### **test-local.sh** - Local Testing Script
+
 - Automated local testing environment
 - Builds SvelteKit application
 - Starts NGINX with temporary configuration
@@ -60,10 +65,12 @@ chmod +x test-local.sh
 ---
 
 This simplified NGINX setup focuses on **ease of use** while maintaining **production readiness** for EC2 deployment.
+
 - Gzip compression
 - Security headers
 
 ### **sites-available/musicalzoe.conf** - Production Site
+
 - SSL/TLS configuration (commented for demo)
 - Static file optimization
 - API route handling
@@ -71,6 +78,7 @@ This simplified NGINX setup focuses on **ease of use** while maintaining **produ
 - Error handling
 
 ### **dev.conf** - Development Configuration
+
 - Relaxed security for development
 - Enhanced logging
 - CORS headers for API testing
@@ -111,6 +119,7 @@ Internet → NGINX (Port 8080) → SvelteKit (Port 3000)
 ```
 
 ### **NGINX Responsibilities**
+
 - **Reverse Proxy**: Forward requests to SvelteKit
 - **Static File Serving**: Serve CSS, JS, images directly
 - **SSL Termination**: Handle HTTPS (in production)
@@ -120,6 +129,7 @@ Internet → NGINX (Port 8080) → SvelteKit (Port 3000)
 - **Load Balancing**: Distribute requests (with multiple instances)
 
 ### **SvelteKit Responsibilities**
+
 - **Server-Side Rendering (SSR)**
 - **API Routes**: Handle `/api/*` endpoints
 - **Dynamic Content**: Generate pages on-demand
@@ -128,6 +138,7 @@ Internet → NGINX (Port 8080) → SvelteKit (Port 3000)
 ## 🔒 Security Features
 
 ### **Docker Security**
+
 - Non-root user (`musicalzoe:1001`)
 - Read-only filesystem
 - No new privileges
@@ -135,6 +146,7 @@ Internet → NGINX (Port 8080) → SvelteKit (Port 3000)
 - Health checks
 
 ### **NGINX Security**
+
 - Security headers (XSS, CSRF, etc.)
 - Rate limiting
 - Request size limits
@@ -142,6 +154,7 @@ Internet → NGINX (Port 8080) → SvelteKit (Port 3000)
 - CSP headers
 
 ### **Network Security**
+
 - Internal Docker network
 - No direct exposure of SvelteKit
 - Proper port isolation
@@ -149,17 +162,20 @@ Internet → NGINX (Port 8080) → SvelteKit (Port 3000)
 ## 📊 Performance Optimizations
 
 ### **Caching Strategy**
+
 - **Immutable assets**: 1 year cache
 - **Static assets**: 30 days cache
 - **API responses**: No cache
 - **HTML pages**: No cache (SSR)
 
 ### **Compression**
+
 - Gzip enabled for text assets
 - Optimal compression levels
 - Varies by content type
 
 ### **Connection Optimization**
+
 - HTTP/2 support (with SSL)
 - Keep-alive connections
 - Upstream connection pooling
@@ -167,6 +183,7 @@ Internet → NGINX (Port 8080) → SvelteKit (Port 3000)
 ## 🚀 Production Deployment
 
 ### **EC2 Installation**
+
 ```bash
 # Install NGINX
 sudo yum install -y nginx
@@ -184,6 +201,7 @@ sudo systemctl start nginx
 ```
 
 ### **SSL Configuration**
+
 ```bash
 # Install Certbot
 sudo yum install -y certbot python3-certbot-nginx
@@ -201,6 +219,7 @@ sudo crontab -e
 ### **Common Issues**
 
 1. **Port Conflicts**
+
    ```bash
    # Check what's using ports
    sudo netstat -tulpn | grep :8080
@@ -208,6 +227,7 @@ sudo crontab -e
    ```
 
 2. **Permission Issues**
+
    ```bash
    # Fix Docker permissions
    sudo usermod -aG docker $USER
@@ -215,16 +235,18 @@ sudo crontab -e
    ```
 
 3. **Build Directory Missing**
+
    ```bash
    # Build SvelteKit
    npm run build
    ```
 
 4. **NGINX Configuration Errors**
+
    ```bash
    # Test configuration
    nginx -t
-   
+
    # Check syntax
    ./test-local.sh test-config
    ```
@@ -239,11 +261,13 @@ sudo crontab -e
 ## 📈 Monitoring
 
 ### **Health Checks**
+
 - **Application**: `GET /health`
 - **NGINX**: `nginx -t`
 - **Docker**: Container health checks
 
 ### **Metrics to Monitor**
+
 - Response times
 - Error rates
 - Memory usage
@@ -254,12 +278,14 @@ sudo crontab -e
 ## 🔄 Updates and Deployment
 
 ### **Local Testing Workflow**
+
 1. Make changes to SvelteKit app
 2. Build: `npm run build`
 3. Test: `./test-local.sh full-test`
 4. Verify all endpoints work
 
 ### **Production Deployment**
+
 1. Upload build to S3
 2. Use SSM to update EC2
 3. Restart services with PM2

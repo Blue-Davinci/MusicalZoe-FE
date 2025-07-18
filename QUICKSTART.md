@@ -5,11 +5,13 @@
 I've updated the Musical Zoe application to be production-ready with the following changes:
 
 ### ✅ SvelteKit Configuration
+
 - **Changed adapter**: From `@sveltejs/adapter-auto` to `@sveltejs/adapter-node`
 - **Build output**: Now correctly outputs to `.svelte-kit/output/server/index.js` (Node.js server)
 - **Static assets**: Available in `.svelte-kit/output/client/` (HTML, CSS, JS)
 
 ### ✅ Updated All Configurations
+
 - **NGINX configs**: Updated to serve static files from `.svelte-kit/output/client/`
 - **PM2 ecosystem**: Updated to start `.svelte-kit/output/server/index.js`
 - **Docker files**: Updated to copy and run correct build output
@@ -22,11 +24,13 @@ I've updated the Musical Zoe application to be production-ready with the followi
 ### Method 1: Direct Node.js (Recommended for Testing)
 
 1. **Build the application**:
+
    ```bash
    npm run build
    ```
 
 2. **Start the server**:
+
    ```bash
    node .svelte-kit/output/server/index.js
    ```
@@ -40,17 +44,20 @@ I've updated the Musical Zoe application to be production-ready with the followi
 ### Method 2: PM2 (Production-like)
 
 1. **Install PM2** (if not already installed):
+
    ```bash
    npm install -g pm2
    ```
 
 2. **Build and start**:
+
    ```bash
    npm run build
    pm2 start nginx/ecosystem.config.js
    ```
 
 3. **Monitor**:
+
    ```bash
    pm2 status
    pm2 logs musical-zoe-frontend
@@ -68,11 +75,13 @@ I've updated the Musical Zoe application to be production-ready with the followi
 ### Method 3: Docker Compose (Full Stack)
 
 1. **Build first**:
+
    ```bash
    npm run build
    ```
 
 2. **Start containers**:
+
    ```bash
    cd nginx/
    docker-compose up --build
@@ -87,7 +96,8 @@ I've updated the Musical Zoe application to be production-ready with the followi
    docker-compose down
    ```
 
-**What's happening**: 
+**What's happening**:
+
 - App container runs the SvelteKit Node.js server
 - NGINX container acts as reverse proxy
 - NGINX serves static files directly for better performance
@@ -97,6 +107,7 @@ I've updated the Musical Zoe application to be production-ready with the followi
 ## How It All Works
 
 ### Traditional Architecture (What we've built)
+
 ```
 User Request → NGINX (Port 80) → Node.js Server (Port 3000)
                    ↓
@@ -131,6 +142,7 @@ User Request → NGINX (Port 80) → Node.js Server (Port 3000)
 Before deploying to production, test locally:
 
 ### ✅ Basic Functionality
+
 ```bash
 # Test 1: Direct Node.js
 npm run build
@@ -149,6 +161,7 @@ curl http://localhost:3000
 ```
 
 ### ✅ Health Checks
+
 ```bash
 # Check health endpoint
 curl http://localhost:3000/health
@@ -156,6 +169,7 @@ curl http://localhost/health  # via NGINX
 ```
 
 ### ✅ Static Assets
+
 ```bash
 # Check if static files are served
 curl -I http://localhost/_app/immutable/assets/app.css
@@ -180,17 +194,20 @@ Once local testing is complete:
 ### Common Issues:
 
 1. **Build fails**: Make sure all dependencies are installed
+
    ```bash
    npm ci
    npm run build
    ```
 
 2. **Port 3000 in use**: Kill existing processes
+
    ```bash
    lsof -ti:3000 | xargs kill -9
    ```
 
 3. **NGINX errors**: Check configuration
+
    ```bash
    sudo nginx -t
    ```
