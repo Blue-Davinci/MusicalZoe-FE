@@ -1,6 +1,55 @@
 # Musical Zoe - Production Deployment Guide
 
-This guide covers deploying the Musical Zoe SvelteKit application to AWS EC2 using traditional infrastructure with NGINX as a reverse proxy and PM2 for Node.js process management.
+This guide covers deploying the Musical Zoe SvelteKit application to AWS EC2 using automated CI/CD pipelines and traditional infrastructure.
+
+## Deployment Methods
+
+### 🚀 Automated Deployment (Recommended)
+- **GitHub Actions CI/CD** - Automated build, test, and deployment
+- **AWS S3 + SSM** - Artifact storage and deployment automation
+- **Zero-downtime deployments** with automatic rollback
+- **Environment-specific configurations**
+
+### 🛠️ Manual Deployment
+- Traditional EC2 setup with NGINX and PM2
+- Manual build and deployment process
+- Suitable for development and testing
+
+---
+
+## 🚀 Automated Deployment (Production)
+
+### Overview
+The automated deployment uses GitHub Actions to build, test, and deploy your application to AWS infrastructure.
+
+**Flow**: `GitHub Push → CI/CD → S3 → SSM → EC2 Deployment`
+
+### Required GitHub Secrets
+Configure these secrets in your GitHub repository:
+
+| Secret | Description | Example |
+|--------|-------------|---------|
+| `AWS_ROLE_ARN` | IAM role for GitHub Actions | `arn:aws:iam::123456789012:role/GitHubActionsRole` |
+| `AWS_REGION` | AWS region | `us-east-1` |
+| `S3_BUCKET_NAME` | Deployment artifacts bucket | `musical-zoe-deployments` |
+| `SSM_DOCUMENT_NAME` | SSM automation document | `MusicalZoeDeployment` |
+
+### Deployment Process
+1. **Push to `main`** - Triggers the CI/CD pipeline
+2. **Build & Test** - Runs linting, type checking, and tests
+3. **Create Artifact** - Packages build output with metadata
+4. **Upload to S3** - Stores deployment artifact
+5. **SSM Automation** - Executes deployment on EC2 instances
+6. **Health Check** - Verifies deployment success
+
+### Monitoring
+- **GitHub Actions** - View deployment status and logs
+- **AWS Console** - Monitor SSM automation execution
+- **Application Health** - Automated health checks verify deployment
+
+---
+
+## 🛠️ Manual Deployment (Development)
 
 ## Architecture Overview
 
