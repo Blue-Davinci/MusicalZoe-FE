@@ -176,14 +176,7 @@ jobs:
 
           EXECUTION_ID=$(aws ssm start-automation-execution \
             --document-name "${{ secrets.SSM_DOCUMENT_NAME }}" \
-            --parameters \
-              "AutoScalingGroupName=${ASG_NAME}" \
-              "S3Bucket=${{ secrets.S3_BUCKET_NAME }}" \
-              "ArtifactKey=${ARTIFACT_KEY}" \
-              "DestinationPath=${DESTINATION_PATH:-/usr/share/nginx/html}" \
-              "Version=${{ needs.test.outputs.build-version }}" \
-              "Environment=production" \
-              "AutomationAssumeRole=${{ secrets.AWS_ROLE_ARN }}" \
+            --parameters "AutoScalingGroupName=${ASG_NAME},S3Bucket=${{ secrets.S3_BUCKET_NAME }},ArtifactKey=${ARTIFACT_KEY},DestinationPath=${DESTINATION_PATH:-/usr/share/nginx/html},Version=${{ needs.test.outputs.build-version }},Environment=production,AutomationAssumeRole=${{ secrets.AWS_ROLE_ARN }}" \
             --query 'AutomationExecutionId' \
             --output text)
 
