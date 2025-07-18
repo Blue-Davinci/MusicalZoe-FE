@@ -46,7 +46,7 @@
 		"@tailwindcss/typography": "^0.5.16",
 		"clsx": "^2.1.1",
 		"date-fns": "^4.1.0",
-		"lucide-svelte": "^0.516.0",
+		"lucide-svelte": "^0.525.0",
 		"mode-watcher": "^1.0.8",
 		"pino": "^9.7.0",
 		"pino-pretty": "^13.0.0",
