@@ -23,7 +23,7 @@ parameters:
     description: The target directory on the EC2 instances where the frontend files will be extracted.
   Version:
     type: String
-    default: ""
+    default: ''
     description: (Optional) Version identifier for this deployment.
   Environment:
     type: String
@@ -39,8 +39,8 @@ mainSteps:
         - Key: tag:aws:autoscaling:groupName
           Values:
             - '{{ AutoScalingGroupName }}'
-      MaxConcurrency: "10"
-      MaxErrors: "0"
+      MaxConcurrency: '10'
+      MaxErrors: '0'
       Parameters:
         commands:
           - echo "=== STARTING FRONTEND DEPLOYMENT ==="
