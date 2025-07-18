@@ -5,19 +5,14 @@ on:
     branches: [main, development]
   pull_request:
     branches: [main, development]
-  schedule:
-    # Run weekly code quality checks on Mondays at 9 AM UTC
-    - cron: '0 9 * * 1'
 
 jobs:
   code-quality:
-    name: Advanced Code Quality Checks
+    name: Code Quality Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Needed for some analysis tools
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,24 +23,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Code complexity analysis
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run type checking
+        run: npm run check
+
+      - name: Build application
         run: |
-          echo "Running code complexity analysis..."
-          npx es-complexity src/lib --format json > complexity-report.json || echo "Complexity analysis completed"
-
-          # Count components and analyze structure
-          echo "Component Analysis:"
-          echo "Svelte components: $(find src -name "*.svelte" | wc -l)"
-          echo "TypeScript files: $(find src -name "*.ts" | wc -l)"
-          echo "API routes: $(find src/routes/api -name "+server.ts" | wc -l)"
-
-      - name: Bundle size analysis
-        run: |
-          echo "Building for bundle analysis..."
-
-          # Create environment file for build
+          # Create test environment for build
           cat > .env << EOF
-          # Server-side variables
           API_BASE_URL=https://api.test.com/v1
           API_SIGNUP_URL=https://api.test.com/v1/api
           API_ACTIVATION_URL=https://api.test.com/v1/api/activated
@@ -55,8 +42,6 @@ jobs:
           MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
           MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
           MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
-
-          # Client-side variables
           VITE_API_BASE_URL=https://api.test.com/v1
           VITE_API_SIGNUP_URL=https://api.test.com/v1/api
           VITE_API_ACTIVATION_URL=https://api.test.com/v1/api/activated
@@ -70,143 +55,8 @@ jobs:
           VITE_APP_VERSION="1.0.0"
           VITE_APP_ENV="test"
           EOF
-
+          
           npm run build
 
-          echo "📦 Build Analysis:"
-          echo "Total build size: $(du -sh .svelte-kit/output/)"
-
-          # Analyze largest files
-          echo "Largest files in build:"
-          find .svelte-kit/output -type f -name "*.js" -o -name "*.css" | xargs ls -lh | sort -k5 -hr | head -10
-
-      - name: Check for accessibility issues
-        run: |
-          echo "Accessibility Analysis:"
-
-          # Check for common accessibility patterns
-          echo "Checking for accessibility atributes..."
-          ARIA_COUNT=$(find src -name "*.svelte" | xargs grep -o "aria-" | wc -l)
-          ALT_COUNT=$(find src -name "*.svelte" | xargs grep -o "alt=" | wc -l)
-          LABEL_COUNT=$(find src -name "*.svelte" | xargs grep -o "<label" | wc -l)
-
-          echo "ARIA attributes found: $ARIA_COUNT"
-          echo "Alt attributes found: $ALT_COUNT"
-          echo "Label elements found: $LABEL_COUNT"
-
-      - name: Performance checks
-        run: |
-          echo "⚡ Performance Analysis:"
-
-          # Check for potential performance issues
-          echo "Checking for performance anti-patterns..."
-
-          # Look for potential issues
-          LARGE_COMPONENTS=$(find src -name "*.svelte" -exec wc -l {} + | awk '$1 > 200 {print $2 " (" $1 " lines)"}')
-          if [ -n "$LARGE_COMPONENTS" ]; then
-            echo "Large components (>200 lines):"
-            echo "$LARGE_COMPONENTS"
-          else
-            echo "✓ No overly large components found"
-          fi
-
-      - name: Security patterns check
-        run: |
-          echo "🔒 Security Pattern Analysis:"
-
-          # Check for common security patterns
-          if grep -r "innerHTML" src/; then
-            echo "⚠️  Found innerHTML usage - review for XSS safety"
-          else
-            echo "✓ No innerHTML usage found"
-          fi
-
-          if grep -r "eval(" src/; then
-            echo "⚠️  Found eval() usage - potential security risk"
-          else
-            echo "✓ No eval() usage found"
-          fi
-
-          # Check environment variable handling
-          ENV_USAGE=$(find src -name "*.ts" -o -name "*.svelte" | xargs grep -l "process.env\|import.meta.env" | wc -l)
-          echo "Files using environment variables: $ENV_USAGE"
-
-      - name: API consistency check
-        run: |
-          echo "🔌 API Consistency Analysis:"
-
-          # Check API endpoint consistency
-          echo "API endpoints structure:"
-          find src/routes/api -name "+server.ts" -exec basename {} \; | sort
-
-          # Check for consistent error handling
-          ERROR_HANDLERS=$(find src/routes/api -name "+server.ts" | xargs grep -l "try.*catch\|\.catch" | wc -l)
-          TOTAL_ENDPOINTS=$(find src/routes/api -name "+server.ts" | wc -l)
-          echo "Endpoints with error handling: $ERROR_HANDLERS/$TOTAL_ENDPOINTS"
-
-      - name: Component consistency check
-        run: |
-          echo "🧩 Component Consistency Analysis:"
-
-          # Check for consistent prop types
-          echo "Widget components:"
-          find src/lib/web-components/dashboard -name "*Widget.svelte" | sort
-
-          # Check for consistent styling patterns
-          TAILWIND_USAGE=$(find src -name "*.svelte" | xargs grep -l "class=" | wc -l)
-          TOTAL_COMPONENTS=$(find src -name "*.svelte" | wc -l)
-          echo "Components using Tailwind: $TAILWIND_USAGE/$TOTAL_COMPONENTS"
-
-      - name: Documentation coverage
-        run: |
-          echo "📚 Documentation Coverage Analysis:"
-
-          # Check for component documentation
-          DOCUMENTED_COMPONENTS=0
-          TOTAL_WIDGET_COMPONENTS=$(find src/lib/web-components -name "*.svelte" | wc -l)
-
-          # Check for README sections
-          if grep -q "## Features" README.md; then
-            echo "✓ Features section in README"
-          fi
-
-          if grep -q "## Installation" README.md; then
-            echo "✓ Installation section in README"
-          fi
-
-          if grep -q "## Usage" README.md; then
-            echo "✓ Usage section in README"
-          fi
-
-          echo "Total components: $TOTAL_WIDGET_COMPONENTS"
-
-      - name: Generate quality report
-        run: |
-          echo "📋 Quality Report Summary:" > quality-report.md
-          echo "=========================" >> quality-report.md
-          echo "" >> quality-report.md
-          echo "Generated on: $(date)" >> quality-report.md
-          echo "Commit: $GITHUB_SHA" >> quality-report.md
-          echo "" >> quality-report.md
-          echo "### Project Statistics" >> quality-report.md
-          echo "- Svelte components: $(find src -name "*.svelte" | wc -l)" >> quality-report.md
-          echo "- TypeScript files: $(find src -name "*.ts" | wc -l)" >> quality-report.md
-          echo "- API endpoints: $(find src/routes/api -name "+server.ts" | wc -l)" >> quality-report.md
-          echo "- Total lines of code: $(find src -name "*.ts" -o -name "*.svelte" | xargs wc -l | tail -1 | awk '{print $1}')" >> quality-report.md
-          echo "" >> quality-report.md
-          echo "### Quality Checks" >> quality-report.md
-          echo "- ✅ Code formatting (Prettier)" >> quality-report.md
-          echo "- ✅ Linting (ESLint)" >> quality-report.md
-          echo "- ✅ Type checking (TypeScript)" >> quality-report.md
-          echo "- ✅ Build validation" >> quality-report.md
-          echo "- ✅ Security patterns" >> quality-report.md
-          echo "- ✅ Component consistency" >> quality-report.md
-
-          cat quality-report.md
-
-      - name: Upload quality report
-        uses: actions/upload-artifact@v4
-        with:
-          name: quality-report
-          path: quality-report.md
-          retention-days: 30
+      - name: Run tests
+        run: npm test
