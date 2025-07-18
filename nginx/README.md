@@ -1,6 +1,7 @@
 # Musical Zoe - NGINX Configuration
 
 This directory contains NGINX configuration files and testing setup for the Musical Zoe SvelteKit application.
+Test
 
 ## 📁 Directory Structure
 
