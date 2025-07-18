@@ -203,26 +203,30 @@ jobs:
           timeout 600 bash -c '
             while true; do
               echo "Checking execution status..."
-              EXECUTION_RESPONSE=$(aws ssm describe-automation-executions \
+              
+              # Use the metadata list query that we know works
+              STATUS=$(aws ssm describe-automation-executions \
                 --filters "Key=ExecutionId,Values=${{ steps.trigger-deployment.outputs.execution-id }}" \
-                --query "AutomationExecutions[0]" \
-                --output json)
-              
-              echo "Full response: ${EXECUTION_RESPONSE}"
-              
-              STATUS=$(echo "${EXECUTION_RESPONSE}" | jq -r ".AutomationExecutionStatus // \"None\"")
+                --query "AutomationExecutions[0].AutomationExecutionStatus" \
+                --output text)
               
               echo "Deployment status: ${STATUS}"
               
               case "${STATUS}" in
                 "Success")
                   echo "Deployment completed successfully!"
+                  echo "Getting execution details..."
+                  aws ssm describe-automation-executions \
+                    --filters "Key=ExecutionId,Values=${{ steps.trigger-deployment.outputs.execution-id }}" \
+                    --output table
                   exit 0
                   ;;
                 "Failed"|"Cancelled"|"TimedOut")
                   echo "Deployment failed with status: ${STATUS}"
-                  echo "Failure details:"
-                  echo "${EXECUTION_RESPONSE}" | jq ".FailureMessage // \"No failure message\""
+                  echo "Getting failure details..."
+                  aws ssm describe-automation-executions \
+                    --filters "Key=ExecutionId,Values=${{ steps.trigger-deployment.outputs.execution-id }}" \
+                    --output table
                   exit 1
                   ;;
                 "InProgress")

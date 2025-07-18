@@ -1,6 +1,26 @@
 # ASG Frontend Deployment Document
 
-This document is designed for deploying the Musical Zoe frontend to an Auto Scaling Group.
+This document is designed fo          - echo "=== EXTRACTING NEW FRONTEND ==="
+          - echo "Extracting new frontend to {{ DestinationPath }}"
+          - sudo mkdir -p {{ DestinationPath }}
+          - sudo unzip -o /tmp/frontend.zip -d /tmp/frontend-extract
+          - echo "Moving build files to nginx document root"
+          - sudo rm -rf {{ DestinationPath }}/*
+          - sudo cp -r /tmp/frontend-extract/build/* {{ DestinationPath }}/
+          - sudo cp /tmp/frontend-extract/deployment-info.json {{ DestinationPath }}/
+          - echo "Extraction completed. Contents:"
+          - ls -la {{ DestinationPath }}
+          - echo "=== SETTING PERMISSIONS ==="
+          - echo "Setting correct permissions for nginx"
+          - sudo chown -R nginx:nginx {{ DestinationPath }}
+          - sudo chmod -R 755 {{ DestinationPath }}
+          - echo "=== RESTARTING NGINX ==="
+          - echo "Restarting nginx to ensure proper serving"
+          - sudo systemctl restart nginx
+          - sudo systemctl status nginx
+          - echo "=== CLEANING UP ==="
+          - echo "Cleaning up temporary files"
+          - rm -rf /tmp/frontend.zip /tmp/frontend-extracthe Musical Zoe frontend to an Auto Scaling Group.
 
 ## Document Name: `DeployFrontendToASG`
 
@@ -63,18 +83,71 @@ mainSteps:
           - sudo mkdir -p /tmp/backup-$(date +%Y%m%d-%H%M%S)
           - sudo cp -r {{ DestinationPath }}/* /tmp/backup-$(date +%Y%m%d-%H%M%S)/ 2>/dev/null || echo "No existing files to backup"
           - echo "=== EXTRACTING NEW FRONTEND ==="
-          - echo "Extracting new frontend to {{ DestinationPath }}"
-          - sudo mkdir -p {{ DestinationPath }}
-          - sudo unzip -o /tmp/frontend.zip -d {{ DestinationPath }}
+          - echo "Extracting new frontend to temporary directory"
+          - sudo mkdir -p /tmp/frontend-extract
+          - sudo unzip -o /tmp/frontend.zip -d /tmp/frontend-extract
+          - echo "Moving build files to nginx document root"
+          - sudo rm -rf {{ DestinationPath }}/*
+          - sudo cp -r /tmp/frontend-extract/build/* {{ DestinationPath }}/
+          - sudo cp /tmp/frontend-extract/deployment-info.json {{ DestinationPath }}/
           - echo "Extraction completed. Contents -"
           - ls -la {{ DestinationPath }}
+          - echo "=== UPDATING NGINX CONFIGURATION ==="
+          - echo "Creating nginx configuration for static serving"
+          - sudo rm -f /etc/nginx/conf.d/default.conf
+          - echo "server {" | sudo tee /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    listen 80;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    listen [::]:80;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    server_name _;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    root /usr/share/nginx/html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    index index.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    add_header X-Frame-Options \"SAMEORIGIN\" always;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    add_header X-Content-Type-Options \"nosniff\" always;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    add_header X-XSS-Protection \"1; mode=block\" always;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    location ~* \\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        expires 1y;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        add_header Cache-Control \"public, immutable\";" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files \\$uri =404;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    location /_app/ {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        expires 1y;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        add_header Cache-Control \"public, immutable\";" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files \\$uri =404;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    location /api/ {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files \\$uri \\$uri.html \\$uri/index.html @fallback;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    location /health {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files \\$uri \\$uri.html \\$uri/index.html @fallback;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    location ~ /\\. {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        deny all;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    location = /deployment-info.json {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        deny all;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    location / {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files \\$uri \\$uri.html \\$uri/index.html @fallback;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    location @fallback {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files /index.html =404;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    error_page 404 /404.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    error_page 500 502 503 504 /50x.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "}" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "=== SETTING PERMISSIONS ==="
           - echo "Setting correct permissions for nginx"
           - sudo chown -R nginx:nginx {{ DestinationPath }}
           - sudo chmod -R 755 {{ DestinationPath }}
+          - echo "=== RESTARTING NGINX ==="
+          - echo "Testing nginx configuration"
+          - sudo nginx -t
+          - echo "Restarting nginx to apply new configuration"
+          - sudo systemctl restart nginx
+          - sudo systemctl status nginx --no-pager
           - echo "=== CLEANING UP ==="
           - echo "Cleaning up temporary files"
-          - rm -f /tmp/frontend.zip
+          - rm -rf /tmp/frontend.zip /tmp/frontend-extract
           - echo "=== DEPLOYMENT COMPLETED ==="
           - echo "Deployment completed successfully on $(hostname)"
     outputs:
