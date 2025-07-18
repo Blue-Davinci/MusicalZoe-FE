@@ -7,7 +7,6 @@ This document is designed for deploying the Musical Zoe frontend to an Auto Scal
 ```yaml
 description: Deploy Frontend to Auto Scaling Group from S3
 schemaVersion: '0.3'
-assumeRole: '{{ AutomationAssumeRole }}'
 parameters:
   AutoScalingGroupName:
     type: String
@@ -22,9 +21,6 @@ parameters:
     type: String
     default: /usr/share/nginx/html
     description: The target directory on the EC2 instances where the frontend files will be extracted.
-  AutomationAssumeRole:
-    type: String
-    description: (Required) The IAM role that Systems Manager Automation will assume to run this document.
   Version:
     type: String
     default: ''
