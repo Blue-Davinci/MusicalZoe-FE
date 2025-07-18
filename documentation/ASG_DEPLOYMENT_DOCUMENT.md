@@ -66,18 +66,23 @@ mainSteps:
           - echo "Extracting new frontend to temporary directory"
           - sudo mkdir -p /tmp/frontend-extract
           - sudo unzip -o /tmp/frontend.zip -d /tmp/frontend-extract
+          - echo "Checking extracted contents"
+          - ls -la /tmp/frontend-extract/build/
           - echo "Moving build files to nginx document root"
           - sudo rm -rf {{ DestinationPath }}/*
-          - sudo cp -r /tmp/frontend-extract/build/* {{ DestinationPath }}/
+          - echo "Extracting client files from Node.js build"
+          - sudo cp -r /tmp/frontend-extract/build/client/* {{ DestinationPath }}/
           - sudo cp /tmp/frontend-extract/deployment-info.json {{ DestinationPath }}/
           - echo "Extraction completed. Contents -"
           - ls -la {{ DestinationPath }}
           - echo "=== UPDATING NGINX CONFIGURATION ==="
           - echo "Creating nginx configuration for static serving"
           - sudo rm -f /etc/nginx/conf.d/default.conf
+          - sudo rm -f /etc/nginx/sites-enabled/default
+          - sudo rm -f /etc/nginx/sites-available/default
           - echo "server {" | sudo tee /etc/nginx/conf.d/musicalzoe.conf
-          - echo "    listen 80;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
-          - echo "    listen [::]:80;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    listen 80 default_server;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "    listen [::]:80 default_server;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    server_name _;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    root /usr/share/nginx/html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    index index.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
@@ -95,10 +100,10 @@ mainSteps:
           - echo "        try_files \\$uri =404;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    location /api/ {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
-          - echo "        try_files \\$uri \\$uri.html \\$uri/index.html @fallback;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files \\$uri \\$uri.html \\$uri/index.html /index.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    location /health {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
-          - echo "        try_files \\$uri \\$uri.html \\$uri/index.html @fallback;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files \\$uri \\$uri.html \\$uri/index.html /index.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    location ~ /\\. {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "        deny all;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
@@ -107,24 +112,39 @@ mainSteps:
           - echo "        deny all;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    location / {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
-          - echo "        try_files \\$uri \\$uri.html \\$uri/index.html @fallback;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
-          - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
-          - echo "    location @fallback {" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
-          - echo "        try_files /index.html =404;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "        try_files \\$uri \\$uri.html \\$uri/ /index.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    }" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    error_page 404 /404.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "    error_page 500 502 503 504 /50x.html;" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
           - echo "}" | sudo tee -a /etc/nginx/conf.d/musicalzoe.conf
+          - echo "Checking nginx configuration syntax"
+          - sudo nginx -t
           - echo "=== SETTING PERMISSIONS ==="
           - echo "Setting correct permissions for nginx"
           - sudo chown -R nginx:nginx {{ DestinationPath }}
           - sudo chmod -R 755 {{ DestinationPath }}
           - echo "=== RESTARTING NGINX ==="
-          - echo "Testing nginx configuration"
-          - sudo nginx -t
-          - echo "Restarting nginx to apply new configuration"
-          - sudo systemctl restart nginx
+          - echo "Stopping nginx service"
+          - sudo systemctl stop nginx
+          - echo "Cleaning up any existing nginx processes"
+          - sudo pkill -f nginx || true
+          - echo "Starting nginx service"
+          - sudo systemctl start nginx
+          - echo "Enabling nginx service for auto-start"
+          - sudo systemctl enable nginx
+          - echo "Checking nginx status"
           - sudo systemctl status nginx --no-pager
+          - echo "=== VERIFYING DEPLOYMENT ==="
+          - echo "Checking nginx configuration"
+          - sudo nginx -t
+          - echo "Checking nginx process"
+          - ps aux | grep nginx
+          - echo "Checking listening ports"
+          - sudo netstat -tlnp | grep :80 || ss -tlnp | grep :80
+          - echo "Checking deployed files"
+          - ls -la {{ DestinationPath }}
+          - echo "Testing local response"
+          - curl -I http://localhost/ || echo "Local curl test failed"
           - echo "=== CLEANING UP ==="
           - echo "Cleaning up temporary files"
           - rm -rf /tmp/frontend.zip /tmp/frontend-extract
