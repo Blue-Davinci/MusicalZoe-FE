@@ -158,25 +158,32 @@ jobs:
         id: trigger-deployment
         env:
           ASG_NAME: ${{ secrets.ASG_NAME }}
+          DESTINATION_PATH: ${{ secrets.DESTINATION_PATH }}
         run: |
           echo "Starting deployment automation..."
 
           # Build parameters for SSM document
-          PARAMS="S3Bucket=${{ secrets.S3_BUCKET_NAME }},ArtifactKey=deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip,Version=${{ needs.test.outputs.build-version }},Environment=production"
+          ARTIFACT_KEY="deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip"
 
-          # Add ASG parameter if provided
-          if [ -n "${ASG_NAME}" ]; then
-            PARAMS="${PARAMS},AutoScalingGroupName=${ASG_NAME}"
-            echo "Targeting Auto Scaling Group: ${ASG_NAME}"
-          else
-            echo "No ASG specified - SSM document will use tag-based targeting"
-          fi
-
-          echo "SSM Parameters: ${PARAMS}"
+          echo "SSM Parameters:"
+          echo "  AutoScalingGroupName: ${ASG_NAME}"
+          echo "  S3Bucket: ${{ secrets.S3_BUCKET_NAME }}"
+          echo "  ArtifactKey: ${ARTIFACT_KEY}"
+          echo "  DestinationPath: ${DESTINATION_PATH:-/usr/share/nginx/html}"
+          echo "  Version: ${{ needs.test.outputs.build-version }}"
+          echo "  Environment: production"
+          echo "  AutomationAssumeRole: ${{ secrets.AWS_ROLE_ARN }}"
 
           EXECUTION_ID=$(aws ssm start-automation-execution \
             --document-name "${{ secrets.SSM_DOCUMENT_NAME }}" \
-            --parameters "${PARAMS}" \
+            --parameters \
+              "AutoScalingGroupName=${ASG_NAME}" \
+              "S3Bucket=${{ secrets.S3_BUCKET_NAME }}" \
+              "ArtifactKey=${ARTIFACT_KEY}" \
+              "DestinationPath=${DESTINATION_PATH:-/usr/share/nginx/html}" \
+              "Version=${{ needs.test.outputs.build-version }}" \
+              "Environment=production" \
+              "AutomationAssumeRole=${{ secrets.AWS_ROLE_ARN }}" \
             --query 'AutomationExecutionId' \
             --output text)
 
