@@ -1,26 +1,6 @@
 # ASG Frontend Deployment Document
 
-This document is designed fo          - echo "=== EXTRACTING NEW FRONTEND ==="
-          - echo "Extracting new frontend to {{ DestinationPath }}"
-          - sudo mkdir -p {{ DestinationPath }}
-          - sudo unzip -o /tmp/frontend.zip -d /tmp/frontend-extract
-          - echo "Moving build files to nginx document root"
-          - sudo rm -rf {{ DestinationPath }}/*
-          - sudo cp -r /tmp/frontend-extract/build/* {{ DestinationPath }}/
-          - sudo cp /tmp/frontend-extract/deployment-info.json {{ DestinationPath }}/
-          - echo "Extraction completed. Contents:"
-          - ls -la {{ DestinationPath }}
-          - echo "=== SETTING PERMISSIONS ==="
-          - echo "Setting correct permissions for nginx"
-          - sudo chown -R nginx:nginx {{ DestinationPath }}
-          - sudo chmod -R 755 {{ DestinationPath }}
-          - echo "=== RESTARTING NGINX ==="
-          - echo "Restarting nginx to ensure proper serving"
-          - sudo systemctl restart nginx
-          - sudo systemctl status nginx
-          - echo "=== CLEANING UP ==="
-          - echo "Cleaning up temporary files"
-          - rm -rf /tmp/frontend.zip /tmp/frontend-extracthe Musical Zoe frontend to an Auto Scaling Group.
+This document is designed fo - echo "=== EXTRACTING NEW FRONTEND ===" - echo "Extracting new frontend to {{ DestinationPath }}" - sudo mkdir -p {{ DestinationPath }} - sudo unzip -o /tmp/frontend.zip -d /tmp/frontend-extract - echo "Moving build files to nginx document root" - sudo rm -rf {{ DestinationPath }}/_ - sudo cp -r /tmp/frontend-extract/build/_ {{ DestinationPath }}/ - sudo cp /tmp/frontend-extract/deployment-info.json {{ DestinationPath }}/ - echo "Extraction completed. Contents:" - ls -la {{ DestinationPath }} - echo "=== SETTING PERMISSIONS ===" - echo "Setting correct permissions for nginx" - sudo chown -R nginx:nginx {{ DestinationPath }} - sudo chmod -R 755 {{ DestinationPath }} - echo "=== RESTARTING NGINX ===" - echo "Restarting nginx to ensure proper serving" - sudo systemctl restart nginx - sudo systemctl status nginx - echo "=== CLEANING UP ===" - echo "Cleaning up temporary files" - rm -rf /tmp/frontend.zip /tmp/frontend-extracthe Musical Zoe frontend to an Auto Scaling Group.
 
 ## Document Name: `DeployFrontendToASG`
 
