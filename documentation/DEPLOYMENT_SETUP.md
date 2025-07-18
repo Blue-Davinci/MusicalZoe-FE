@@ -7,32 +7,34 @@ This guide explains how to set up the automated deployment pipeline for Musical 
 The following secrets must be configured in your GitHub repository:
 
 ### AWS Configuration (OIDC)
+
 - `AWS_ROLE_ARN`: IAM role for GitHub Actions to assume (e.g., `arn:aws:iam::123456789012:role/GitHubActionsRole`)
 - `AWS_REGION`: AWS region where resources are deployed (e.g., `us-east-1`)
 
 **Note**: This workflow uses OpenID Connect (OIDC) for secure authentication with AWS. The IAM role must have a trust policy that allows GitHub Actions to assume it.
 
 ### Example IAM Role Trust Policy
+
 ```json
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Federated": "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
-      },
-      "Action": "sts:AssumeRoleWithWebIdentity",
-      "Condition": {
-        "StringEquals": {
-          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-        },
-        "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:Blue-Davinci/MusicalZoe-FE:*"
-        }
-      }
-    }
-  ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"Federated": "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+			},
+			"Action": "sts:AssumeRoleWithWebIdentity",
+			"Condition": {
+				"StringEquals": {
+					"token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+				},
+				"StringLike": {
+					"token.actions.githubusercontent.com:sub": "repo:Blue-Davinci/MusicalZoe-FE:*"
+				}
+			}
+		}
+	]
 }
 ```
 
