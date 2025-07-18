@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, development]
 
+permissions:
+  contents: read
+  id-token: write
+
 env:
   NODE_VERSION: '20'
   ARTIFACT_NAME: musical-zoe-frontend
@@ -82,7 +86,7 @@ jobs:
           echo "Build version: ${VERSION}"
 
       - name: Create deployment artifact
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
         run: |
           # Create deployment directory structure
           mkdir -p deployment
@@ -111,7 +115,7 @@ jobs:
           unzip -l ${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}.zip
 
       - name: Upload build artifact
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}
@@ -122,7 +126,7 @@ jobs:
     name: Deploy to Production
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -154,25 +158,32 @@ jobs:
         id: trigger-deployment
         env:
           ASG_NAME: ${{ secrets.ASG_NAME }}
+          DESTINATION_PATH: ${{ secrets.DESTINATION_PATH }}
         run: |
           echo "Starting deployment automation..."
 
           # Build parameters for SSM document
-          PARAMS="S3Bucket=${{ secrets.S3_BUCKET_NAME }},ArtifactKey=deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip,Version=${{ needs.test.outputs.build-version }},Environment=production"
+          ARTIFACT_KEY="deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip"
 
-          # Add ASG parameter if provided
-          if [ -n "${ASG_NAME}" ]; then
-            PARAMS="${PARAMS},AutoScalingGroupName=${ASG_NAME}"
-            echo "Targeting Auto Scaling Group: ${ASG_NAME}"
-          else
-            echo "No ASG specified - SSM document will use tag-based targeting"
-          fi
-
-          echo "SSM Parameters: ${PARAMS}"
+          echo "SSM Parameters:"
+          echo "  AutoScalingGroupName: ${ASG_NAME}"
+          echo "  S3Bucket: ${{ secrets.S3_BUCKET_NAME }}"
+          echo "  ArtifactKey: ${ARTIFACT_KEY}"
+          echo "  DestinationPath: ${DESTINATION_PATH:-/usr/share/nginx/html}"
+          echo "  Version: ${{ needs.test.outputs.build-version }}"
+          echo "  Environment: production"
+          echo "  AutomationAssumeRole: ${{ secrets.AWS_ROLE_ARN }}"
 
           EXECUTION_ID=$(aws ssm start-automation-execution \
             --document-name "${{ secrets.SSM_DOCUMENT_NAME }}" \
-            --parameters "${PARAMS}" \
+            --parameters \
+              "AutoScalingGroupName=${ASG_NAME}" \
+              "S3Bucket=${{ secrets.S3_BUCKET_NAME }}" \
+              "ArtifactKey=${ARTIFACT_KEY}" \
+              "DestinationPath=${DESTINATION_PATH:-/usr/share/nginx/html}" \
+              "Version=${{ needs.test.outputs.build-version }}" \
+              "Environment=production" \
+              "AutomationAssumeRole=${{ secrets.AWS_ROLE_ARN }}" \
             --query 'AutomationExecutionId' \
             --output text)
 
@@ -195,15 +206,15 @@ jobs:
               
               case "${STATUS}" in
                 "Success")
-                  echo "✅ Deployment completed successfully!"
+                  echo "Deployment completed successfully!"
                   exit 0
                   ;;
                 "Failed"|"Cancelled"|"TimedOut")
-                  echo "❌ Deployment failed with status: ${STATUS}"
+                  echo "Deployment failed with status: ${STATUS}"
                   exit 1
                   ;;
                 "InProgress")
-                  echo "⏳ Deployment in progress..."
+                  echo "Deployment in progress..."
                   sleep 30
                   ;;
                 *)

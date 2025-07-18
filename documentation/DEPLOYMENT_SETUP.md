@@ -1,15 +1,55 @@
 # Deployment Setup Guide
 
-This guide explains how to set up the automated deployment pipeline for Musical Zoe Frontend.
+This guide explains how to### Deployment Configuration
+
+- `DESTINATION_PATH`: (Optional) Target directory on EC2 instances. Default: `/usr/share/nginx/html`
+
+**Note**: If using an existing SSM document designed for single EC2 instances, you'll need to adapt it for Auto Scaling Group deployment. The document should use the `ASG_NAME` parameter to discover instances instead of requiring an `InstanceId` parameter.
+
+## Nginx Configuration Notes
+
+For Amazon Linux 2023 with nginx, the typical web root directories are:
+
+- `/usr/share/nginx/html` (nginx default - recommended)
+- `/var/www/html` (traditional Apache/nginx location)
+
+The deployment will extract files to the specified `DESTINATION_PATH`. Ensure your nginx configuration points to this directory.utomated deployment pipeline for Musical Zoe Frontend.
 
 ## Required GitHub Secrets
 
 The following secrets must be configured in your GitHub repository:
 
-### AWS Configuration
+### AWS Configuration (OIDC)
 
 - `AWS_ROLE_ARN`: IAM role for GitHub Actions to assume (e.g., `arn:aws:iam::123456789012:role/GitHubActionsRole`)
 - `AWS_REGION`: AWS region where resources are deployed (e.g., `us-east-1`)
+
+**Note**: This workflow uses OpenID Connect (OIDC) for secure authentication with AWS. The IAM role must have a trust policy that allows GitHub Actions to assume it.
+
+### Example IAM Role Trust Policy
+
+```json
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"Federated": "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+			},
+			"Action": "sts:AssumeRoleWithWebIdentity",
+			"Condition": {
+				"StringEquals": {
+					"token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+				},
+				"StringLike": {
+					"token.actions.githubusercontent.com:sub": "repo:Blue-Davinci/MusicalZoe-FE:*"
+				}
+			}
+		}
+	]
+}
+```
 
 ### S3 Configuration
 
@@ -21,7 +61,22 @@ The following secrets must be configured in your GitHub repository:
 
 ### Auto Scaling Group Configuration
 
-- `ASG_NAME`: Name of the Auto Scaling Group containing your EC2 instances (optional, can be handled by tags)
+- `ASG_NAME`: Name of the Auto Scaling Group containing your EC2 instances
+
+### Deployment Configuration
+
+- `DESTINATION_PATH`: (Optional) Target directory on EC2 instances. Default: `/usr/share/nginx/html`
+
+**Note**: If using an existing SSM document designed for single EC2 instances, you'll need to adapt it for Auto Scaling Group deployment. The document should use the `ASG_NAME` parameter to discover instances instead of requiring an `InstanceId` parameter.
+
+## Nginx Configuration Notes
+
+For Amazon Linux 2023 with nginx, the typical web root directories are:
+
+- `/var/www/html` (traditional Apache/nginx location)
+- `/usr/share/nginx/html` (nginx default)
+
+The deployment will extract files to the specified `DESTINATION_PATH`. Ensure your nginx configuration points to this directory.
 
 ## Auto Scaling Group Setup
 
