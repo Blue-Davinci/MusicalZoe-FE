@@ -173,26 +173,44 @@ jobs:
           echo "  Version: ${{ needs.test.outputs.build-version }}"
           echo "  Environment: production"
 
+          echo "Starting SSM automation execution..."
           EXECUTION_ID=$(aws ssm start-automation-execution \
             --document-name "${{ secrets.SSM_DOCUMENT_NAME }}" \
             --parameters "AutoScalingGroupName=${ASG_NAME},S3Bucket=${{ secrets.S3_BUCKET_NAME }},ArtifactKey=${ARTIFACT_KEY},DestinationPath=${DESTINATION_PATH:-/usr/share/nginx/html},Version=${{ needs.test.outputs.build-version }},Environment=production" \
             --query 'AutomationExecutionId' \
             --output text)
 
+          if [ -z "$EXECUTION_ID" ] || [ "$EXECUTION_ID" = "None" ]; then
+            echo "ERROR: Failed to start automation execution"
+            exit 1
+          fi
+
           echo "Deployment automation started with ID: ${EXECUTION_ID}"
           echo "execution-id=${EXECUTION_ID}" >> $GITHUB_OUTPUT
+          
+          # Verify the execution was created
+          echo "Verifying execution was created..."
+          aws ssm describe-automation-executions \
+            --filters "Key=ExecutionId,Values=${EXECUTION_ID}" \
+            --output table
 
       - name: Wait for deployment completion
         run: |
           echo "Monitoring deployment progress..."
+          echo "Execution ID: ${{ steps.trigger-deployment.outputs.execution-id }}"
 
           # Wait for deployment to complete (max 10 minutes)
           timeout 600 bash -c '
             while true; do
-              STATUS=$(aws ssm describe-automation-executions \
+              echo "Checking execution status..."
+              EXECUTION_RESPONSE=$(aws ssm describe-automation-executions \
                 --filters "Key=ExecutionId,Values=${{ steps.trigger-deployment.outputs.execution-id }}" \
-                --query "AutomationExecutions[0].AutomationExecutionStatus" \
-                --output text)
+                --query "AutomationExecutions[0]" \
+                --output json)
+              
+              echo "Full response: ${EXECUTION_RESPONSE}"
+              
+              STATUS=$(echo "${EXECUTION_RESPONSE}" | jq -r ".AutomationExecutionStatus // \"None\"")
               
               echo "Deployment status: ${STATUS}"
               
@@ -203,10 +221,20 @@ jobs:
                   ;;
                 "Failed"|"Cancelled"|"TimedOut")
                   echo "Deployment failed with status: ${STATUS}"
+                  echo "Failure details:"
+                  echo "${EXECUTION_RESPONSE}" | jq ".FailureMessage // \"No failure message\""
                   exit 1
                   ;;
                 "InProgress")
                   echo "Deployment in progress..."
+                  sleep 30
+                  ;;
+                "None"|"null")
+                  echo "Execution not found or not started properly"
+                  echo "Checking if execution exists..."
+                  aws ssm describe-automation-executions \
+                    --filters "Key=ExecutionId,Values=${{ steps.trigger-deployment.outputs.execution-id }}" \
+                    --output table
                   sleep 30
                   ;;
                 *)

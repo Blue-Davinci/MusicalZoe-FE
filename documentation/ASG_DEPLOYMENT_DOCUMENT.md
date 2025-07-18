@@ -23,7 +23,7 @@ parameters:
     description: The target directory on the EC2 instances where the frontend files will be extracted.
   Version:
     type: String
-    default: ''
+    default: ""
     description: (Optional) Version identifier for this deployment.
   Environment:
     type: String
@@ -32,36 +32,50 @@ parameters:
 mainSteps:
   - name: DeployToInstances
     action: aws:runCommand
-    description: Deploy frontend to all instances in the ASG
+    description: Deploy frontend to all instances in the ASG using EC2 tags
     inputs:
       DocumentName: AWS-RunShellScript
       Targets:
         - Key: tag:aws:autoscaling:groupName
           Values:
             - '{{ AutoScalingGroupName }}'
-      MaxConcurrency: '10'
-      MaxErrors: '0'
+      MaxConcurrency: "10"
+      MaxErrors: "0"
       Parameters:
         commands:
+          - echo "=== STARTING FRONTEND DEPLOYMENT ==="
           - echo "Starting frontend deployment on $(hostname)"
-          - echo "Version{{ ":" }} {{ Version }}"
-          - echo "Environment{{ ":" }} {{ Environment }}"
-          - echo "Timestamp{{ ":" }} $(date)"
+          - echo "Instance ID - $(curl -s http://169.254.169.254/latest/meta-data/instance-id)"
+          - echo "Version - {{ Version }}"
+          - echo "Environment - {{ Environment }}"
+          - echo "Timestamp - $(date)"
+          - echo "Current user - $(whoami)"
+          - echo "Current directory - $(pwd)"
+          - echo "=== INSTALLING REQUIRED PACKAGES ==="
           - echo "Installing required packages"
           - sudo dnf install -y unzip awscli
-          - echo "Downloading artifact from S3{{ ":" }} s3{{ ":" }}//{{ S3Bucket }}/{{ ArtifactKey }}"
-          - aws s3 cp s3{{ ":" }}//{{ S3Bucket }}/{{ ArtifactKey }} /tmp/frontend.zip
+          - echo "=== DOWNLOADING ARTIFACT FROM S3 ==="
+          - echo "Downloading artifact from S3 - s3://{{ S3Bucket }}/{{ ArtifactKey }}"
+          - aws s3 cp s3://{{ S3Bucket }}/{{ ArtifactKey }} /tmp/frontend.zip
+          - echo "Download completed. File size - $(ls -lh /tmp/frontend.zip)"
+          - echo "=== CREATING BACKUP ==="
           - echo "Creating backup of current deployment"
           - sudo mkdir -p /tmp/backup-$(date +%Y%m%d-%H%M%S)
           - sudo cp -r {{ DestinationPath }}/* /tmp/backup-$(date +%Y%m%d-%H%M%S)/ 2>/dev/null || echo "No existing files to backup"
+          - echo "=== EXTRACTING NEW FRONTEND ==="
           - echo "Extracting new frontend to {{ DestinationPath }}"
           - sudo mkdir -p {{ DestinationPath }}
           - sudo unzip -o /tmp/frontend.zip -d {{ DestinationPath }}
+          - echo "Extraction completed. Contents -"
+          - ls -la {{ DestinationPath }}
+          - echo "=== SETTING PERMISSIONS ==="
           - echo "Setting correct permissions for nginx"
-          - sudo chown -R nginx{{ ":" }}nginx {{ DestinationPath }}
+          - sudo chown -R nginx:nginx {{ DestinationPath }}
           - sudo chmod -R 755 {{ DestinationPath }}
+          - echo "=== CLEANING UP ==="
           - echo "Cleaning up temporary files"
           - rm -f /tmp/frontend.zip
+          - echo "=== DEPLOYMENT COMPLETED ==="
           - echo "Deployment completed successfully on $(hostname)"
     outputs:
       - Name: DeploymentCommandId
@@ -78,7 +92,6 @@ Update your GitHub repository secrets:
 - `AWS_ROLE_ARN`: Your GitHub OIDC role ARN
 - `AWS_REGION`: Your AWS region
 - `S3_BUCKET_NAME`: Your S3 bucket name
-- `AUTOMATION_ASSUME_ROLE`: IAM role for SSM automation (can be the same as AWS_ROLE_ARN)
 
 ## How to Create This Document
 
