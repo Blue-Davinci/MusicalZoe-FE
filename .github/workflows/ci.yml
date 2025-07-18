@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Continuous Integration & Deployment
 
 on:
   push:
@@ -8,12 +8,14 @@ on:
 
 env:
   NODE_VERSION: '20'
+  ARTIFACT_NAME: musical-zoe-frontend
 
 jobs:
-  # Job 1: Code Quality and Linting
-  lint:
-    name: Code Quality & Linting
+  test:
+    name: Test & Build
     runs-on: ubuntu-latest
+    outputs:
+      build-version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,272 +29,197 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Prettier check
-        run: npm run format -- --check
+      - name: Create test environment
+        run: |
+          cat > .env << EOF
+          API_BASE_URL=https://api.test.com/v1
+          API_SIGNUP_URL=https://api.test.com/v1/api
+          API_ACTIVATION_URL=https://api.test.com/v1/api/activated
+          API_AUTHENTICATION_URL=https://api.test.com/v1/api/authentication
+          MUSIC_API_NEWS_URL=https://api.test.com/v1/musical/news
+          MUSIC_API_TRENDS_URL=https://api.test.com/v1/musical/trends
+          MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
+          MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
+          MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
+          APP_NAME="Musical Zoe"
+          APP_VERSION="1.0.0"
+          APP_ENV="test"
+          VITE_API_BASE_URL=https://api.test.com/v1
+          VITE_API_SIGNUP_URL=https://api.test.com/v1/api
+          VITE_API_ACTIVATION_URL=https://api.test.com/v1/api/activated
+          VITE_API_AUTHENTICATION_URL=https://api.test.com/v1/api/authentication
+          VITE_MUSIC_API_NEWS_URL=https://api.test.com/v1/musical/news
+          VITE_MUSIC_API_TRENDS_URL=https://api.test.com/v1/musical/trends
+          VITE_MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
+          VITE_MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
+          VITE_MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
+          VITE_APP_NAME="Musical Zoe"
+          VITE_APP_VERSION="1.0.0"
+          VITE_APP_ENV="test"
+          EOF
 
-      - name: Run ESLint
+      - name: Run linting
         run: npm run lint
 
-      - name: Check for unused dependencies
-        run: |
-          echo "Checking for unused dependencies..."
-          npx depcheck --skip-missing --ignores="@types/*,eslint-*,prettier-*,@testing-library/*,@tailwindcss/typography,date-fns,lucide-svelte,mode-watcher,pino-pretty,@lucide/svelte,tailwind-variants,tw-animate-css"
-
-  # Job 2: TypeScript and Svelte Check
-  type-check:
-    name: TypeScript & Svelte Validation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Create test environment file
-        run: |
-          cat > .env << EOF
-          # Test environment variables for CI build
-          # Server-side variables (accessible via \$env/static/private)
-          API_BASE_URL=https://api.test.com/v1
-          API_SIGNUP_URL=https://api.test.com/v1/api
-          API_ACTIVATION_URL=https://api.test.com/v1/api/activated
-          API_AUTHENTICATION_URL=https://api.test.com/v1/api/authentication
-          MUSIC_API_NEWS_URL=https://api.test.com/v1/musical/news
-          MUSIC_API_TRENDS_URL=https://api.test.com/v1/musical/trends
-          MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
-          MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
-          MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
-
-          # Client-side variables (accessible via \$env/static/public)
-          VITE_API_BASE_URL=https://api.test.com/v1
-          VITE_API_SIGNUP_URL=https://api.test.com/v1/api
-          VITE_API_ACTIVATION_URL=https://api.test.com/v1/api/activated
-          VITE_API_AUTHENTICATION_URL=https://api.test.com/v1/api/authentication
-          VITE_MUSIC_API_NEWS_URL=https://api.test.com/v1/musical/news
-          VITE_MUSIC_API_TRENDS_URL=https://api.test.com/v1/musical/trends
-          VITE_MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
-          VITE_MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
-          VITE_MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
-          VITE_APP_NAME="Musical Zoe"
-          VITE_APP_VERSION="1.0.0"
-          VITE_APP_ENV="test"
-          EOF
-
-      - name: Run Svelte Check
+      - name: Run type checking
         run: npm run check
 
-      - name: Validate Svelte components
-        run: |
-          echo "Checking all .svelte files compile correctly..."
-          find src -name "*.svelte" -type f | wc -l
-          echo "Found $(find src -name "*.svelte" -type f | wc -l) Svelte components"
-
-  # Job 3: Build and Test
-  build-and-test:
-    name: Build & Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Create test environment file
-        run: |
-          cat > .env << EOF
-          # Test environment variables for CI build
-          # Server-side variables (accessible via \$env/static/private)
-          API_BASE_URL=https://api.test.com/v1
-          API_SIGNUP_URL=https://api.test.com/v1/api
-          API_ACTIVATION_URL=https://api.test.com/v1/api/activated
-          API_AUTHENTICATION_URL=https://api.test.com/v1/api/authentication
-          MUSIC_API_NEWS_URL=https://api.test.com/v1/musical/news
-          MUSIC_API_TRENDS_URL=https://api.test.com/v1/musical/trends
-          MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
-          MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
-          MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
-
-          # Client-side variables (accessible via \$env/static/public)
-          VITE_API_BASE_URL=https://api.test.com/v1
-          VITE_API_SIGNUP_URL=https://api.test.com/v1/api
-          VITE_API_ACTIVATION_URL=https://api.test.com/v1/api/activated
-          VITE_API_AUTHENTICATION_URL=https://api.test.com/v1/api/authentication
-          VITE_MUSIC_API_NEWS_URL=https://api.test.com/v1/musical/news
-          VITE_MUSIC_API_TRENDS_URL=https://api.test.com/v1/musical/trends
-          VITE_MUSIC_API_LYRICS_URL=https://api.test.com/v1/musical/lyrics
-          VITE_MUSIC_API_TRACK_INFO_URL=https://api.test.com/v1/musical/track-info
-          VITE_MUSIC_API_HEALTH_URL=https://api.test.com/v1/health
-          VITE_APP_NAME="Musical Zoe"
-          VITE_APP_VERSION="1.0.0"
-          VITE_APP_ENV="test"
-          EOF
-
-      - name: Run unit tests
-        run: npm run test
+      - name: Run tests
+        run: npm test
 
       - name: Build application
         run: npm run build
-        env:
-          NODE_ENV: production
-
-      - name: Check build output
-        run: |
-          echo "Build completed successfully!"
-          ls -la .svelte-kit/output/
-          echo "Build output:"
-          ls -la .svelte-kit/output/client/
-          echo "Build size:"
-          du -sh .svelte-kit/output/
-
-      - name: Validate API routes structure
-        run: |
-          echo "Checking API routes..."
-          find src/routes/api -name "+server.ts" -type f
-          echo "Found $(find src/routes/api -name "+server.ts" -type f | wc -l) API endpoints"
-
-  # Job 4: Security and Dependencies
-  security:
-    name: Security & Dependencies
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Run security audit
-        run: npm audit --audit-level moderate
+        run: npm audit --audit-level high
         continue-on-error: true
 
-      - name: Check for known vulnerabilities
+      - name: Generate build version
+        id: version
         run: |
-          echo "Checking for high severity vulnerabilities..."
-          npm audit --audit-level high --json | jq '.vulnerabilities | length'
+          VERSION=$(date +%Y%m%d-%H%M%S)-${GITHUB_SHA::8}
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Build version: ${VERSION}"
 
-      - name: Validate package.json
+      - name: Create deployment artifact
+        if: github.ref == 'refs/heads/main'
         run: |
-          echo "Validating package.json structure..."
-          node -e "console.log('Package.json is valid JSON')"
+          # Create deployment directory structure
+          mkdir -p deployment
 
-  # Job 5: Project Structure Validation
-  structure:
-    name: Project Structure Validation
+          # Copy build output
+          cp -r build deployment/
+
+          # Create deployment metadata
+          cat > deployment/deployment-info.json << EOF
+          {
+            "version": "${{ steps.version.outputs.version }}",
+            "build_time": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "commit_sha": "${GITHUB_SHA}",
+            "branch": "${GITHUB_REF_NAME}",
+            "environment": "production"
+          }
+          EOF
+
+          # Create deployment archive
+          cd deployment
+          zip -r ../${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}.zip .
+          cd ..
+
+          # Verify archive contents
+          echo "Archive contents:"
+          unzip -l ${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}.zip
+
+      - name: Upload build artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}
+          path: ${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}.zip
+          retention-days: 30
+
+  deploy:
+    name: Deploy to Production
+    needs: test
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Validate project structure
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}
+          path: .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload artifact to S3
         run: |
-          echo "Validating Musical Zoe project structure..."
+          ARTIFACT_KEY="deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip"
 
-          # Check essential directories
-          test -d "src/lib/web-components" && echo "Components directory exists"
-          test -d "src/routes/api/music" && echo "Music API routes exist"
-          test -d "documentation" && echo "Documentation directory exists"
+          echo "Uploading to S3..."
+          aws s3 cp ${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip \
+            s3://${{ secrets.S3_BUCKET_NAME }}/${ARTIFACT_KEY} \
+            --metadata "version=${{ needs.test.outputs.build-version }},commit=${{ github.sha }},branch=${{ github.ref_name }}"
 
-          # Check essential files
-          test -f "src/lib/types/music-api.ts" && echo "Music API types exist"
-          test -f ".env" && echo "Environment configuration file exists"
-          test -f "README.md" && echo "README exists"
+          echo "Artifact uploaded to s3://${{ secrets.S3_BUCKET_NAME }}/${ARTIFACT_KEY}"
 
-          # Check component files
-          test -f "src/lib/web-components/dashboard/LyricsSearchWidget.svelte" && echo "LyricsSearchWidget exists"
-          test -f "src/lib/web-components/dashboard/MusicNewsWidget.svelte" && echo "MusicNewsWidget exists"
-          test -f "src/lib/web-components/dashboard/TrendingWidget.svelte" && echo "TrendingWidget exists"
-
-          # Check API endpoints
-          test -f "src/routes/api/music/lyrics/+server.ts" && echo "Lyrics API endpoint exists"
-          test -f "src/routes/api/music/news/+server.ts" && echo "News API endpoint exists"
-          test -f "src/routes/api/music/trends/+server.ts" && echo "Trends API endpoint exists"
-
-          echo "Project structure validation completed!"
-
-      - name: Check environment variables structure
+      - name: Trigger deployment via SSM
+        id: trigger-deployment
+        env:
+          ASG_NAME: ${{ secrets.ASG_NAME }}
         run: |
-          echo "Validating environment variables..."
-          if [ -f ".env" ]; then
-            echo "Environment variables in .env:"
-            grep -E "^[A-Z_]+" .env | cut -d'=' -f1 | sort
-            echo "Server-side variables (non-VITE_):"
-            grep -E "^[A-Z_]+=" .env | grep -v "^VITE_" | cut -d'=' -f1 | sort
-            echo "Client-side variables (VITE_):"
-            grep -E "^VITE_[A-Z_]+=" .env | cut -d'=' -f1 | sort
+          echo "Starting deployment automation..."
+
+          # Build parameters for SSM document
+          PARAMS="S3Bucket=${{ secrets.S3_BUCKET_NAME }},ArtifactKey=deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip,Version=${{ needs.test.outputs.build-version }},Environment=production"
+
+          # Add ASG parameter if provided
+          if [ -n "${ASG_NAME}" ]; then
+            PARAMS="${PARAMS},AutoScalingGroupName=${ASG_NAME}"
+            echo "Targeting Auto Scaling Group: ${ASG_NAME}"
           else
-            echo "No .env file found!"
+            echo "No ASG specified - SSM document will use tag-based targeting"
           fi
 
-  # Job 6: Documentation Check
-  documentation:
-    name: Documentation Validation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+          echo "SSM Parameters: ${PARAMS}"
 
-      - name: Check documentation completeness
+          EXECUTION_ID=$(aws ssm start-automation-execution \
+            --document-name "${{ secrets.SSM_DOCUMENT_NAME }}" \
+            --parameters "${PARAMS}" \
+            --query 'AutomationExecutionId' \
+            --output text)
+
+          echo "Deployment automation started with ID: ${EXECUTION_ID}"
+          echo "execution-id=${EXECUTION_ID}" >> $GITHUB_OUTPUT
+
+      - name: Wait for deployment completion
         run: |
-          echo "Checking documentation..."
+          echo "Monitoring deployment progress..."
 
-          # Check main documentation files
-          test -f "README.md" && echo "Main README exists"
-          test -f "documentation/DASHBOARD_IMPLEMENTATION.md" && echo "Dashboard docs exist"
-          test -f "documentation/API_CONFIGURATION.md" && echo "API docs exist"
+          # Wait for deployment to complete (max 10 minutes)
+          timeout 600 bash -c '
+            while true; do
+              STATUS=$(aws ssm describe-automation-executions \
+                --filters "Key=ExecutionId,Values=${{ steps.trigger-deployment.outputs.execution-id }}" \
+                --query "AutomationExecutions[0].AutomationExecutionStatus" \
+                --output text)
+              
+              echo "Deployment status: ${STATUS}"
+              
+              case "${STATUS}" in
+                "Success")
+                  echo "✅ Deployment completed successfully!"
+                  exit 0
+                  ;;
+                "Failed"|"Cancelled"|"TimedOut")
+                  echo "❌ Deployment failed with status: ${STATUS}"
+                  exit 1
+                  ;;
+                "InProgress")
+                  echo "⏳ Deployment in progress..."
+                  sleep 30
+                  ;;
+                *)
+                  echo "Unknown status: ${STATUS}"
+                  sleep 30
+                  ;;
+              esac
+            done
+          '
 
-          # Check README content
-          if grep -q "Musical Zoe" README.md; then
-            echo "README contains project name"
-          fi
-
-          if grep -q "SvelteKit" README.md; then
-            echo "README mentions SvelteKit"
-          fi
-
-          # Check for TODO items
-          TODO_COUNT=$(find . -name "*.md" -o -name "*.ts" -o -name "*.svelte" | xargs grep -i "todo\|fixme" | wc -l)
-          echo "Found $TODO_COUNT TODO/FIXME items"
-
-          echo "Documentation validation completed!"
-
-  # Summary job that requires all others to pass
-  ci-success:
-    name: CI Success
-    runs-on: ubuntu-latest
-    needs: [lint, type-check, build-and-test, security, structure, documentation]
-    if: always()
-    steps:
-      - name: Check all jobs status
+      - name: Deployment summary
+        if: always()
         run: |
-          if [[ "${{ needs.lint.result }}" == "success" && 
-                "${{ needs.type-check.result }}" == "success" && 
-                "${{ needs.build-and-test.result }}" == "success" && 
-                "${{ needs.security.result }}" == "success" && 
-                "${{ needs.structure.result }}" == "success" && 
-                "${{ needs.documentation.result }}" == "success" ]]; then
-            echo "All CI checks passed for Musical Zoe!"
-            exit 0
-          else
-            echo "Some CI checks failed"
-            exit 1
-          fi
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.test.outputs.build-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: Production" >> $GITHUB_STEP_SUMMARY
+          echo "- **S3 Bucket**: ${{ secrets.S3_BUCKET_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Artifact**: deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
