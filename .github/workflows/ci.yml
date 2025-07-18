@@ -123,7 +123,6 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -152,16 +151,28 @@ jobs:
           echo "Artifact uploaded to s3://${{ secrets.S3_BUCKET_NAME }}/${ARTIFACT_KEY}"
 
       - name: Trigger deployment via SSM
+        id: trigger-deployment
+        env:
+          ASG_NAME: ${{ secrets.ASG_NAME }}
         run: |
           echo "Starting deployment automation..."
           
+          # Build parameters for SSM document
+          PARAMS="S3Bucket=${{ secrets.S3_BUCKET_NAME }},ArtifactKey=deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip,Version=${{ needs.test.outputs.build-version }},Environment=production"
+          
+          # Add ASG parameter if provided
+          if [ -n "${ASG_NAME}" ]; then
+            PARAMS="${PARAMS},AutoScalingGroupName=${ASG_NAME}"
+            echo "Targeting Auto Scaling Group: ${ASG_NAME}"
+          else
+            echo "No ASG specified - SSM document will use tag-based targeting"
+          fi
+          
+          echo "SSM Parameters: ${PARAMS}"
+          
           EXECUTION_ID=$(aws ssm start-automation-execution \
             --document-name "${{ secrets.SSM_DOCUMENT_NAME }}" \
-            --parameters \
-              S3Bucket=${{ secrets.S3_BUCKET_NAME }}, \
-              ArtifactKey=deployments/${{ env.ARTIFACT_NAME }}-${{ needs.test.outputs.build-version }}.zip, \
-              Version=${{ needs.test.outputs.build-version }}, \
-              Environment=production \
+            --parameters "${PARAMS}" \
             --query 'AutomationExecutionId' \
             --output text)
           
@@ -176,7 +187,7 @@ jobs:
           timeout 600 bash -c '
             while true; do
               STATUS=$(aws ssm describe-automation-executions \
-                --filters "Key=ExecutionId,Values=${{ steps.deploy.outputs.execution-id }}" \
+                --filters "Key=ExecutionId,Values=${{ steps.trigger-deployment.outputs.execution-id }}" \
                 --query "AutomationExecutions[0].AutomationExecutionStatus" \
                 --output text)
               
