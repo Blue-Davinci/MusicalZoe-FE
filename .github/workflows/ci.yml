@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, development]
 
+permissions:
+  contents: read
+  id-token: write
+
 env:
   NODE_VERSION: '20'
   ARTIFACT_NAME: musical-zoe-frontend
@@ -195,15 +199,15 @@ jobs:
               
               case "${STATUS}" in
                 "Success")
-                  echo "✅ Deployment completed successfully!"
+                  echo "Deployment completed successfully!"
                   exit 0
                   ;;
                 "Failed"|"Cancelled"|"TimedOut")
-                  echo "❌ Deployment failed with status: ${STATUS}"
+                  echo "Deployment failed with status: ${STATUS}"
                   exit 1
                   ;;
                 "InProgress")
-                  echo "⏳ Deployment in progress..."
+                  echo "Deployment in progress..."
                   sleep 30
                   ;;
                 *)
